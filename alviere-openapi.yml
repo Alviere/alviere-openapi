@@ -5636,6 +5636,11 @@ paths:
                       description: Message to be printed in the carrier
                       maxLength: 150
                       minLength: 1
+                    line2_text:
+                      type: string
+                      description: Custom text for line 2 of the card
+                      minLength: 1
+                      maxLength: 26
                 auto_pin_generation:
                   type: boolean
                   description: |-
