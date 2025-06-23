@@ -5641,6 +5641,7 @@ paths:
                       description: Custom text for line 2 of the card
                       minLength: 1
                       maxLength: 26
+                      example: "12345"
                 auto_pin_generation:
                   type: boolean
                   description: |-
