@@ -1543,7 +1543,7 @@ paths:
         description: The unique uuid of an account
   /wallets/{wallet_uuid}/transactions/statement:
     get:
-      summary: Get wallet statement data
+      summary: Get wallet statement 
       description: |-
         Gets aggregated wallet transaction data required to build a monthly transaction statement for an account wallet.
 
@@ -1970,6 +1970,14 @@ paths:
           in: query
           name: payment_method_uuid
           description: The unique ID of the payment method that is associated with the transactions
+        - schema:
+            type: string
+            minLength: 2
+            maxLength: 100
+          in: query
+          name: description_search
+          description: Search transactions by description (case-insensitive partial match)
+          example: "coffee shop"
       responses:
         '200':
           description: |
@@ -2059,6 +2067,14 @@ paths:
           in: query
           name: payment_method_uuid
           description: The unique ID of the payment method that is associated with the transactions
+        - schema:
+            type: string
+            minLength: 2
+            maxLength: 100
+          in: query
+          name: description_search
+          description: Search transactions by description (case-insensitive partial match)
+          example: "coffee shop"
       responses:
         '200':
           description: |
@@ -2884,7 +2900,7 @@ paths:
                   - transaction
                 properties:
                   receipt_uuid:
-                    description: This field is Alviere's internal unique transaction identifier and is required to reference the transaciton that we wish to perform an operation on, such as `VOID` or `REFUND`
+                    description: Receipt identifier for a given transaction
                     type: string
                     format: uuid
                   receipt_date:
@@ -6290,6 +6306,35 @@ paths:
                       type: string
                       pattern: ^[A-Z]{3}$
                       example: USA
+                physical_card_conversion:
+                  type: object
+                  description: Configuration for converting a virtual card to physical
+                  required:
+                    - product_id
+                  properties:
+                    product_id:
+                      type: string
+                      description: Physical card product ID
+                    custom_fields:
+                      type: object
+                      description: Custom fields for physical card
+                      properties:
+                        shipping_method:
+                          type: string
+                          enum:
+                            - DEFAULT
+                            - EXPRESS_FEDEX
+                          example: DEFAULT
+                        name_on_card:
+                          type: string
+                          description: Name for embossing on the card
+                          example: John Doe
+                        line2_text:
+                          type: string
+                          description: Custom text for line 2 of the card
+                          minLength: 1
+                          maxLength: 26
+                          example: "12345"
       responses:
         '200':
           description: |
@@ -9909,6 +9954,10 @@ components:
         payout_method_uuid:
           type: string
           description: If the transaction is related to the transfer of funds to a Beneficiary, this field will contain the UUID of applicable Payout Method
+        receipt_uuid:
+          description: Receipt identifier for a given transaction
+          type: string
+          format: uuid
         transaction_type:
           $ref: '#/components/schemas/transaction-type'
         status:
@@ -10025,6 +10074,42 @@ components:
                 is_international:
                   type: boolean
                   description: If ``TRUE`` the transaction is international
+                dispute_details:
+                  type: object
+                  description: Dispute information for card transactions
+                  properties:
+                    status:
+                      type: string
+                      enum:
+                        - OPEN
+                        - PENDING
+                        - WON
+                        - LOST
+                        - CLOSED
+                      description: High-level dispute status
+                    status_reason:
+                      type: string
+                      enum:
+                        - FILED
+                        - AWAITING_DOCUMENTATION
+                        - UNDER_REVIEW
+                        - MERCHANT_RESPONSE_PENDING
+                        - ESCALATED
+                        - FINAL_REVIEW
+                        - RESOLVED_IN_FAVOR
+                        - RESOLVED_AGAINST
+                        - ADMINISTRATIVE_CLOSURE
+                      description: Current lifecycle stage
+                    dispute_reason:
+                      type: string
+                      enum:
+                        - FRAUD
+                        - AUTHORIZATION_ISSUE
+                        - MERCHANT_ERROR
+                        - SERVICE_ISSUE
+                        - PROCESSING_ERROR
+                        - OTHER
+                      description: Why the dispute was filed
             payments_details:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
@@ -11300,6 +11385,11 @@ components:
               description: Message to be printed in the carrier
               minLength: 1
               maxLength: 150
+            line2_text:
+              type: string
+              description: Custom text for line 2 of the card
+              minLength: 1
+              maxLength: 26
         service_fees:
           type: array
           items:
@@ -13490,6 +13580,10 @@ components:
         payout_method_uuid:
           type: string
           description: 'If the transaction is related to the transfer of funds to a Beneficiary, this field will contain the UUID of applicable Payout Method  '
+        receipt_uuid:
+          description: Receipt identifier for a given transaction
+          type: string
+          format: uuid
         transaction_type:
           $ref: '#/components/schemas/wallet-transaction-type'
         status:
@@ -13606,6 +13700,42 @@ components:
                 is_international:
                   type: boolean
                   description: If ``TRUE`` the transaction is international
+                dispute_details:
+                  type: object
+                  description: Dispute information for card transactions
+                  properties:
+                    status:
+                      type: string
+                      enum:
+                        - OPEN
+                        - PENDING
+                        - WON
+                        - LOST
+                        - CLOSED
+                      description: High-level dispute status
+                    status_reason:
+                      type: string
+                      enum:
+                        - FILED
+                        - AWAITING_DOCUMENTATION
+                        - UNDER_REVIEW
+                        - MERCHANT_RESPONSE_PENDING
+                        - ESCALATED
+                        - FINAL_REVIEW
+                        - RESOLVED_IN_FAVOR
+                        - RESOLVED_AGAINST
+                        - ADMINISTRATIVE_CLOSURE
+                      description: Current lifecycle stage
+                    dispute_reason:
+                      type: string
+                      enum:
+                        - FRAUD
+                        - AUTHORIZATION_ISSUE
+                        - MERCHANT_ERROR
+                        - SERVICE_ISSUE
+                        - PROCESSING_ERROR
+                        - OTHER
+                      description: Why the dispute was filed
             payments_details:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
@@ -13834,6 +13964,10 @@ components:
         payout_method_uuid:
           type: string
           description: 'If the transaction is related to the transfer of funds to a Beneficiary, this field will contain the UUID of applicable Payout Method  '
+        receipt_uuid:
+          description: Receipt identifier for a given transaction
+          type: string
+          format: uuid
         transaction_type:
           $ref: '#/components/schemas/wallet-transaction-type'
         status:
@@ -13950,6 +14084,42 @@ components:
                 is_international:
                   type: boolean
                   description: If ``TRUE`` the transaction is international
+                dispute_details:
+                  type: object
+                  description: Dispute information for card transactions
+                  properties:
+                    status:
+                      type: string
+                      enum:
+                        - OPEN
+                        - PENDING
+                        - WON
+                        - LOST
+                        - CLOSED
+                      description: High-level dispute status
+                    status_reason:
+                      type: string
+                      enum:
+                        - FILED
+                        - AWAITING_DOCUMENTATION
+                        - UNDER_REVIEW
+                        - MERCHANT_RESPONSE_PENDING
+                        - ESCALATED
+                        - FINAL_REVIEW
+                        - RESOLVED_IN_FAVOR
+                        - RESOLVED_AGAINST
+                        - ADMINISTRATIVE_CLOSURE
+                      description: Current lifecycle stage
+                    dispute_reason:
+                      type: string
+                      enum:
+                        - FRAUD
+                        - AUTHORIZATION_ISSUE
+                        - MERCHANT_ERROR
+                        - SERVICE_ISSUE
+                        - PROCESSING_ERROR
+                        - OTHER
+                      description: Why the dispute was filed
             payments_details:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
