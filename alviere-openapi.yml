@@ -10059,6 +10059,10 @@ components:
                         store_name:
                           type: string
                           description: Name of the store
+                        barcode_data:
+                          type: string
+                          description: Barcode data associated with the transaction
+                          example: "123456789012"
                 card_processing:
                   type: object
                   description: Additional details for card processing related tr
@@ -13640,6 +13644,10 @@ components:
                         store_name:
                           type: string
                           description: Name of the store
+                        barcode_data:
+                          type: string
+                          description: Barcode data associated with the transaction
+                          example: "123456789012"
                 card_processing:
                   type: object
                   description: Additional details for card processing related transactions
@@ -13984,6 +13992,10 @@ components:
                         store_name:
                           type: string
                           description: Name of the store
+                        barcode_data:
+                          type: string
+                          description: Barcode data associated with the transaction
+                          example: "123456789012"
                 card_processing:
                   type: object
                   description: Additional details for card processing related transactions
