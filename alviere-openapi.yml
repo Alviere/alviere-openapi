@@ -3145,6 +3145,25 @@ paths:
                               transaction_reference:
                                 type: string
                                 description: A reference for the Beneficiary to provide to the cash pickup location on pickup
+                          cash_loading:
+                            type: object
+                            properties:
+                              cash_loading_location:
+                                type: object
+                                required:
+                                  - store_network_id
+                                  - terminal_id
+                                properties:
+                                  store_network_id:
+                                    type: string
+                                    description: Unique identifier of the store
+                                  terminal_id:
+                                    type: string
+                                    description: Unique identifier of the terminal
+                                  barcode_data:
+                                    type: string
+                                    description: Barcode data for the cash loading location
+                                    example: '1234567890'
                       metadata:
                         type: object
                         description: Allows for any number of custom metadata keys and values to be stored with a given transaction
