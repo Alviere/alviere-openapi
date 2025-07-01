@@ -6229,7 +6229,7 @@ paths:
                       example: USA
                 physical_card_conversion:
                   type: object
-                  description: Configuration for converting a virtual card to physical
+                  description: Configuration for converting a virtual card to physical. Using this object requires prior approval from Alviere.
                   required:
                     - product_id
                   properties:
