@@ -1901,12 +1901,14 @@ paths:
                 properties:
                   transaction_uuid:
                     title: Child transaction
-                    description: The field will contain the UUID of the reversal transaction that was generated as part of this operation.
+                    description: The field will contain the UUID of the reversal or refund transaction that was generated as part of this operation.
                     type: string
                     format: uuid
                     example: 798ee7f3-bb75-4a4c-9a2a-06cb697ddb5e
                 required:
                   - transaction_uuid
+        '204':
+          description: Transaction successfully canceled or Voided
         '400':
           $ref: '#/components/responses/400-Error'
         '401':
