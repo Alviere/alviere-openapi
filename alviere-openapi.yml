@@ -2886,7 +2886,7 @@ paths:
                                 title: Address Line Two
                                 description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
                                 type: string
-                                pattern: ^.{2,128}$
+                                pattern: ^.{1,128}$
                                 example: Suite 936
                               postal_code:
                                 title: Postal Code
@@ -6203,7 +6203,7 @@ paths:
                       title: Address Line Two
                       description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
                       type: string
-                      pattern: ^.{2,128}$
+                      pattern: ^.{1,128}$
                       example: Suite 936
                     postal_code:
                       title: Postal Code
@@ -8811,7 +8811,7 @@ paths:
                               pattern: ^.{2,128}$
                             line_2:
                               type: string
-                              pattern: ^.{0,128}$
+                              pattern: ^.{1,128}$
                             postal_code:
                               type: string
                               pattern: ^.{5,9}$
@@ -9303,7 +9303,7 @@ components:
           pattern: ^.{2,128}$
         line_2:
           type: string
-          pattern: ^.{0,128}$
+          pattern: ^.{1,128}$
         postal_code:
           type: string
           pattern: ^.{5,9}$
@@ -11959,7 +11959,7 @@ components:
               title: Address Line Two
               description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
               type: string
-              pattern: ^.{2,128}$
+              pattern: ^.{1,128}$
               example: Suite 936
             postal_code:
               title: Postal Code
@@ -12101,7 +12101,7 @@ components:
               title: Address Line Two
               description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
               type: string
-              pattern: ^.{2,30}$
+              pattern: ^.{1,30}$
               example: Suite 936
             postal_code:
               title: Postal Code
@@ -12152,7 +12152,7 @@ components:
               description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
               type: string
               example: 5B
-              pattern: ^.{2,128}$
+              pattern: ^.{1,128}$
             postal_code:
               title: Postal Code
               description: ZIP or postal code
@@ -12553,7 +12553,7 @@ components:
               title: Address Line Two
               description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
               type: string
-              pattern: ^.{2,128}$
+              pattern: ^.{1,128}$
               example: Suite 936
             postal_code:
               title: Postal Code
@@ -12598,7 +12598,7 @@ components:
               description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
               type: string
               example: 5B
-              pattern: ^.{2,128}$
+              pattern: ^.{1,128}$
             postal_code:
               title: Postal Code
               description: ZIP or postal code
@@ -13341,7 +13341,7 @@ components:
           type: string
           pattern: ^[ a-zA-Z0-9._-]$
           example: Suite 936
-          minLength: 2
+          minLength: 1
           maxLength: 128
         postal_code:
           title: Postal Code
@@ -14443,7 +14443,7 @@ components:
           title: Address Line Two
           description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
           type: string
-          pattern: ^.{2,128}$
+          pattern: ^.{1,128}$
           example: Suite 936
         postal_code:
           title: Postal Code
@@ -14636,9 +14636,9 @@ components:
           title: Address Line Two
           description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
           type: string
-          pattern: '^[ a-zA-Z0-9._-]{2,128}$ '
+          pattern: '^[ a-zA-Z0-9._-]{1,128}$ '
           example: Suite 936
-          minLength: 2
+          minLength: 1
           maxLength: 128
         postal_code:
           title: Postal Code
@@ -15058,7 +15058,7 @@ components:
           type: string
           title: Address Line Two
           description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
-          pattern: ^.{2,30}$
+          pattern: ^.{1,30}$
           example: Suite 936
         postal_code:
           title: Postal Code
@@ -16075,7 +16075,7 @@ components:
           type: string
           pattern: ^[ a-zA-Z0-9._-]$
           example: Suite 936
-          minLength: 2
+          minLength: 1
           maxLength: 128
         postal_code:
           title: Postal Code
