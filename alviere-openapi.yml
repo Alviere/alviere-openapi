@@ -1557,6 +1557,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/account_uuid'
+        - $ref: '#/components/parameters/wallet_uuid'
         - $ref: '#/components/parameters/Version'
       responses:
         '200':
@@ -1590,20 +1591,7 @@ paths:
       operationId: wallet-account_uuid-wallet_uuid-get
       tags:
         - Wallets
-    parameters:
-      - name: account_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of an account
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of an account
+    
   /wallets/{wallet_uuid}/transactions/statement:
     get:
       summary: Get wallet statement 
