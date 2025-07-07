@@ -4009,6 +4009,7 @@ paths:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
       responses:
         '200':
           description: OK
@@ -4303,6 +4304,7 @@ paths:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
       responses:
         '200':
           description: |
@@ -4356,6 +4358,8 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
+        - $ref: '#/components/parameters/payment_method_uuid'
       summary: Get card
       description: Retrieves card payment method details.
       responses:
@@ -4436,20 +4440,6 @@ paths:
       - $ref: '#/components/parameters/account_uuid'
       - $ref: '#/components/parameters/payment_method_uuid'
   /accounts/{account_uuid}/payment-methods/bank-accounts/{payment_method_uuid}:
-    parameters:
-      - name: account_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of an account
-      - name: payment_method_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique identifier of a payment method
     get:
       summary: Get bank account
       description: Retrieves bank account payment method details.
@@ -4462,6 +4452,8 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
+        - $ref: '#/components/parameters/payment_method_uuid'
       responses:
         '200':
           description: |
@@ -4646,20 +4638,6 @@ paths:
         in: path
         required: true
   /accounts/{account_uuid}/payment-methods/plaid-bank-accounts/{payment_method_uuid}/activate:
-    parameters:
-      - name: payment_method_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique identifier of a payment method
-      - name: account_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of an account
     put:
       summary: Activate Plaid bank account
       operationId: PM-11
@@ -4678,6 +4656,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/account_uuid'
+        - $ref: '#/components/parameters/payment_method_uuid'
       tags:
         - Payment methods
   /wallets/{wallet_uuid}/service-fees:
@@ -4776,6 +4756,8 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
+        - $ref: '#/components/parameters/transaction_uuid'
       requestBody:
         required: true
         content:
@@ -6091,6 +6073,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
         - in: path
           name: card_uuid
           required: true
@@ -6148,6 +6131,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
         - in: path
           name: card_uuid
           required: true
@@ -6413,6 +6397,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
         - in: path
           name: card_uuid
           required: true
@@ -6486,6 +6471,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
         - in: path
           name: card_uuid
           required: true
@@ -6548,6 +6534,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
         - in: path
           name: card_uuid
           required: true
@@ -6663,6 +6650,8 @@ paths:
           description: The access token.
           required: true
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
+        - $ref: '#/components/parameters/card_uuid'
       requestBody:
         content:
           application/json:
@@ -6705,6 +6694,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
         - in: path
           name: card_uuid
           required: true
@@ -6762,6 +6752,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
         - in: path
           name: card_uuid
           required: true
@@ -8309,6 +8300,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
         - $ref: '#/components/parameters/check_uuid'
       summary: Get check
       operationId: check-deposits-account_uuid-check_uuid-get
