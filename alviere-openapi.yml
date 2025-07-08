@@ -7230,6 +7230,7 @@ paths:
                       properties:
                         account_uuid:
                           type: string
+                          format: uuid
                           description: The unique ID of the Account where the funds will be deposited. Choosing this option will deposit the funds in the Account's primary wallet
                     - title: Wallet
                       required:
@@ -7237,6 +7238,7 @@ paths:
                       properties:
                         wallet_uuid:
                           type: string
+                          format: uuid
                           description: The unique ID of the Wallet where the funds will be deposited
                   type: object
                 external_id:
@@ -15395,25 +15397,35 @@ components:
         barcode_uuid:
           type: string
           description: The unique identifier of this Barcode
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
         account_uuid:
           type: string
           description: The UUID of the Account owning the Barcode
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
         wallet_uuid:
           type: string
           description: The UUID of the Wallet where the funds will be deposited
+          format: uuid
+          example: 987fcdeb-51a2-43d1-9c45-123456789abc
         external_id:
           type: string
           description: The external ID of this barcode
+          example: barcode_12345
         barcode_image:
           type: string
           description: Barcode image in base64
+          example: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==
         barcode_data:
           type: string
           description: Barcode string data
+          example: "1234567890123"
         barcode_format:
           enum:
             - CODE-128
           description: The barcode data format
+          example: CODE-128
         limits:
           description: Min-max limits for this Barcode
           oneOf:
@@ -15425,21 +15437,28 @@ components:
                 min:
                   type: string
                   description: Minimum amount that can be loaded with this Barcode
+                  example: "1000"
                 max:
                   type: string
                   description: Maximum amount that can be loaded with this Barcode
+                  example: "50000"
           type: object
         metadata:
           type: object
           description: Custom key:value pairs stored together with the Barcode
+          example:
+            store_id: "12345"
+            location: "downtown"
         expires_at:
           type: string
           description: The date-time the Barcode expires
           format: date-time
+          example: "2024-12-31T23:59:59Z"
         created_at:
           type: string
           description: The date-time the Barcode was created
           format: date-time
+          example: "2024-01-15T10:30:00Z"
     store-address:
       title: Store address
       type: object
