@@ -217,13 +217,7 @@ paths:
       summary: Request a mobile token
       description: This service generates a secure and authenticated token under your account to be used with Alviere's Android or iOS Mobile SDK
       parameters:
-        - in: header
-          name: Authorization
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
-          required: true
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -541,13 +535,7 @@ paths:
 
         **Note**: For consumer accounts, if you do not set the `primary_address` property, you have to add an address separately to initiate the KYC process.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -648,13 +636,7 @@ paths:
           - Properties not present on the request body will remain unchanged in the system.
           - To update a property to an empty string or `null` you need to put the correct value on the request.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
       requestBody:
@@ -896,8 +878,7 @@ paths:
                     type: string
                     example: account being processed
       operationId: accounts-account_uuid-activate-put
-    parameters:
-      - $ref: '#/components/parameters/account_uuid'
+
   /accounts/{account_uuid}/onboarding:
     put:
       tags:
@@ -1140,13 +1121,7 @@ paths:
 
         *Note:* A primary address of an account cannot be deleted. If the primary address has changed the original record needs to be updated.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/address_uuid'
@@ -1770,8 +1745,7 @@ paths:
       operationId: TRN-01
       tags:
         - Transactions
-    parameters:
-      - $ref: '#/components/parameters/transaction_uuid'
+
   /transactions/{transaction_uuid}/reverse:
     post:
       summary: Reverse transaction
