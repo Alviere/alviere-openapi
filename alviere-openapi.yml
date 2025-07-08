@@ -15836,6 +15836,7 @@ components:
         default: 0
         minimum: 0
       description: Start after offset amount of items
+    
     bank_uuid:
       name: bank_uuid
       in: path
