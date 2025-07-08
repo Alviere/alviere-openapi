@@ -527,7 +527,7 @@ paths:
       tags:
         - Accounts
       description: |-
-        Creates an account in the system. Accounts can be of type `CONSUMER`, `BUSINESS` or `STAKEHOLDER`.
+        Creates an account in the system. Accounts can be of type `CONSUMER`, `BUSINESS` , `STAKEHOLDER` or `CARDHOLDER``
 
         This service will automatically trigger the KYC/KYB and Identity Management process relevant to the account type.  
 
@@ -557,9 +557,11 @@ paths:
                     - CONSUMER
                     - BUSINESS
                     - STAKEHOLDER
+                    - CARDHOLDER
                 profile:
                   type: string
                   description: The Profile that this Account should be created with. If not sent, the account will be created with the Profile set as default in your program configuration
+                  example: "default"
                 information:
                   $ref: '#/components/schemas/account-information-request'
                 primary_address:
