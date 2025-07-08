@@ -7230,14 +7230,14 @@ paths:
                       properties:
                         account_uuid:
                           type: string
-                          description: The unique ID of the Account's in which the funds will be deposited. The funds will be deposited in the Account's primary wallet
+                          description: The unique ID of the Account where the funds will be deposited. Choosing this option will deposit the funds in the Account's primary wallet
                     - title: Wallet
                       required:
                         - wallet_uuid
                       properties:
                         wallet_uuid:
                           type: string
-                          description: The unique ID of the Wallet in which the funds will be deposited
+                          description: The unique ID of the Wallet where the funds will be deposited
                   type: object
                 external_id:
                   type: string
