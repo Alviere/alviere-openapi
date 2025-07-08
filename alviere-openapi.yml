@@ -603,21 +603,8 @@ paths:
       summary: Get account
       description: Gets the account details, in its current status.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
-        - in: path
-          name: account_uuid
-          required: true
-          description: The uuid of the account
-          schema:
-            type: string
-            format: uuid
-            title: Account UUID
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
       responses:
         '200':
@@ -856,12 +843,6 @@ paths:
                     type: string
                     example: account being processed
       operationId: accounts-account_uuid-inactivate-put
-    parameters:
-      - schema:
-          type: string
-        name: account_uuid
-        in: path
-        required: true
   /accounts/{account_uuid}/activate:
     put:
       tags:
@@ -871,13 +852,7 @@ paths:
         Activates a consumer account.
         Only accounts in `INACTIVE` status can ba activated.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
       responses:
@@ -929,26 +904,35 @@ paths:
       operationId: accounts-account_uuid-activate-put
     parameters:
       - $ref: '#/components/parameters/account_uuid'
-  /accounts/{account_uuid}/start-onboarding:
+  /accounts/{account_uuid}/onboarding:
     put:
       tags:
         - Accounts
-      summary: Start onboarding process
-      description: Manually trigger the KYC onboarding process for an account. This endpoint is used when the account profile is configured with manual onboarding trigger. The account must have all required fields populated according to its profile requirements.
-      operationId: accounts-account_uuid-start-onboarding-put
+      summary: Manage onboarding process
+      description: Manage the KYC onboarding process for an account. This endpoint is used when the account profile is configured with manual onboarding trigger. The account must have all required fields populated according to its profile requirements.
+      operationId: accounts-account_uuid-onboarding-put
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - START_ONBOARDING
+                  description: The action to perform on the onboarding process
+                  example: START_ONBOARDING
       responses:
         '204':
-          description: Onboarding process started successfully
+          description: Onboarding action completed successfully
           headers:
             Alv-Request-Id:
               description: |
@@ -999,13 +983,7 @@ paths:
       summary: Create address
       description: Creates an address and adds it to the account.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
       requestBody:
@@ -2022,6 +2000,7 @@ paths:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/start_date'
         - $ref: '#/components/parameters/end_date'
+        - $ref: '#/components/parameters/wallet_uuid'
         - schema:
             type: string
           in: query
@@ -2343,6 +2322,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
         required: true
         content:
@@ -2570,6 +2550,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
         required: true
         content:
@@ -2658,6 +2639,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
         required: true
         content:
@@ -2731,6 +2713,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
         required: true
         content:
@@ -3168,6 +3151,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
         required: true
         content:
@@ -3395,6 +3379,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/beneficiary_uuid'
       requestBody:
         required: true
         content:
@@ -3589,6 +3574,7 @@ paths:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/beneficiary_uuid'
       responses:
         '200':
           description: OK
@@ -3645,6 +3631,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/payout_method_uuid'
       responses:
         '200':
           description: OK
@@ -3705,6 +3692,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/payout_method_uuid'
       tags:
         - Beneficiaries
     patch:
@@ -3738,6 +3726,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/payout_method_uuid'
       requestBody:
         content:
           application/json:
@@ -4673,6 +4662,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
         required: true
         content:
@@ -7206,6 +7196,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/cash_pickup_location_uuid'
       responses:
         '200':
           description: OK
@@ -7404,6 +7395,7 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
         required: true
         content:
@@ -7543,6 +7535,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
         required: true
         content:
@@ -8637,6 +8630,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/bank_uuid'
       responses:
         '200':
           description: OK
@@ -12736,9 +12730,6 @@ components:
 
         Dossiers are used to store documents that have been uploaded to an account.docume
       x-internal: false
-      required:
-        - external_id
-        - documents
       properties:
         external_id:
           description: The external_id of the dossier in your system.
@@ -16496,6 +16487,14 @@ components:
         default: 0
         minimum: 0
       description: Start after offset amount of items
+    bank_uuid:
+      name: bank_uuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The unique ID of a Bank
     Authorization:
       name: Authorization
       in: header
