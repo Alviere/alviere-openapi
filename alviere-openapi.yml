@@ -787,13 +787,7 @@ paths:
         Deactivates a consumer account.
         Only accounts in `ACTIVE` status can be de-activated
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
       responses:
@@ -1098,13 +1092,7 @@ paths:
 
         Note: if the primary address is updated, the Identity Verification process is resumed.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/address_uuid'
         - $ref: '#/components/parameters/Version'
@@ -1161,6 +1149,7 @@ paths:
             type: string
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/address_uuid'
       responses:
         '204':
           description: |
@@ -1185,12 +1174,7 @@ paths:
         '409':
           description: Conflict on the field `external_id`. Entity has already been deleted.
       operationId: accounts-account_uuid-addresses-address_uuid-delete
-    parameters:
-      - schema:
-          type: string
-        name: address_uuid
-        in: path
-        required: true
+
   /accounts/{account_uuid}/dossiers/{dossier_uuid}:
     get:
       tags:
@@ -1199,13 +1183,7 @@ paths:
       description: |
         Gets a specific dossier from the account, including the uploaded documents.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/dossier_uuid'
         - $ref: '#/components/parameters/Version'
@@ -1244,22 +1222,9 @@ paths:
       summary: Update dossier
       description: Updates an existing dossier in the system.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
-        - in: path
-          name: dossier_uuid
-          required: true
-          description: The uuid of the dossier
-          schema:
-            type: string
-            format: uuid
-            title: Dossier UUID
+        - $ref: '#/components/parameters/dossier_uuid'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -1304,22 +1269,9 @@ paths:
       summary: Replace dossier
       description: Replaces an existing dossier in the system.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
-        - in: path
-          name: dossier_uuid
-          required: true
-          description: The uuid of the dossier
-          schema:
-            type: string
-            format: uuid
-            title: Dossier UUID
+        - $ref: '#/components/parameters/dossier_uuid'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -1365,22 +1317,9 @@ paths:
       summary: Delete dossier
       description: Deletes a dossier from the system
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
-        - in: path
-          name: dossier_uuid
-          required: true
-          description: The uuid of the dossier
-          schema:
-            type: string
-            format: uuid
-            title: Dossier UUID
+        - $ref: '#/components/parameters/dossier_uuid'
         - $ref: '#/components/parameters/Version'
       responses:
         '204':
@@ -1406,12 +1345,7 @@ paths:
         '409':
           description: Conflict on the field `external_id`. Entity has already been deleted.
       operationId: accounts-account_uuid-dossiers-dossier_uuid-delete
-    parameters:
-      - schema:
-          type: string
-        name: dossier_uuid
-        in: path
-        required: true
+
   /accounts/{account_uuid}/dossiers:
     post:
       tags:
@@ -1527,13 +1461,7 @@ paths:
       summary: Get wallet
       description: Gets a wallet that belongs to an account
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/wallet_uuid'
         - $ref: '#/components/parameters/Version'
@@ -1578,13 +1506,7 @@ paths:
 
         Data is only available for months that have ended or that are in the past.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        
         - in: query
           name: scope
           schema:
@@ -1596,6 +1518,7 @@ paths:
             default: ALL
           description: Whether to perform an operation on all debits, credits or fees
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/wallet_uuid'
         - schema:
             type: string
@@ -1690,26 +1613,12 @@ paths:
       operationId: get-wallets-wallet_uuid-transactions-statement
       tags:
         - Wallets
-    parameters:
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
   /accounts/{account_uuid}/wallets:
     get:
       summary: List wallets
       description: Gets all wallets that belong to an account
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/limit'
@@ -1748,12 +1657,7 @@ paths:
       operationId: wallet-account_uuid-get
       tags:
         - Wallets
-    parameters:
-      - schema:
-          type: string
-        name: account_uuid
-        in: path
-        required: true
+    
   /transactions/release:
     post:
       operationId: TRN-07
@@ -1833,13 +1737,7 @@ paths:
       description: Gets the details of a transaction
       parameters:
         - $ref: '#/components/parameters/Authorization'
-        - in: path
-          name: transaction_uuid
-          required: true
-          description: The uuid of the transaction
-          schema:
-            type: string
-            format: uuid
+        - $ref: '#/components/parameters/transaction_uuid'
         - $ref: '#/components/parameters/Version'
       responses:
         '200':
@@ -1879,14 +1777,9 @@ paths:
       summary: Reverse transaction
       description: Trigger the reversal of a transaction. Only applicable to `SERVICE_FEE`, `CASHBACK`, `CARD_ISSUED_INITIAL` or `LOAD_FUNDS` with card transaction types
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/transaction_uuid'
       requestBody:
         required: true
         content:
@@ -1973,14 +1866,7 @@ paths:
       operationId: TRN-05
       tags:
         - Transactions
-    parameters:
-      - name: transaction_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The uuid of the transaction
+
   /wallets/{wallet_uuid}/transactions:
     get:
       summary: List wallet transactions
@@ -2059,14 +1945,7 @@ paths:
       operationId: wallet-account_uuid-wallet_uuid-transactions-get
       tags:
         - Wallets
-    parameters:
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
+
   /transactions:
     get:
       summary: List Transactions
@@ -2149,14 +2028,7 @@ paths:
       tags:
         - Transactions
   /transactions/{transaction_uuid}/cancel:
-    parameters:
-      - name: transaction_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The uuid of the transaction
+
     put:
       summary: Cancel transaction
       operationId: put-transactions-transaction_uuid---copy
@@ -2177,6 +2049,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/transaction_uuid'
       tags:
         - Transactions
       requestBody:
@@ -2194,14 +2067,7 @@ paths:
                     - CHECK
                   description: The refund method. Only applicable for transactions funded with cash
   /transactions/{transaction_uuid}/refund:
-    parameters:
-      - name: transaction_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The uuid of the transaction
+
     put:
       summary: Update Refund transaction
       tags:
@@ -2226,6 +2092,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/transaction_uuid'
       requestBody:
         content:
           application/json:
@@ -2252,6 +2119,7 @@ paths:
         - $ref: '#/components/parameters/transaction-type'
         - $ref: '#/components/parameters/transaction-status'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/transaction_uuid'
       responses:
         '200':
           description: |
@@ -2295,14 +2163,7 @@ paths:
       operationId: transactions-child-get
       tags:
         - Transactions
-    parameters:
-      - name: transaction_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The uuid of the transaction
+
   /wallets/{wallet_uuid}/load:
     post:
       summary: Load funds
@@ -2314,13 +2175,7 @@ paths:
 
         Once funds are loaded in the user account, the account wallet will have the corresponding amount in the `transit` bucket. This means that the loading of funds transaction has been accepted, but the funds are not settled yet. Funds will be settled according to the selected payment method settlement times.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
@@ -2396,26 +2251,13 @@ paths:
       operationId: wallets-load-funds-post
       tags:
         - Wallets
-    parameters:
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
+
   /wallets/spend-management/set:
     post:
       summary: Set spend budget
       description: Load/adjust funds of a Spend Budget
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -2542,13 +2384,7 @@ paths:
 
         **Important Note**: Although withdrawing of funds returns structure of the underlying payment transaction, account wallet operations can only be cancelled using the unique `transaction_uuid`.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
@@ -2621,8 +2457,6 @@ paths:
       operationId: wallets-account_uuid-wallet_uuid-withdraw-post
       tags:
         - Wallets
-    parameters:
-      - $ref: '#/components/parameters/wallet_uuid'
   /wallets/{wallet_uuid}/send:
     post:
       summary: Send to Wallet
@@ -2631,13 +2465,7 @@ paths:
         This feature is only available for customers subscribed to a P2P
         program.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSlTbd...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
@@ -2698,20 +2526,13 @@ paths:
       operationId: account-account_uuid-wallet_uuid-send-post
       tags:
         - Wallets
-    parameters:
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /wallets/{wallet_uuid}/transfer:
     post:
       summary: Transfer to Beneficiary
       description: Alviere provides the ability to transfer funds to a local beneficiary. Funds can only be sent from/to accounts that are in ACTIVE status.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSlTbd...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
@@ -2776,14 +2597,6 @@ paths:
       operationId: account-account_uuid-wallet_uuid-transfer-post
       tags:
         - Wallets
-    parameters:
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
   /transactions/{transaction_uuid}/receipt:
     get:
       summary: Get receipt
@@ -2792,20 +2605,8 @@ paths:
 
         Notes: Receipts are a regulatory requirement to be shown to consumers on every inbound or outbound transaction from a wallet.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
-        - in: path
-          name: transaction_uuid
-          required: true
-          description: The uuid of the transaction
-          schema:
-            type: string
-            format: uuid
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/transaction_uuid'
         - $ref: '#/components/parameters/Version'
       responses:
         '200':
@@ -3126,14 +2927,7 @@ paths:
       operationId: account-account_uuid-transactions-transaction_uuid-receipt-get
       tags:
         - Transactions
-    parameters:
-      - name: transaction_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The uuid of the transaction
+
   /wallets/{wallet_uuid}/promo:
     post:
       summary: Credit promotional funds
@@ -3143,13 +2937,7 @@ paths:
 
         The funds will be sent from your program's treasury vault Promotional Funds `PROMO_FUNDS`
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSlTbd...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
@@ -3200,27 +2988,15 @@ paths:
       operationId: ledger-promo
       tags:
         - Wallets
-    parameters:
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
+
   /wallets/{wallet_uuid}/credit:
     post:
       summary: Credit funds
       description: |
         Credits a specified transaction amount to the provided wallet
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/wallet_uuid'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -3282,20 +3058,14 @@ paths:
       operationId: ledger-transfer-credit
       tags:
         - Wallets
-    parameters:
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /wallets/{wallet_uuid}/debit:
     post:
       summary: Debit funds
       description: Debits a specified transaction amount to the provided wallet
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/wallet_uuid'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -3363,21 +3133,14 @@ paths:
       operationId: ledger-transfer-debit-post
       tags:
         - Wallets
-    parameters:
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /beneficiaries/{beneficiary_uuid}/payout-methods:
     post:
       summary: Create payout method
       description: |
         Adds a Payout Method to a Beneficiary
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/beneficiary_uuid'
       requestBody:
@@ -3623,13 +3386,7 @@ paths:
       summary: Get payout method
       description: Get Payout Method details
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/payout_method_uuid'
       responses:
@@ -3750,14 +3507,9 @@ paths:
       description: |
         Adds a payment method of type card to an account.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
       requestBody:
         required: true
         content:
@@ -3988,13 +3740,7 @@ paths:
       summary: List cards
       description: Show cards that have been added as payment methods for this account.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
         - $ref: '#/components/parameters/Version'
@@ -4040,14 +3786,7 @@ paths:
       operationId: paymentmethods-card-get
       tags:
         - Payment methods
-    parameters:
-      - name: account_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of an account
+
   /accounts/{account_uuid}/payment-methods/bank-accounts:
     post:
       tags:
@@ -4055,14 +3794,9 @@ paths:
       summary: Create bank account
       description: Adds a payment method of type bank account to an account.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
       requestBody:
         required: true
         content:
@@ -4328,24 +4062,10 @@ paths:
       operationId: paymentmethods-bankaccounts-get
       tags:
         - Payment methods
-    parameters:
-      - name: account_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of an account
   /accounts/{account_uuid}/payment-methods/cards/{payment_method_uuid}:
     get:
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/payment_method_uuid'
@@ -4394,14 +4114,10 @@ paths:
 
         Cards in `FAILED` status can't be deleted.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
+        - $ref: '#/components/parameters/payment_method_uuid'
       responses:
         '204':
           description: Card deleted successfully
@@ -4425,21 +4141,13 @@ paths:
         '409':
           description: Conflict on the field `external_id`. Entity has already been deleted.
       operationId: paymentmethods-card-token-delete
-    parameters:
-      - $ref: '#/components/parameters/account_uuid'
-      - $ref: '#/components/parameters/payment_method_uuid'
+
   /accounts/{account_uuid}/payment-methods/bank-accounts/{payment_method_uuid}:
     get:
       summary: Get bank account
       description: Retrieves bank account payment method details.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/account_uuid'
         - $ref: '#/components/parameters/payment_method_uuid'
@@ -4483,13 +4191,9 @@ paths:
 
         Banks in `CREATED`, `FAILED` or `REJECTED` statuses can't be deleted.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/account_uuid'
+        - $ref: '#/components/parameters/payment_method_uuid'
         - $ref: '#/components/parameters/Version'
       responses:
         '204':
@@ -4524,14 +4228,9 @@ paths:
       summary: Create Plaid bank account
       description: Adds a payment method of type bank account via Plaid to an account.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
       requestBody:
         required: true
         content:
@@ -4620,12 +4319,6 @@ paths:
                   bank_account:
                     $ref: '#/components/schemas/bank-account-pm-response'
       operationId: paymentmethods-plaid-bankaccount-post
-    parameters:
-      - schema:
-          type: string
-        name: account_uuid
-        in: path
-        required: true
   /accounts/{account_uuid}/payment-methods/plaid-bank-accounts/{payment_method_uuid}/activate:
     put:
       summary: Activate Plaid bank account
@@ -4725,14 +4418,7 @@ paths:
       operationId: FEE-01
       tags:
         - Service fees
-    parameters:
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
+
   /wallets/{wallet_uuid}/service-fees/{transaction_uuid}/reverse:
     post:
       summary: Create service fee reversal
@@ -4832,15 +4518,6 @@ paths:
       operationId: accounts-account_uuid-servicefee-reverse1
       tags:
         - Service fees
-    parameters:
-      - name: transaction_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The uuid of the transaction
-      - $ref: '#/components/parameters/wallet_uuid'
   /payments/payment-instruments:
     post:
       summary: Create Payment Instrument
@@ -4959,14 +4636,9 @@ paths:
   /payments/payment-instruments/{payment_instrument_uuid}:
     get:
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/payment_instrument_uuid'
       summary: Get Payment Instrument
       description: Returns Payment Instrument details
       responses:
@@ -5008,6 +4680,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/payment_instrument_uuid'
       responses:
         '204':
           description: Payment Instrument deleted successfully
@@ -5276,6 +4949,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/account_uuid'
       requestBody:
         required: true
         content:
@@ -5459,8 +5133,7 @@ paths:
       operationId: CARD-XX
       tags:
         - Card issuance
-    parameters:
-      - $ref: '#/components/parameters/account_uuid'
+
   /wallets/{wallet_uuid}/issued-cards:
     post:
       tags:
@@ -5469,13 +5142,8 @@ paths:
       description: |
         Creates a new issued card for the designated wallet
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/wallet_uuid'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -5679,6 +5347,7 @@ paths:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/wallet_uuid'
       responses:
         '200':
           description: |
@@ -5712,8 +5381,7 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: accounts-account_uuid-issuedcards-get
-    parameters:
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /issued-cards:
     post:
       tags:
@@ -5993,22 +5661,9 @@ paths:
       summary: Set Card PIN
       description: To set/change a card PIN. The required number of digits depends on your issued card program configuration. This endpoint is restricted to Alviere's SDK or preauthorized clients.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/card_uuid'
       requestBody:
         required: true
         content:
@@ -6046,13 +5701,7 @@ paths:
           $ref: '#/components/responses/404-Error'
       operationId: CARD-18
       x-internal: false
-    parameters:
-      - name: card_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of the card
+
   /wallets/{wallet_uuid}/issued-cards/{card_uuid}:
     get:
       tags:
@@ -6064,14 +5713,7 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/card_uuid'
       responses:
         '200':
           description: |
@@ -6113,23 +5755,10 @@ paths:
 
         **Note:** Status changes need to be submitted through the appropriate endpoints.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/card_uuid'
       requestBody:
         required: true
         content:
@@ -6321,22 +5950,10 @@ paths:
       description: |
         Cancels a card and put the status of the card to `CANCELED`
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/wallet_uuid'
+        - $ref: '#/components/parameters/card_uuid'
       responses:
         '204':
           description: |
@@ -6361,14 +5978,7 @@ paths:
         '409':
           description: Conflict on the field `external_id`. Entity has already been deleted.
       operationId: accounts-account_uuid-issuedcards-card_uuid-cancel
-    parameters:
-      - name: card_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of the card
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /wallets/{wallet_uuid}/issued-cards/{card_uuid}/activate:
     put:
       tags:
@@ -6379,23 +5989,10 @@ paths:
 
         **Note:** this method is only valid for physical card products.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/card_uuid'
       requestBody:
         required: true
         content:
@@ -6442,9 +6039,7 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: accounts-account_uuid-issuedcards-card_uuid-activate
-    parameters:
-      - $ref: '#/components/parameters/card_uuid'
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /wallets/{wallet_uuid}/issued-cards/{card_uuid}/unfreeze:
     put:
       tags:
@@ -6453,23 +6048,11 @@ paths:
       description: |
         Unfreezes an issued card.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/card_uuid'
+         
       responses:
         '204':
           description: |
@@ -6492,20 +6075,7 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: accounts-account_uuid-issuedcards-card_uuid-unfreeze
-    parameters:
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
-      - name: card_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of the card
+
   /wallets/{wallet_uuid}/issued-cards/{card_uuid}/freeze:
     put:
       tags:
@@ -6516,23 +6086,10 @@ paths:
 
         All authorization requests will be declined when a card is frozen 
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/card_uuid'
       responses:
         '204':
           description: |
@@ -6555,35 +6112,9 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: accounts-account_uuid-issuedcards-card_uuid-freeze
-    parameters:
-      - name: card_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of the card
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
+
   /wallets/{wallet_uuid}/issued-cards/{card_uuid}/mobile-wallet:
-    parameters:
-      - name: wallet_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a wallet
-      - name: card_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of the card
+
     put:
       summary: Add Card to digital wallet
       operationId: put-accounts-account_uuid-issued-cards-card_uuid-mdes
@@ -6633,12 +6164,7 @@ paths:
           $ref: '#/components/responses/404-Error'
       description: Adds an issued card to a mobile wallet. The supported wallets are Apple Pay, Google Pay and Samsung Pay.
       parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authorization
-          description: The access token.
-          required: true
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
         - $ref: '#/components/parameters/card_uuid'
@@ -6685,14 +6211,7 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/card_uuid'
       responses:
         '200':
           description: The request was successful
@@ -6724,14 +6243,7 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: accounts-account_uuid-issuedcards-card_uuid-image-get
-    parameters:
-      - name: card_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of the card
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /wallets/{wallet_uuid}/issued-cards/{card_uuid}/sensitive-data:
     get:
       tags:
@@ -6743,14 +6255,7 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
-        - in: path
-          name: card_uuid
-          required: true
-          description: The uuid of the card
-          schema:
-            type: string
-            format: uuid
-            title: Card UUID
+        - $ref: '#/components/parameters/card_uuid'
       responses:
         '200':
           description: The request was successful
@@ -6785,26 +6290,13 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: accounts-account_uuid-issuedcards-sensitivedata-get
-    parameters:
-      - name: card_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of the card
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /accounts/{account_uuid}/beneficiaries:
     post:
       summary: Create beneficiary
       description: Create a new Beneficiary associated with this account
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/account_uuid'
       requestBody:
@@ -6921,21 +6413,10 @@ paths:
       description: |
         Updates a Beneficiary.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/account_uuid'
-        - in: path
-          name: beneficiary_uuid
-          description: The beneficiary identifier
-          required: true
-          schema:
-            format: uuid
+        - $ref: '#/components/parameters/beneficiary_uuid'
       requestBody:
         required: true
         content:
@@ -6995,12 +6476,7 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/account_uuid'
-        - in: path
-          name: beneficiary_uuid
-          description: The beneficiary identifier
-          required: true
-          schema:
-            format: uuid
+        - $ref: '#/components/parameters/beneficiary_uuid'
       responses:
         '200':
           description: OK
@@ -7035,21 +6511,10 @@ paths:
       summary: Delete beneficiary
       description: Deletes a beneficiary
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/account_uuid'
-        - in: path
-          name: beneficiary_uuid
-          description: The beneficiary identifier
-          required: true
-          schema:
-            format: uuid
+        - $ref: '#/components/parameters/beneficiary_uuid'
       responses:
         '204':
           description: Beneficiary successfully deleted
@@ -7075,13 +6540,7 @@ paths:
       operationId: accounts-account_uuid-beneficiaries-beneficiary_uuid-delete
       tags:
         - Beneficiaries
-    parameters:
-      - $ref: '#/components/parameters/account_uuid'
-      - schema:
-          type: string
-        name: beneficiary_uuid
-        in: path
-        required: true
+
   /cash-pickup/locations:
     get:
       summary: List cash pickup locations
@@ -7227,25 +6686,13 @@ paths:
       operationId: GPAY-04
       tags:
         - Global payments
-    parameters:
-      - name: cash_pickup_location_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: Cash pickup location UUID
+
   /global-payments/quote-preview:
     post:
       summary: Get quote preview
       description: Gets the spot exchange rate for an international transfer
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -7387,13 +6834,7 @@ paths:
       summary: Create quote
       description: Creates a new quote to inform the consumer of the costs associated with sending funds internationally to a specific beneficiary
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/wallet_uuid'
       requestBody:
@@ -7525,8 +6966,7 @@ paths:
       operationId: globalpayments-account_uuid-quote-post
       tags:
         - Global payments
-    parameters:
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /wallets/{wallet_uuid}/remittances:
     post:
       summary: Create remittance
@@ -7684,8 +7124,7 @@ paths:
       operationId: globalpayments-accounts-account_uuid-wallet_uuid-remittances-transactions-post
       tags:
         - Global payments
-    parameters:
-      - $ref: '#/components/parameters/wallet_uuid'
+ 
   /treasury/transactions:
     get:
       tags:
@@ -7744,13 +7183,8 @@ paths:
       summary: Load funds
       description: Creates a load transaction (load money into a treasury vault)
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/vault_uuid'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -7797,17 +7231,11 @@ paths:
         '409':
           $ref: '#/components/responses/ledger-transaction-response-idempotency'
       operationId: treasury-account_uuid-load-post
-    parameters:
-      - name: vault_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of a treasury vault
+
   /cash-load/barcode:
     post:
-      summary: Load cash via barcode
-      description: Returns a barcode that can be presented at selected stores to load cash into your Wallet or fund certain transactions.
+      summary: Generate a Barcode
+      description: Creates a barcode that can be presented at selected stores to load cash in to a Wallet or fund certain transactions.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
@@ -7994,14 +7422,9 @@ paths:
       description: |
         Creates a withdraw transaction (withdraw money from treasury vault).
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/vault_uuid'
       requestBody:
         required: true
         content:
@@ -8047,13 +7470,7 @@ paths:
         '409':
           $ref: '#/components/responses/ledger-transaction-response-idempotency'
       operationId: treasury-account_uuid-withdraw
-    parameters:
-      - name: vault_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The unique uuid of a treasury vault
+
   /treasury/transfer:
     post:
       tags:
@@ -8062,13 +7479,7 @@ paths:
       description: |
         Creates a transfer transaction (transfers money between treasury vaults).
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
       requestBody:
         required: true
@@ -8179,13 +7590,8 @@ paths:
 
         Checks deposited in the accounts will remain as `captive` balance in the user account until they settle, however, you can decide to release all or part of the check amount prior to settlement.
       parameters:
-        - in: header
-          name: Authorization
-          required: true
-          description: The access token.
-          example: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/wallet_uuid'
         - $ref: '#/components/parameters/Version'
       summary: Deposit check
       operationId: accounts-checkdeposits-account_uuid-post
@@ -8249,8 +7655,7 @@ paths:
           $ref: '#/components/responses/404-Error'
         '409':
           $ref: '#/components/responses/check-response-idempotency'
-    parameters:
-      - $ref: '#/components/parameters/wallet_uuid'
+
     get:
       summary: List checks
       operationId: get-wallets-wallet_uuid-check-deposits
@@ -8285,6 +7690,7 @@ paths:
         - $ref: '#/components/parameters/start_date'
         - $ref: '#/components/parameters/end_date'
         - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/wallet_uuid'
   /wallets/{wallet_uuid}/check-deposits/{check_uuid}:
     get:
       description: Gets a Check that was previously deposited in the account wallet.
@@ -8315,15 +7721,7 @@ paths:
           $ref: '#/components/responses/403-Error'
         '404':
           $ref: '#/components/responses/404-Error'
-    parameters:
-      - name: check_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The unique uuid of a check
-      - $ref: '#/components/parameters/wallet_uuid'
+
   /incentive-rules/{rule_uuid}:
     get:
       summary: Get incentive rule
@@ -8352,14 +7750,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
-    parameters:
-      - name: rule_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The ID of a rule in the system
+        - $ref: '#/components/parameters/rule_uuid'
+    
     delete:
       summary: Delete incentive rule
       operationId: CARD-13
@@ -8380,17 +7772,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/rule_uuid'
       tags:
         - Rewards and Incentives
   /incentive-rules/{rule_uuid}/activate:
-    parameters:
-      - name: rule_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The ID of a rule in the system
+
     put:
       summary: Activate incentive rule
       operationId: CARD-14
@@ -8411,17 +7797,10 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/rule_uuid'
       tags:
         - Rewards and Incentives
   /incentive-rules/{rule_uuid}/deactivate:
-    parameters:
-      - name: rule_uuid
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-        description: The ID of a rule in the system
     put:
       summary: Deactivate incentive rule
       operationId: CARD-15
@@ -8443,6 +7822,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/rule_uuid'
       tags:
         - Rewards and Incentives
   /incentive-rules:
@@ -8661,12 +8041,7 @@ paths:
       operationId: payout-methods-banks-bank-uuid-get
       tags:
         - Global payments
-    parameters:
-      - schema:
-          type: string
-        name: bank_uuid
-        in: path
-        required: true
+
   /payout-methods/banks:
     get:
       summary: List supported banks
@@ -16712,6 +16087,14 @@ components:
       schema:
         type: string
       description: The unique ID of a payment instrument
+    rule_uuid:
+      name: rule_uuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The unique ID of a rule
     account_uuid_query:
       name: account_uuid
       in: query
