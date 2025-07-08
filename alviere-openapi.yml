@@ -11056,6 +11056,32 @@ components:
           type: string
           description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
+        tax_information:
+          type: object
+          description: Tax identification information for the stakeholder
+          properties:
+            tax_id_last_4:
+              type: string
+              description: The last 4 digits of the stakeholder's tax identification number
+              example: '6789'
+            tax_id_type:
+              type: string
+              enum:
+                - SSN
+                - EIN
+                - ITIN
+                - FOREIGN_TAX_ID
+              description: The type of tax identification number
+              example: SSN
+            country_of_issuance:
+              type: string
+              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              pattern: ^[A-Z]{3}$
+              example: USA
+          required:
+            - tax_id_last_4
+            - tax_id_type
+            - country_of_issuance
       required:
         - stakeholder_types
         - first_name
@@ -11337,6 +11363,32 @@ components:
           type: string
           description: The date of birth.
           example: '1976-02-07'
+        tax_information:
+          type: object
+          description: Tax identification information for the stakeholder
+          properties:
+            tax_id:
+              type: string
+              description: The stakeholder's tax identification number
+              example: '123456789'
+            tax_id_type:
+              type: string
+              enum:
+                - SSN
+                - EIN
+                - ITIN
+                - FOREIGN_TAX_ID
+              description: The type of tax identification number
+              example: SSN
+            country_of_issuance:
+              type: string
+              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              pattern: ^[A-Z]{3}$
+              example: USA
+          required:
+            - tax_id
+            - tax_id_type
+            - country_of_issuance
         primary_address:
           type: object
           properties:
@@ -11429,6 +11481,32 @@ components:
           type: string
           description: The date of birth.
           example: '1976-02-07'
+        tax_information:
+          type: object
+          description: Tax identification information for the stakeholder
+          properties:
+            tax_id:
+              type: string
+              description: The stakeholder's tax identification number
+              example: '123456789'
+            tax_id_type:
+              type: string
+              enum:
+                - SSN
+                - EIN
+                - ITIN
+                - FOREIGN_TAX_ID
+              description: The type of tax identification number
+              example: SSN
+            country_of_issuance:
+              type: string
+              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              pattern: ^[A-Z]{3}$
+              example: USA
+          required:
+            - tax_id
+            - tax_id_type
+            - country_of_issuance
       required:
         - stakeholder_types
         - first_name
@@ -11645,6 +11723,32 @@ components:
           type: string
           description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
+        tax_information:
+          type: object
+          description: Tax identification information for the stakeholder
+          properties:
+            tax_id_last_4:
+              type: string
+              description: The last 4 digits of the stakeholder's tax identification number
+              example: '6789'
+            tax_id_type:
+              type: string
+              enum:
+                - SSN
+                - EIN
+                - ITIN
+                - FOREIGN_TAX_ID
+              description: The type of tax identification number
+              example: SSN
+            country_of_issuance:
+              type: string
+              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              pattern: ^[A-Z]{3}$
+              example: USA
+          required:
+            - tax_id_last_4
+            - tax_id_type
+            - country_of_issuance
       required:
         - stakeholder_uuid
         - external_id
