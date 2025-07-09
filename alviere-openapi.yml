@@ -728,8 +728,7 @@ paths:
         '409':
           description: Conflict on the field `external_id`. Entity has already been deleted.
   /payment-methods/cards/{payment_method_uuid}:
-    parameters:
-      - $ref: '#/components/parameters/payment_method_uuid'
+    
     patch:
       summary: Update card
       tags:
@@ -760,6 +759,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/payment_method_uuid'
       requestBody:
         content:
           application/json:
