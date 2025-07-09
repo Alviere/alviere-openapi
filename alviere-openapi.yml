@@ -6669,8 +6669,8 @@ paths:
 
   /global-payments/quote-preview:
     post:
-      summary: Get quote preview
-      description: Gets the spot exchange rate for an international transfer
+      summary: Create quote preview
+      description: Creates a quote preview for an international transfer
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
