@@ -225,6 +225,8 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - account_uuid
               properties:
                 account_uuid:
                   type: string
@@ -394,6 +396,8 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - account_uuid
               properties:
                 account_uuid:
                   type: string
