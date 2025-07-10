@@ -5429,6 +5429,7 @@ paths:
                 required:
                   - card
       operationId: issued-cards-post
+      x-internal: true
     get:
       tags:
         - Card issuance
@@ -5475,6 +5476,7 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: issued-cards-get
+      x-internal: true
     parameters: []
   /issued-cards/{card_uuid}:
     get:
@@ -5516,6 +5518,7 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: issued-cards-card-uuid-get
+      x-internal: true
     parameters:
       - $ref: '#/components/parameters/card_uuid'
   /issued-cards/{card_uuid}/reissue_replace:
