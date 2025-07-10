@@ -2151,9 +2151,8 @@ paths:
         Loads funds to a wallet.
 
         In order to load funds into the wallet, the user account needs to have a valid payment method, tokenized in the system through the payment methods services.
-        Note that loading funds from a Bank Account requires that a Plaid token is present and valid in the system.
 
-        Once funds are loaded in the user account, the account wallet will have the corresponding amount in the `transit` bucket. This means that the loading of funds transaction has been accepted, but the funds are not settled yet. Funds will be settled according to the selected payment method settlement times.
+        Once funds are loaded in the user account, the account wallet will have the corresponding amount in the `transit` or `pending` bucket depending on the prefunding setting. This means that the loading of funds transaction has been accepted, but the funds are not settled yet. Funds will be settled according to the selected payment method settlement times.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
