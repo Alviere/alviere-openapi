@@ -11067,32 +11067,35 @@ components:
           type: string
           description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
-        tax_information:
+        id_information:
           type: object
-          description: Tax identification information for the stakeholder
+          description: ID information for the stakeholder
           properties:
-            tax_id_last_4:
+            id_number_last_4:
               type: string
-              description: The last 4 digits of the stakeholder's tax identification number
+              description: The last 4 digits of the stakeholder's ID number
               example: '6789'
-            tax_id_type:
+            id_type:
               type: string
               enum:
                 - SSN
                 - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
-              description: The type of tax identification number
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
               example: SSN
             country_of_issuance:
               type: string
-              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Only present for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
               pattern: ^[A-Z]{3}$
               example: USA
           required:
-            - tax_id_last_4
-            - tax_id_type
-            - country_of_issuance
+            - id_number_last_4
+            - id_type
       required:
         - stakeholder_types
         - first_name
@@ -11374,32 +11377,34 @@ components:
           type: string
           description: The date of birth.
           example: '1976-02-07'
-        tax_information:
+        id_information:
           type: object
-          description: Tax identification information for the stakeholder
+          description: ID information for the stakeholder
           properties:
-            tax_id:
-              type: string
-              description: The stakeholder's tax identification number
-              example: '123456789'
-            tax_id_type:
+            id_type:
               type: string
               enum:
                 - SSN
                 - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
-              description: The type of tax identification number
-              example: SSN
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
+            id_number:
+              type: string
+              description: The ID number
+              example: '123456789'
             country_of_issuance:
               type: string
-              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Required for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
               pattern: ^[A-Z]{3}$
               example: USA
           required:
-            - tax_id
-            - tax_id_type
-            - country_of_issuance
+            - id_type
+            - id_number
         primary_address:
           type: object
           properties:
@@ -11492,32 +11497,34 @@ components:
           type: string
           description: The date of birth.
           example: '1976-02-07'
-        tax_information:
+        id_information:
           type: object
-          description: Tax identification information for the stakeholder
+          description: ID information for the stakeholder
           properties:
-            tax_id:
-              type: string
-              description: The stakeholder's tax identification number
-              example: '123456789'
-            tax_id_type:
+            id_type:
               type: string
               enum:
                 - SSN
                 - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
-              description: The type of tax identification number
-              example: SSN
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
+            id_number:
+              type: string
+              description: The ID number
+              example: '123456789'
             country_of_issuance:
               type: string
-              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Required for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
               pattern: ^[A-Z]{3}$
               example: USA
           required:
-            - tax_id
-            - tax_id_type
-            - country_of_issuance
+            - id_type
+            - id_number
       required:
         - stakeholder_types
         - first_name
@@ -11734,32 +11741,35 @@ components:
           type: string
           description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
-        tax_information:
+        id_information:
           type: object
-          description: Tax identification information for the stakeholder
+          description: ID information for the stakeholder
           properties:
-            tax_id_last_4:
+            id_number_last_4:
               type: string
-              description: The last 4 digits of the stakeholder's tax identification number
+              description: The last 4 digits of the stakeholder's ID number
               example: '6789'
-            tax_id_type:
+            id_type:
               type: string
               enum:
                 - SSN
                 - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
-              description: The type of tax identification number
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
               example: SSN
             country_of_issuance:
               type: string
-              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Only present for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
               pattern: ^[A-Z]{3}$
               example: USA
           required:
-            - tax_id_last_4
-            - tax_id_type
-            - country_of_issuance
+            - id_number_last_4
+            - id_type
       required:
         - stakeholder_uuid
         - external_id
