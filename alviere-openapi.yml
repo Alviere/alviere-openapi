@@ -3486,6 +3486,19 @@ paths:
       summary: Create card
       description: |
         Adds a payment method of type card to an account.
+
+        **Billing Address Validation Rules:**
+
+        - **If the account has a primary address:** Only the `postal_code` field is required in the `billing_address` object.
+
+        - **If the account does not have a primary address:** All billing address fields are required in the `billing_address` object:
+          - `line_1` (required)
+          - `city` (required) 
+          - `state` (required)
+          - `country` (required)
+          - `postal_code` (required)
+
+        If these requirements are not met, the API will return a 4xx error with details about the missing required fields.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
