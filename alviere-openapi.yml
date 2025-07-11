@@ -10618,6 +10618,10 @@ components:
             - DIGITAL
             - VIRTUAL
             - PHYSICAL
+        converted_to_physical:
+          type: boolean
+          description: Indicates if this card was originally virtual and converted to physical
+          example: true
         status:
           type: string
           description: The status of the card
@@ -10753,6 +10757,11 @@ components:
           type: string
           description: The card's modification date
           example: '2021-08-02T05:32:11.345Z'
+        shipped_at:
+          type: string
+          format: date-time
+          description: Date when physical card was shipped. Only present for physical cards that have been shipped.
+          example: '2024-07-11T10:30:00Z'
         
     profile-request:
       title: Profile request
