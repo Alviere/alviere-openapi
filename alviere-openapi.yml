@@ -2151,9 +2151,8 @@ paths:
         Loads funds to a wallet.
 
         In order to load funds into the wallet, the user account needs to have a valid payment method, tokenized in the system through the payment methods services.
-        Note that loading funds from a Bank Account requires that a Plaid token is present and valid in the system.
 
-        Once funds are loaded in the user account, the account wallet will have the corresponding amount in the `transit` bucket. This means that the loading of funds transaction has been accepted, but the funds are not settled yet. Funds will be settled according to the selected payment method settlement times.
+        Once funds are loaded in the user account, the account wallet will have the corresponding amount in the `transit` or `pending` bucket depending on the prefunding setting. This means that the loading of funds transaction has been accepted, but the funds are not settled yet. Funds will be settled according to the selected payment method settlement times.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
@@ -3486,6 +3485,11 @@ paths:
       summary: Create card
       description: |
         Adds a payment method of type card to an account.
+
+        **Billing Address Requirements:**
+        - If account has no primary address: all fields required (`line_1`, `city`, `state`, `country`, `postal_code`)
+
+        If these requirements are not met, the API will return a 4xx error with details about the missing required fields.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
@@ -5429,6 +5433,7 @@ paths:
                 required:
                   - card
       operationId: issued-cards-post
+      x-internal: true
     get:
       tags:
         - Card issuance
@@ -5475,6 +5480,7 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: issued-cards-get
+      x-internal: true
     parameters: []
   /issued-cards/{card_uuid}:
     get:
@@ -5516,6 +5522,7 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: issued-cards-card-uuid-get
+      x-internal: true
     parameters:
       - $ref: '#/components/parameters/card_uuid'
   /issued-cards/{card_uuid}/reissue_replace:
@@ -10611,6 +10618,10 @@ components:
             - DIGITAL
             - VIRTUAL
             - PHYSICAL
+        converted_to_physical:
+          type: boolean
+          description: Indicates if this card was originally virtual and converted to physical
+          example: true
         status:
           type: string
           description: The status of the card
@@ -10746,6 +10757,11 @@ components:
           type: string
           description: The card's modification date
           example: '2021-08-02T05:32:11.345Z'
+        shipped_at:
+          type: string
+          format: date-time
+          description: Date when physical card was shipped. Only present for physical cards that have been shipped.
+          example: '2024-07-11T10:30:00Z'
         
     profile-request:
       title: Profile request
@@ -11060,32 +11076,35 @@ components:
           type: string
           description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
-        tax_information:
+        id_information:
           type: object
-          description: Tax identification information for the stakeholder
+          description: ID information for the stakeholder
           properties:
-            tax_id_last_4:
+            id_number_last_4:
               type: string
-              description: The last 4 digits of the stakeholder's tax identification number
+              description: The last 4 digits of the stakeholder's ID number
               example: '6789'
-            tax_id_type:
+            id_type:
               type: string
               enum:
                 - SSN
                 - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
-              description: The type of tax identification number
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
               example: SSN
             country_of_issuance:
               type: string
-              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Only present for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
               pattern: ^[A-Z]{3}$
               example: USA
           required:
-            - tax_id_last_4
-            - tax_id_type
-            - country_of_issuance
+            - id_number_last_4
+            - id_type
       required:
         - stakeholder_types
         - first_name
@@ -11367,32 +11386,34 @@ components:
           type: string
           description: The date of birth.
           example: '1976-02-07'
-        tax_information:
+        id_information:
           type: object
-          description: Tax identification information for the stakeholder
+          description: ID information for the stakeholder
           properties:
-            tax_id:
-              type: string
-              description: The stakeholder's tax identification number
-              example: '123456789'
-            tax_id_type:
+            id_type:
               type: string
               enum:
                 - SSN
                 - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
-              description: The type of tax identification number
-              example: SSN
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
+            id_number:
+              type: string
+              description: The ID number
+              example: '123456789'
             country_of_issuance:
               type: string
-              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Required for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
               pattern: ^[A-Z]{3}$
               example: USA
           required:
-            - tax_id
-            - tax_id_type
-            - country_of_issuance
+            - id_type
+            - id_number
         primary_address:
           type: object
           properties:
@@ -11485,32 +11506,34 @@ components:
           type: string
           description: The date of birth.
           example: '1976-02-07'
-        tax_information:
+        id_information:
           type: object
-          description: Tax identification information for the stakeholder
+          description: ID information for the stakeholder
           properties:
-            tax_id:
-              type: string
-              description: The stakeholder's tax identification number
-              example: '123456789'
-            tax_id_type:
+            id_type:
               type: string
               enum:
                 - SSN
                 - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
-              description: The type of tax identification number
-              example: SSN
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
+            id_number:
+              type: string
+              description: The ID number
+              example: '123456789'
             country_of_issuance:
               type: string
-              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Required for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
               pattern: ^[A-Z]{3}$
               example: USA
           required:
-            - tax_id
-            - tax_id_type
-            - country_of_issuance
+            - id_type
+            - id_number
       required:
         - stakeholder_types
         - first_name
@@ -11727,32 +11750,35 @@ components:
           type: string
           description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
-        tax_information:
+        id_information:
           type: object
-          description: Tax identification information for the stakeholder
+          description: ID information for the stakeholder
           properties:
-            tax_id_last_4:
+            id_number_last_4:
               type: string
-              description: The last 4 digits of the stakeholder's tax identification number
+              description: The last 4 digits of the stakeholder's ID number
               example: '6789'
-            tax_id_type:
+            id_type:
               type: string
               enum:
                 - SSN
                 - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
-              description: The type of tax identification number
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
               example: SSN
             country_of_issuance:
               type: string
-              description: The country that issued the tax ID (ISO 3166-1 alpha-3)
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Only present for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
               pattern: ^[A-Z]{3}$
               example: USA
           required:
-            - tax_id_last_4
-            - tax_id_type
-            - country_of_issuance
+            - id_number_last_4
+            - id_type
       required:
         - stakeholder_uuid
         - external_id
