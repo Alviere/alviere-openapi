@@ -531,7 +531,7 @@ paths:
       tags:
         - Accounts
       description: |-
-        Creates an account in the system. Accounts can be of type `CONSUMER`, `BUSINESS` , `STAKEHOLDER` or `CARDHOLDER``
+        Creates an account in the system. Accounts can be of type `CONSUMER`, `BUSINESS` , `STAKEHOLDER` or `CARDHOLDER`
 
         This service will automatically trigger the KYC/KYB and Identity Management process relevant to the account type.  
 
