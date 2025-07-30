@@ -6535,6 +6535,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
         - name: wallet_uuid
           in: query
           schema:
@@ -6555,6 +6557,19 @@ paths:
               - DENIED_AUTHORIZATION
               - CARD_REPLACEMENT
           description: Filter activities by type
+        - name: entity_uuid
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Filter activities by entity UUID
+        - name: entity_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - ISSUED_CARD
+          description: Filter activities by entity type
         - name: created_after
           in: query
           schema:
@@ -6567,21 +6582,6 @@ paths:
             type: string
             format: date-time
           description: Filter activities created before this timestamp
-        - name: page
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-          description: Page number for pagination
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 25
-          description: Number of results per page
       responses:
         '200':
           description: List of activities retrieved successfully
@@ -6590,6 +6590,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of activity records returned
                   activities:
                     type: array
                     description: List of activities
@@ -9770,11 +9774,13 @@ components:
         type_details:
           type: object
           oneOf:
-            - type: object
+            - title: Denied Authorization
+              type: object
               properties:
                 denied_authorization_details:
                   $ref: '#/components/schemas/denied-authorization-details'
-            - type: object
+            - title: Card Replacement
+              type: object
               properties:
                 card_replacement_details:
                   $ref: '#/components/schemas/card-replacement-details'
