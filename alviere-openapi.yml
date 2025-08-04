@@ -16803,7 +16803,7 @@ components:
               - validation
     account-response-success:
       description: |
-        The account was successfully created in the system and the KYC and Identity Management processes hav been kicked off.
+        The account was successfully created in the system and the KYC and Identity Management processes have been kicked off.
       headers:
         Alv-Request-Id:
           description: |
