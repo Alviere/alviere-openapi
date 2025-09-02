@@ -12737,6 +12737,22 @@ components:
             - LOAN
           default: CHECKING
           description: The bank account type
+      x-internal: false
+    wire-details-request:
+      title: Wire details Request
+      type: object
+      description: Structure representing bank account details required for wire transfers (real DDA)
+      required:
+        - routing_number
+        - account_number
+      properties:
+        routing_number:
+          type: string
+          description: Wire routing number for this bank account
+        account_number:
+          type: string
+          description: Account number for this bank account
+      x-internal: false
     eft-details-request:
       title: EFT details
       type: object
@@ -12840,6 +12856,10 @@ components:
           properties:
             iban_details:
               $ref: '#/components/schemas/iban-details-request'
+        - title: Wire
+          properties:
+            wire_details:
+              $ref: '#/components/schemas/wire-details-request'
       x-internal: false
     spend-budget-response:
       title: Spend budget
