@@ -14165,12 +14165,12 @@ components:
       type: object
       x-internal: false
       required:
-        - iban_last_4
+        - iban_number_last_4
       properties:
         bic:
           type: string
           description: The account SWIFT/BIC code for this bank account
-        iban_last_4:
+        iban_number_last_4:
           type: string
           description: The IBAN number last 4 digits for this bank account
     bank-account-details-response:
