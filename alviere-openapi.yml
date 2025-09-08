@@ -3486,10 +3486,10 @@ paths:
       description: |
         Adds a payment method of type card to an account.
 
-        **Billing Address Requirements:**
-        - If account has no primary address: all fields required (`line_1`, `city`, `state`, `country`, `postal_code`)
+        Billing address rules:
+        - If the account does not have a primary address on file, the request must include `billing_address` with all fields present (`line_1`, `city`, `state`, `country`, `postal_code`).
 
-        If these requirements are not met, the API will return a 4xx error with details about the missing required fields.
+        Requests that do not meet these rules return 400 Bad Request with details about the missing fields.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
