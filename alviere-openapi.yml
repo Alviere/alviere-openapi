@@ -9563,6 +9563,9 @@ components:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
               properties:
+                trace_number:
+                  type: string
+                  description: Trace number associated with the payment transaction
                 company_identification:
                   type: string
                   description: Identification of the originator assigned by the ODFI
@@ -13449,6 +13452,9 @@ components:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
               properties:
+                trace_number:
+                  type: string
+                  description: Trace number associated with the payment transaction
                 company_identification:
                   type: string
                   description: Identification of the originator assigned by the ODFI
@@ -13837,6 +13843,9 @@ components:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
               properties:
+                trace_number:
+                  type: string
+                  description: Trace number associated with the payment transaction
                 company_identification:
                   type: string
                   description: Identification of the originator assigned by the ODFI
