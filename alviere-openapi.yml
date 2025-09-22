@@ -9559,6 +9559,9 @@ components:
                         - PROCESSING_ERROR
                         - OTHER
                       description: Why the dispute was filed
+                cashback_amount:
+                  type: integer
+                  description: The cashback amount for the transaction, in cents
             payments_details:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
@@ -13448,6 +13451,9 @@ components:
                         - PROCESSING_ERROR
                         - OTHER
                       description: Why the dispute was filed
+                cashback_amount:
+                  type: integer
+                  description: The cashback amount for the transaction, in cents
             payments_details:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
@@ -13839,6 +13845,9 @@ components:
                         - PROCESSING_ERROR
                         - OTHER
                       description: Why the dispute was filed
+                cashback_amount:
+                  type: integer
+                  description: The cashback amount for the transaction, in cents
             payments_details:
               type: object
               description: If this transaction is related to a payment processing transaction, this structure may show additional details
