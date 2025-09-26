@@ -2299,6 +2299,7 @@ paths:
       operationId: wallets-spend-management-set-post
       tags:
         - Wallets
+      x-internal: true
     parameters: []
   /bulk-operations/template:
     parameters: []
@@ -2350,6 +2351,7 @@ paths:
           name: operation
           description: The type of bulk operation
           required: true
+      x-internal: true
   /wallets/{wallet_uuid}/withdraw:
     post:
       summary: Withdraw funds
