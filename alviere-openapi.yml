@@ -6358,7 +6358,35 @@ paths:
           in: query
           name: type
           description: The type of beneficiary
-        - $ref: '#/components/parameters/limit'
+        - schema:
+            type: boolean
+          in: query
+          name: with_transactions_only
+          description: Filter beneficiaries to only include those with transactions
+        - schema:
+            type: string
+            enum:
+              - INDIVIDUAL
+              - BUSINESS
+          in: query
+          name: legal_type
+          description: The legal type of beneficiary
+        - schema:
+            type: string
+          in: query
+          name: status
+          description: The status of beneficiary
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minLength: 1
+            default: 10
+            maxLength: 500
+            minimum: 1
+            maximum: 500
+          description: The number of items per page
         - $ref: '#/components/parameters/offset'
       responses:
         '200':
