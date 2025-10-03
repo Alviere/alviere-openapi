@@ -11172,7 +11172,7 @@ components:
               example: USA
             incorporation_date:
               type: string
-              description: The date the company was started
+              description: The date the company was started. For new programs, this field is required. Please reach out to implementation support for assistance.
               format: date
             ein:
               type: string
