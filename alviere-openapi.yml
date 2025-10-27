@@ -477,7 +477,7 @@ paths:
           required: false
           schema:
             type: string
-          description: Filter accounts by email address
+          description: Filter accounts by email address. Must be a valid RFC 5322 format email string
         - schema:
             type: string
             enum:
