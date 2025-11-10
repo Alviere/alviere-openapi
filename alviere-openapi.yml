@@ -555,6 +555,10 @@ paths:
                     be used to identify the account as well as protect our API against duplicate accounts.
 
                     NOTE: This field MUST be unique. Any subsequent Create Account with same `external_id` will fail with a HTTP 409.
+                parent_account_uuid:
+                  type: string
+                  format: uuid
+                  description: UUID of the parent account
                 account_type:
                   type: string
                   enum:
@@ -9380,6 +9384,10 @@ components:
         external_id:
           type: string
           description: The external account id of your platform
+        parent_account_uuid:
+          type: string
+          format: uuid
+          description: UUID of the parent account
         information:
           $ref: '#/components/schemas/account-information-response'
         metadata:
@@ -11555,6 +11563,10 @@ components:
         external_id:
           type: string
           description: The external account id of your platform
+        parent_account_uuid:
+          type: string
+          format: uuid
+          description: UUID of the parent account
         information:
           $ref: '#/components/schemas/account-information-response-list'
         metadata:
