@@ -14488,10 +14488,10 @@ components:
           title: Address Line Two
           description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
           type: string
-          pattern: '^[ a-zA-Z0-9._-]{1,128}$ '
+          pattern: '^[ a-zA-Z0-9._-]{1,30}$ '
           example: Suite 936
           minLength: 1
-          maxLength: 128
+          maxLength: 30
         postal_code:
           title: Postal Code
           description: ZIP or postal code
