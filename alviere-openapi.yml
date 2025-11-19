@@ -3853,7 +3853,7 @@ paths:
                     type: object
                     description: The bank account details.
                     required:
-                      - token
+                      - payment_method_uuid
                       - external_id
                       - type
                       - last_4
@@ -3866,7 +3866,7 @@ paths:
                       - created_at
                       - updated_at
                     properties:
-                      token:
+                      payment_method_uuid:
                         type: string
                         description: The unique ID of the bank account in the Alviere system
                         format: uuid
