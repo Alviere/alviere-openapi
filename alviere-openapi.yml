@@ -1215,7 +1215,10 @@ paths:
       tags:
         - Dossiers
       summary: Update dossier
-      description: Updates an existing dossier in the system.
+      description: |
+        Updates an existing dossier in the system.
+
+        For a complete list of document types and their descriptions, please refer to: https://apidocs.alviere.com/guides/hive-definitions/dossier#documents__document-types
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
@@ -1262,7 +1265,10 @@ paths:
       tags:
         - Dossiers
       summary: Replace dossier
-      description: Replaces an existing dossier in the system.
+      description: |
+        Replaces an existing dossier in the system.
+
+        For a complete list of document types and their descriptions, please refer to: https://apidocs.alviere.com/guides/hive-definitions/dossier#documents__document-types
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
@@ -1346,7 +1352,10 @@ paths:
       tags:
         - Dossiers
       summary: Create dossier
-      description: Upload Dossier documents to the account
+      description: |
+        Upload Dossier documents to the account.
+
+        For a complete list of document types and their descriptions, please refer to: https://apidocs.alviere.com/guides/hive-definitions/dossier#documents__document-types
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/account_uuid'
@@ -12454,7 +12463,7 @@ components:
       description: |
         This structure contains dossier information attached to an account in the system.
 
-        Dossiers are used to store documents that have been uploaded to an account.docume
+        Dossiers are used to store documents that have been uploaded to an account.
       x-internal: false
       required:
         - documents
@@ -12513,7 +12522,7 @@ components:
       description: |
         This structure contains dossier information attached to an account in the system.
 
-        Dossiers are used to store documents that have been uploaded to an account.docume
+        Dossiers are used to store documents that have been uploaded to an account.
       x-internal: false
       properties:
         external_id:
@@ -12573,7 +12582,7 @@ components:
       description: |
         This structure contains dossier information attached to an account in the system.
 
-        Dossiers are used to store documents that have been uploaded to an account.docume
+        Dossiers are used to store documents that have been uploaded to an account.
       x-internal: false
       required:
         - dossier_uuid
@@ -12680,7 +12689,7 @@ components:
       description: |
         This structure contains dossier information attached to an account in the system.
 
-        Dossiers are used to store documents that have been uploaded to an account.docume
+        Dossiers are used to store documents that have been uploaded to an account.
       x-internal: false
       required:
         - primary
