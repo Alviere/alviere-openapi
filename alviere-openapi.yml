@@ -5588,7 +5588,7 @@ paths:
                   enum:
                     - DAMAGED
                     - ATM_MALFUNCTION
-                    - DATA_COMPROMISE
+                    - DATA_COMPROMISED
                     - ABOUT_TO_EXPIRE
                     - EXPIRED
                     - OTHER
