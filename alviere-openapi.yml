@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '2.0'
+  version: '6.1.21'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -10270,11 +10270,11 @@ components:
         created_at:
           description: The date this dossier was created.
           type: string
-          format: date
+          format: date-time
         updated_at:
           description: The date this dossier was last updated.
           type: string
-          format: date
+          format: date-time
         documents:
           description: The actual documents uploaded as part of this dossier.
           type: array
@@ -11442,7 +11442,6 @@ components:
               type: string
               enum:
                 - SSN
-                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
@@ -11752,7 +11751,6 @@ components:
               type: string
               enum:
                 - SSN
-                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
@@ -11872,7 +11870,6 @@ components:
               type: string
               enum:
                 - SSN
-                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
@@ -12120,7 +12117,6 @@ components:
               type: string
               enum:
                 - SSN
-                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
@@ -12700,11 +12696,11 @@ components:
         created_at:
           description: The date this dossier was created.
           type: string
-          format: date
+          format: date-time
         updated_at:
           description: The date this dossier was last updated.
           type: string
-          format: date
+          format: date-time
         documents:
           description: The actual documents uploaded as part of this dossier.
           type: array
