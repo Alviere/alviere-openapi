@@ -2707,6 +2707,10 @@ paths:
                         description: This field is Alviere's internal unique transaction identifier
                         type: string
                         format: uuid
+                      wallet_uuid:
+                        description: UUID of the wallet to which this transaction belongs
+                        type: string
+                        format: uuid
                       external_id:
                         type: string
                         description: The ID of this transaction in your own platform. This ID can be used to identify the transaction as well as protect our API against duplicate transactions.
