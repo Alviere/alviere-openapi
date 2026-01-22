@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.22'
+  version: '6.2.23'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -9851,7 +9851,7 @@ components:
           default: false
         refund_reason:
           type: string
-          description: If `refunded` is `TRUE`, reason why the transaction was refunded
+          description: Reason why the transaction was refunded
         disputed:
           type: boolean
           description: For `PAYMENT` transactions, if `TRUE` a chargeback has been received for this transaction
@@ -13771,7 +13771,7 @@ components:
           default: false
         refund_reason:
           type: string
-          description: If `refunded` is `TRUE`, reason why the transaction was refunded
+          description: Reason why the transaction was refunded
         disputed:
           type: boolean
           description: For `PAYMENT` transactions, if `TRUE` a chargeback has been received for this transaction
@@ -14165,7 +14165,7 @@ components:
           default: false
         refund_reason:
           type: string
-          description: If `refunded` is `TRUE`, reason why the transaction was refunded
+          description: Reason why the transaction was refunded
         disputed:
           type: boolean
           description: For `PAYMENT` transactions, if `TRUE` a chargeback has been received for this transaction
