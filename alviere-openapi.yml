@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.23'
+  version: '6.2.24'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
