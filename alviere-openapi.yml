@@ -9669,6 +9669,9 @@ components:
                 is_international:
                   type: boolean
                   description: If ``TRUE`` the transaction is international
+                is_pin:
+                  type: boolean
+                  description: If ``TRUE`` the transaction was a PIN-based transaction
                 dispute_details:
                   type: object
                   description: Dispute information for card transactions
@@ -13589,6 +13592,9 @@ components:
                 is_international:
                   type: boolean
                   description: If ``TRUE`` the transaction is international
+                is_pin:
+                  type: boolean
+                  description: If ``TRUE`` the transaction was a PIN-based transaction
                 dispute_details:
                   type: object
                   description: Dispute information for card transactions
@@ -13983,6 +13989,9 @@ components:
                 is_international:
                   type: boolean
                   description: If ``TRUE`` the transaction is international
+                is_pin:
+                  type: boolean
+                  description: If ``TRUE`` the transaction was a PIN-based transaction
                 dispute_details:
                   type: object
                   description: Dispute information for card transactions
