@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.24'
+  version: '6.2.25'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -11024,6 +11024,10 @@ components:
           type: boolean
           description: Indicates if this card was originally virtual and converted to physical
           example: true
+        frozen:
+          type: boolean
+          description: Indicates if the card is currently frozen
+          example: false
         status:
           type: string
           description: The status of the card
