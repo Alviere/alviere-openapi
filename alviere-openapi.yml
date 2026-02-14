@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.25'
+  version: '6.2.26'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -16391,6 +16391,14 @@ components:
           description: Limits per wallet, keyed by wallet_uuid
           additionalProperties:
             $ref: '#/components/schemas/limit-periods'
+          example:
+            "f47ac10b-58cc-4372-a567-0e02b2c3d479":
+              daily:
+                used: 50000
+                available: 250000
+              rolling:
+                used: 100000
+                available: 500000
     funds-source-limits:
       title: Funds Source Limits
       type: object
@@ -16438,6 +16446,14 @@ components:
           description: Limits per wallet, keyed by wallet_uuid
           additionalProperties:
             $ref: '#/components/schemas/limit-periods'
+          example:
+            "f47ac10b-58cc-4372-a567-0e02b2c3d479":
+              daily:
+                used: 50000
+                available: 250000
+              rolling:
+                used: 100000
+                available: 500000
     transaction-limits-response:
       title: Transaction Limits Response
       type: object
