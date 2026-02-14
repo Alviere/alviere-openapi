@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.26'
+  version: '6.2.27'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -35,6 +35,9 @@ tags:
   - name: Treasury management
   - name: Service fees
   - name: Rewards and Incentives
+  - name: Payment processing
+  - name: Activities
+  - name: Cash loading
 paths:
   /auth/realms/customers/protocol/openid-connect/token:
     servers:
@@ -768,7 +771,6 @@ paths:
         content:
           application/json:
             schema:
-              type: object
               $ref: '#/components/schemas/card-pm-update'
   /payment-methods/bank-accounts/{payment_method_uuid}:
     patch:
@@ -808,7 +810,6 @@ paths:
         content:
           application/json:
             schema:
-              type: object
               $ref: '#/components/schemas/bank-account-pm-update'
   /accounts/{account_uuid}/deactivate:
     put:
@@ -2410,6 +2411,7 @@ paths:
     parameters: []
     get:
       summary: Download bulk operation template
+      description: Download a template file for formatting bulk wallet operations.
       tags:
         - Wallets
       responses:
@@ -7643,7 +7645,7 @@ paths:
           description: Store longitude
         - schema:
             type: number
-            default: '5'
+            default: 5
             minimum: 0.1
             maximum: 25
           in: query
@@ -8186,6 +8188,7 @@ paths:
   /transactions/summary-data:
     post:
       summary: Calculate transactional summary data
+      description: Calculate aggregated transaction summary data based on filter criteria.
       operationId: post-data-transaction-summary
       responses:
         '200':
@@ -9799,7 +9802,7 @@ components:
             - WALLET
           description: Source of funds for transaction funded via a passthrough transaction
         funds_source:
-          oneOf:
+          anyOf:
             - title: Bank account (DDA)
               properties:
                 origin_bank:
@@ -11443,21 +11446,21 @@ components:
         stakeholder_types:
           type: array
           description: The type of stakeholder
-          enum:
-            - BENEFICIAL_OWNER
-            - OFFICER
           items:
             type: string
+            enum:
+              - BENEFICIAL_OWNER
+              - OFFICER
         officer_titles:
           type: array
           description: The job title for type `OFFICER`
-          example: CEO
+          example: [CEO]
           items:
             type: string
         percentage_ownership:
           type: number
           description: The percentage ownership in the company for type `BENEFICIAL_OWNER`
-          example: '25'
+          example: 25
           minimum: 0
           maximum: 100
           format: float
@@ -11756,18 +11759,18 @@ components:
         stakeholder_types:
           type: array
           description: The different types that apply to this stakeholder
-          enum:
-            - BENEFICIAL_OWNER
-            - OFFICER
           items:
             type: string
+            enum:
+              - BENEFICIAL_OWNER
+              - OFFICER
         external_id:
           type: string
           description: The ID of this stakeholder in your own platform. This will be associated with this stakeholder and can be used to identify the stakeholder as well as protect our API against duplicate stakeholders.
         officer_titles:
           type: array
           description: The titles that apply for type `OFFICER`
-          example: CEO
+          example: [CEO]
           items:
             type: string
         percentage_ownership:
@@ -11875,21 +11878,21 @@ components:
         stakeholder_types:
           type: array
           description: The different types that apply to this stakeholder
-          enum:
-            - BENEFICIAL_OWNER
-            - OFFICER
           items:
             type: string
+            enum:
+              - BENEFICIAL_OWNER
+              - OFFICER
         officer_titles:
           type: array
           description: The titles that apply for type `OFFICER`
-          example: CEO
+          example: [CEO]
           items:
             type: string
         percentage_ownership:
           type: number
           description: The percentage ownership in the company for type `BENEFICIAL_OWNER`
-          example: '25'
+          example: 25
           format: float
           minimum: 0
           maximum: 100
@@ -12121,15 +12124,15 @@ components:
         stakeholder_types:
           type: array
           description: The type of stakeholder
-          enum:
-            - BENEFICIAL_OWNER
-            - OFFICER
           items:
             type: string
+            enum:
+              - BENEFICIAL_OWNER
+              - OFFICER
         officer_titles:
           type: array
           description: The job title for type `OFFICER`
-          example: CEO
+          example: [CEO]
           items:
             type: string
         percentage_ownership:
@@ -13230,6 +13233,7 @@ components:
                           maximum: 100
                           format: float
                           example: 14.5
+                          minimum: 0
                           exclusiveMinimum: true
                         cap:
                           type: number
@@ -13300,7 +13304,7 @@ components:
           title: Address Line One
           description: Address line 1 (e.g., street, PO Box, or company name - NOTE that newline characters are not accepted)
           type: string
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: 101 Avenue of the Americas
           minLength: 2
           maxLength: 128
@@ -13308,7 +13312,7 @@ components:
           title: Address Line Two
           description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
           type: string
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: Suite 936
           minLength: 1
           maxLength: 128
@@ -13316,7 +13320,7 @@ components:
           title: Postal Code
           description: ZIP or postal code
           type: string
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: '10013'
           maxLength: 20
           minLength: 2
@@ -13324,7 +13328,7 @@ components:
           title: City
           description: City, district, suburb, town, or village
           type: string
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: New York
           minLength: 2
           maxLength: 128
@@ -13332,7 +13336,7 @@ components:
           type: string
           title: State
           description: State, county, province, or region
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: NY
           minLength: 2
           maxLength: 128
@@ -13340,7 +13344,7 @@ components:
           title: Country
           description: Three-letter country code (ISO 3166-1 alpha-3).
           type: string
-          pattern: ^[A-Z]$
+          pattern: ^[A-Z]{3}$
           example: USA
           minLength: 3
           maxLength: 3
@@ -13357,7 +13361,8 @@ components:
           type: string
           description: A unique string to identify the Merchant
         address:
-          $ref: '#/components/schemas/merchant-address'
+          allOf:
+            - $ref: '#/components/schemas/merchant-address'
           description: Merchant's address
         email_address:
           title: Postal Code
@@ -13726,7 +13731,7 @@ components:
             - WALLET
           description: Source of funds for transaction funded via a passthrough transaction
         funds_source:
-          oneOf:
+          anyOf:
             - title: Bank account (DDA)
               properties:
                 origin_bank:
@@ -14123,7 +14128,7 @@ components:
             - WALLET
           description: Source of funds for transaction funded via a passthrough transaction
         funds_source:
-          oneOf:
+          anyOf:
             - title: Bank account (DDA)
               properties:
                 origin_bank:
@@ -14615,7 +14620,7 @@ components:
           title: Address Line One
           description: Address line 1 (e.g., street, PO Box, or company name - NOTE that newline characters are not accepted)
           type: string
-          pattern: '^[ a-zA-Z0-9._-]{2,128}$ '
+          pattern: '^[ a-zA-Z0-9._-]{2,128}$'
           example: 101 Avenue of the Americas
           minLength: 2
           maxLength: 128
@@ -14623,7 +14628,7 @@ components:
           title: Address Line Two
           description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
           type: string
-          pattern: '^[ a-zA-Z0-9._-]{1,30}$ '
+          pattern: '^[ a-zA-Z0-9._-]{1,30}$'
           example: Suite 936
           minLength: 1
           maxLength: 30
@@ -14631,7 +14636,7 @@ components:
           title: Postal Code
           description: ZIP or postal code
           type: string
-          pattern: '^[ a-zA-Z0-9._-]{2,50}$ '
+          pattern: '^[ a-zA-Z0-9._-]{2,50}$'
           example: '10013'
           maxLength: 50
           minLength: 2
@@ -14639,7 +14644,7 @@ components:
           title: City
           description: City, district, suburb, town, or village
           type: string
-          pattern: '^[ a-zA-Z0-9._-]{2,128}$ '
+          pattern: '^[ a-zA-Z0-9._-]{2,128}$'
           example: New York
           minLength: 2
           maxLength: 128
@@ -14647,7 +14652,7 @@ components:
           type: string
           title: State
           description: State, county, province, or region
-          pattern: '^[ a-zA-Z0-9._-]{2,128}$ '
+          pattern: '^[ a-zA-Z0-9._-]{2,128}$'
           example: NY
           minLength: 2
           maxLength: 128
@@ -14810,7 +14815,8 @@ components:
           oneOf:
             - properties:
                 card:
-                  $ref: '#/components/schemas/card-instrument-request'
+                  allOf:
+                    - $ref: '#/components/schemas/card-instrument-request'
                   description: Payment instrument of type card
           description: Details of the Payment Instrument
           type: object
@@ -15027,7 +15033,8 @@ components:
           oneOf:
             - properties:
                 card:
-                  $ref: '#/components/schemas/card-instrument-request'
+                  allOf:
+                    - $ref: '#/components/schemas/card-instrument-request'
                   description: Payment instrument of type card
               required:
                 - card
@@ -16069,7 +16076,7 @@ components:
           title: Address Line One
           description: Address line 1 (e.g., street, PO Box, or company name - NOTE that newline characters are not accepted)
           type: string
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: 101 Avenue of the Americas
           minLength: 2
           maxLength: 128
@@ -16077,7 +16084,7 @@ components:
           title: Address Line Two
           description: Address line 2 (e.g., apartment, suite, unit, or building - NOTE that newline characters are not accepted)
           type: string
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: Suite 936
           minLength: 1
           maxLength: 128
@@ -16085,7 +16092,7 @@ components:
           title: Postal Code
           description: ZIP or postal code
           type: string
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: '10013'
           maxLength: 20
           minLength: 2
@@ -16093,7 +16100,7 @@ components:
           title: City
           description: City, district, suburb, town, or village
           type: string
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: New York
           minLength: 2
           maxLength: 128
@@ -16101,7 +16108,7 @@ components:
           type: string
           title: State
           description: State, county, province, or region
-          pattern: ^[ a-zA-Z0-9._-]$
+          pattern: ^[ a-zA-Z0-9._-]+$
           example: NY
           minLength: 2
           maxLength: 128
@@ -16109,7 +16116,7 @@ components:
           title: Country
           description: Three-letter country code (ISO 3166-1 alpha-3).
           type: string
-          pattern: ^[A-Z]$
+          pattern: ^[A-Z]{3}$
           example: USA
           minLength: 3
           maxLength: 3
@@ -16390,7 +16397,8 @@ components:
           type: object
           description: Limits per wallet, keyed by wallet_uuid
           additionalProperties:
-            $ref: '#/components/schemas/limit-periods'
+            allOf:
+              - $ref: '#/components/schemas/limit-periods'
             x-additionalPropertiesName: wallet_uuid
           example:
             "f47ac10b-58cc-4372-a567-0e02b2c3d479":
@@ -16398,6 +16406,7 @@ components:
                 used: 50000
                 available: 250000
               rolling:
+                period: 86400
                 used: 100000
                 available: 500000
     funds-source-limits:
@@ -16446,7 +16455,8 @@ components:
           type: object
           description: Limits per wallet, keyed by wallet_uuid
           additionalProperties:
-            $ref: '#/components/schemas/limit-periods'
+            allOf:
+              - $ref: '#/components/schemas/limit-periods'
             x-additionalPropertiesName: wallet_uuid
           example:
             "f47ac10b-58cc-4372-a567-0e02b2c3d479":
@@ -16454,6 +16464,7 @@ components:
                 used: 50000
                 available: 250000
               rolling:
+                period: 86400
                 used: 100000
                 available: 500000
     transaction-limits-response:
