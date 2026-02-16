@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.26'
+  version: '6.2.27'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -2938,6 +2938,16 @@ paths:
                                 The description can be any descriptive text provided by the user to accompany the service fee transaction.
                               minimum: 1
                               maximum: 255
+                            calc_type:
+                              type: string
+                              description: |
+                                The calculation type in relation to the total transaction.
+
+                                * `UPCHARGE`: The service fee was applied as an upcharge to the transaction.
+                                * `DEDUCT`: The service fee was applied as a deduction to the transaction amount.
+                              enum:
+                                - DEDUCT
+                                - UPCHARGE
                       amount:
                         description: |
                           The amount is the value associated with the request, in cents.
