@@ -9867,7 +9867,7 @@ components:
           description: Reason why the transaction was refunded
         disputed:
           type: boolean
-          description: For `PAYMENT` and `LOAD_FUNDS` transactions, if `TRUE` a chargeback has been received for this transaction
+          description: For `PAYMENT` transactions, if `TRUE` a chargeback has been received for this transaction
         created_at:
           type: string
           format: date-time
@@ -13794,7 +13794,7 @@ components:
           description: Reason why the transaction was refunded
         disputed:
           type: boolean
-          description: For `PAYMENT` and `LOAD_FUNDS` transactions, if `TRUE` a chargeback has been received for this transaction
+          description: For `PAYMENT` transactions, if `TRUE` a chargeback has been received for this transaction
         created_at:
           type: string
           format: date-time
@@ -14191,7 +14191,7 @@ components:
           description: Reason why the transaction was refunded
         disputed:
           type: boolean
-          description: For `PAYMENT` and `LOAD_FUNDS` transactions, if `TRUE` a chargeback has been received for this transaction
+          description: For `PAYMENT` transactions, if `TRUE` a chargeback has been received for this transaction
         created_at:
           type: string
           format: date-time
