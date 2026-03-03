@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.28'
+  version: '6.2.29'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -2055,7 +2055,7 @@ paths:
                     title: transactions
                     description: The transactions related to this account
                     items:
-                      $ref: '#/components/schemas/wallet-transaction'
+                      $ref: '#/components/schemas/wallet-transaction-list'
                 required:
                   - records
                   - transactions
@@ -9905,6 +9905,36 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/release'
+        child_transactions:
+          type: array
+          description: Child transactions associated with this transaction, such as service fees. Only present when applicable.
+          items:
+            type: object
+            required:
+              - transaction_uuid
+              - type
+              - status
+              - amount
+              - currency
+            properties:
+              transaction_uuid:
+                type: string
+                format: uuid
+                description: Alviere's unique identifier for the child transaction
+              type:
+                type: string
+                description: The type of child transaction
+                example: SERVICE_FEE
+              status:
+                $ref: '#/components/schemas/transaction-status'
+              amount:
+                type: integer
+                description: The transaction amount in cents
+                example: -300
+              currency:
+                type: string
+                description: The currency code in ISO-4217 format
+                example: USD
         metadata:
           type: object
           description: Allows for any number of custom metadata keys and values to be stored with a given transaction
@@ -11308,7 +11338,7 @@ components:
             ein:
               type: string
               description: The EIN of the company
-              example: '1234556'
+              example: '123456789'
             phone_number:
               type: string
               description: The business' phone number in E.164 international standard
@@ -11393,7 +11423,7 @@ components:
             company_id:
               type: string
               description: The ID number of the company
-              example: '1234556'
+              example: '123456789'
             vat_number:
               type: string
               description: The VAT number of the company
@@ -12281,7 +12311,7 @@ components:
             ein:
               type: string
               description: The EIN of the company
-              example: '1234556'
+              example: '123456789'
             phone_number:
               type: string
               description: The business' phone number in E.164 international standard
@@ -12350,7 +12380,7 @@ components:
             company_id:
               type: string
               description: The ID number of the company
-              example: '1234556'
+              example: '123456789'
             vat_number:
               type: string
               description: The VAT number of the company
@@ -14229,6 +14259,36 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/release'
+        child_transactions:
+          type: array
+          description: Child transactions associated with this transaction, such as service fees. Only present when applicable.
+          items:
+            type: object
+            required:
+              - transaction_uuid
+              - type
+              - status
+              - amount
+              - currency
+            properties:
+              transaction_uuid:
+                type: string
+                format: uuid
+                description: Alviere's unique identifier for the child transaction
+              type:
+                type: string
+                description: The type of child transaction
+                example: SERVICE_FEE
+              status:
+                $ref: '#/components/schemas/transaction-status'
+              amount:
+                type: integer
+                description: The transaction amount in cents
+                example: -300
+              currency:
+                type: string
+                description: The currency code in ISO-4217 format
+                example: USD
         metadata:
           type: object
           description: Allows for any number of custom metadata keys and values to be stored with a given transaction
