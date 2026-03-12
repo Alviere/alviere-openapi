@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.29'
+  version: '6.2.30'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -4109,6 +4109,9 @@ paths:
                       fail_reason:
                         type: string
                         description: Status fail reason
+                      verified:
+                        type: boolean
+                        description: Indicates whether the bank account has been successfully verified. Not present when verification has not been done or is not yet completed. `false` when verification was unsuccessful. `true` when verification was successful.
                       created_at:
                         type: string
                         description: The banks creation date
@@ -10658,6 +10661,9 @@ components:
         primary:
           type: boolean
           description: Indicates whether this bank account is the primary payment method for the account
+        verified:
+          type: boolean
+          description: Indicates whether the bank account has been successfully verified. Not present when verification has not been done or is not yet completed. `false` when verification was unsuccessful. `true` when verification was successful.
         metadata:
           type: object
           description: Allows for any number of custom metadata keys and values to be stored with a given entity
