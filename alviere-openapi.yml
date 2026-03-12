@@ -535,7 +535,7 @@ paths:
 
         This service will automatically trigger the KYC/KYB and Identity Management process relevant to the account type.  
 
-        Please note that an account cannot be duplicated within the same parent program account; an account is considered duplicated when the same `external_id` is provided.
+        Please note that an account cannot be duplicated within the same parent program account; an account is considered duplicated when the same `external_id` and `account_type` combination is provided. Using an `external_id` that already exists under a different `account_type` will result in a HTTP 400 error.
 
         **Note**: For consumer accounts, if you do not set the `primary_address` property, you have to add an address separately to initiate the KYC process.
       parameters:
@@ -554,7 +554,9 @@ paths:
                     The ID of this account in your own platform. This will be associated with this account and can
                     be used to identify the account as well as protect our API against duplicate accounts.
 
-                    NOTE: This field MUST be unique. Any subsequent Create Account with same `external_id` will fail with a HTTP 409.
+                    NOTE: This field MUST be unique per account type. Submitting the same `external_id` for the same
+                    `account_type` will fail with HTTP 409. Submitting the same `external_id` for a different
+                    `account_type` will fail with HTTP 400.
                 parent_account_uuid:
                   type: string
                   format: uuid
