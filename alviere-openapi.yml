@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.30'
+  version: '6.2.31'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -14779,6 +14779,8 @@ components:
           type: string
           example: John Doe
           description: The name of the cardholder as it shows on the face of the card
+          minLength: 2
+          maxLength: 26
         security_code:
           type: string
           description: Card CVC or CVV code
