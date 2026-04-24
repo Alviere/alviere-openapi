@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.31'
+  version: '6.2.32'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -3613,6 +3613,8 @@ paths:
         - If the account does not have a primary address on file, the request must include `billing_address` with all fields present (`line_1`, `city`, `state`, `country`, `postal_code`).
 
         Requests that do not meet these rules return 400 Bad Request with details about the missing fields.
+
+        Adding a duplicate card on the same account returns a 400 when the existing card is in `CREATED`, `ACTIVE`, or `PENDING` status.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
@@ -3899,7 +3901,10 @@ paths:
       tags:
         - Payment methods
       summary: Create bank account
-      description: Adds a payment method of type bank account to an account.
+      description: |
+        Adds a payment method of type bank account to an account.
+
+        Adding a duplicate bank account on the same account returns a 400 when the existing bank account is in `CREATED`, `ACTIVE`, or `PROCESSING` status.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
