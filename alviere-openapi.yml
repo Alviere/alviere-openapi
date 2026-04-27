@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.32'
+  version: '6.2.33'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -9977,6 +9977,7 @@ components:
           enum:
             - DENIED_AUTHORIZATION
             - CARD_REPLACEMENT
+            - CARD_CREATED
           description: Type of activity event
         type_details:
           type: object
@@ -9991,6 +9992,11 @@ components:
               properties:
                 card_replacement_details:
                   $ref: '#/components/schemas/card-replacement-details'
+            - title: Card Created
+              type: object
+              properties:
+                card_created_details:
+                  $ref: '#/components/schemas/card-created-details'
         created_at:
           type: string
           format: date-time
@@ -10062,6 +10068,40 @@ components:
         waive_fees_description:
           type: string
           description: Detailed description for fee waiver
+    card-created-details:
+      type: object
+      properties:
+        card_uuid:
+          type: string
+          format: uuid
+          description: UUID of the card that was created
+        type:
+          type: string
+          description: The type of card
+          enum:
+            - DEBIT
+            - PREPAID
+            - PREPAID_NON_RELOADABLE
+            - GIFT
+        brand:
+          type: string
+          description: Card brand
+          example: VISA
+        genre:
+          type: string
+          description: The genre of the card
+          enum:
+            - DIGITAL
+            - VIRTUAL
+            - PHYSICAL
+        product_id:
+          type: string
+          description: The product ID assigned by Alviere when the card issuance service was set up
+          example: virtual-debit-card
+        last_4:
+          type: string
+          description: The last four digits of the card PAN
+          example: '1234'
     service-fee-transaction:
       title: Service fee rule
       type: object
