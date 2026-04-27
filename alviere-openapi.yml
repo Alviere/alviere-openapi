@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.33'
+  version: '6.2.34'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -6720,6 +6720,7 @@ paths:
             enum:
               - DENIED_AUTHORIZATION
               - CARD_REPLACEMENT
+              - CARD_CREATED
           description: Filter activities by type
         - name: entity_uuid
           in: query
@@ -10098,10 +10099,6 @@ components:
           type: string
           description: The product ID assigned by Alviere when the card issuance service was set up
           example: virtual-debit-card
-        last_4:
-          type: string
-          description: The last four digits of the card PAN
-          example: '1234'
     service-fee-transaction:
       title: Service fee rule
       type: object
