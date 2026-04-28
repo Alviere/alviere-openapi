@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.34'
+  version: '6.2.35'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -11536,6 +11536,9 @@ components:
           enum:
             - BENEFICIAL_OWNER
             - OFFICER
+            - CONTROL_PERSON
+            - DIRECTOR
+            - ADMINISTRATOR
           items:
             type: string
         officer_titles:
@@ -11573,6 +11576,29 @@ components:
           type: string
           description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
+        email_address:
+          type: string
+          description: The stakeholder's email address
+          example: john.doe@example.com
+        phone_number:
+          type: string
+          description: The stakeholder's phone number in E.164 international standard
+          pattern: ^\+[1-9]\d{1,14}$
+          example: '+12125551234'
+        citizenship_country:
+          type: string
+          description: Country of citizenship (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        residency_country:
+          type: string
+          description: Country of residency (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        is_us_person:
+          type: boolean
+          description: Indicates whether the stakeholder is a U.S. person for tax reporting purposes (FATCA)
+          example: true
         id_information:
           type: object
           description: ID information for the stakeholder
@@ -11849,6 +11875,9 @@ components:
           enum:
             - BENEFICIAL_OWNER
             - OFFICER
+            - CONTROL_PERSON
+            - DIRECTOR
+            - ADMINISTRATOR
           items:
             type: string
         external_id:
@@ -11884,8 +11913,31 @@ components:
           maxLength: 40
         date_of_birth:
           type: string
-          description: The date of birth.
+          description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
+        email_address:
+          type: string
+          description: The stakeholder's email address
+          example: john.doe@example.com
+        phone_number:
+          type: string
+          description: The stakeholder's phone number in E.164 international standard
+          pattern: ^\+[1-9]\d{1,14}$
+          example: '+12125551234'
+        citizenship_country:
+          type: string
+          description: Country of citizenship (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        residency_country:
+          type: string
+          description: Country of residency (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        is_us_person:
+          type: boolean
+          description: Indicates whether the stakeholder is a U.S. person for tax reporting purposes (FATCA)
+          example: true
         id_information:
           type: object
           description: ID information for the stakeholder
@@ -11968,6 +12020,9 @@ components:
           enum:
             - BENEFICIAL_OWNER
             - OFFICER
+            - CONTROL_PERSON
+            - DIRECTOR
+            - ADMINISTRATOR
           items:
             type: string
         officer_titles:
@@ -12003,8 +12058,31 @@ components:
           maxLength: 40
         date_of_birth:
           type: string
-          description: The date of birth.
+          description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
+        email_address:
+          type: string
+          description: The stakeholder's email address
+          example: john.doe@example.com
+        phone_number:
+          type: string
+          description: The stakeholder's phone number in E.164 international standard
+          pattern: ^\+[1-9]\d{1,14}$
+          example: '+12125551234'
+        citizenship_country:
+          type: string
+          description: Country of citizenship (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        residency_country:
+          type: string
+          description: Country of residency (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        is_us_person:
+          type: boolean
+          description: Indicates whether the stakeholder is a U.S. person for tax reporting purposes (FATCA)
+          example: true
         id_information:
           type: object
           description: ID information for the stakeholder
@@ -12214,6 +12292,9 @@ components:
           enum:
             - BENEFICIAL_OWNER
             - OFFICER
+            - CONTROL_PERSON
+            - DIRECTOR
+            - ADMINISTRATOR
           items:
             type: string
         officer_titles:
@@ -12248,6 +12329,29 @@ components:
           type: string
           description: The date of birth. Not required for `ADMINISTRATOR`
           example: '1976-02-07'
+        email_address:
+          type: string
+          description: The stakeholder's email address
+          example: john.doe@example.com
+        phone_number:
+          type: string
+          description: The stakeholder's phone number in E.164 international standard
+          pattern: ^\+[1-9]\d{1,14}$
+          example: '+12125551234'
+        citizenship_country:
+          type: string
+          description: Country of citizenship (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        residency_country:
+          type: string
+          description: Country of residency (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        is_us_person:
+          type: boolean
+          description: Indicates whether the stakeholder is a U.S. person for tax reporting purposes (FATCA)
+          example: true
         id_information:
           type: object
           description: ID information for the stakeholder
