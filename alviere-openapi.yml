@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.35'
+  version: '6.2.36'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -9570,6 +9570,14 @@ components:
         payout_method_uuid:
           type: string
           description: If the transaction is related to the transfer of funds to a Beneficiary, this field will contain the UUID of applicable Payout Method
+        origin_wallet_uuid:
+          type: string
+          description: For WALLET_TRANSFER transactions, the UUID of the sending wallet. Only populated on the credit side of the transfer (when `wallet_uuid` is the receiving wallet).
+          format: uuid
+        destination_wallet_uuid:
+          type: string
+          description: For WALLET_TRANSFER transactions, the UUID of the receiving wallet. Only populated on the debit side of the transfer (when `wallet_uuid` is the sending wallet).
+          format: uuid
         receipt_uuid:
           description: Receipt identifier for a given transaction
           type: string
@@ -13670,6 +13678,14 @@ components:
         payout_method_uuid:
           type: string
           description: 'If the transaction is related to the transfer of funds to a Beneficiary, this field will contain the UUID of applicable Payout Method  '
+        origin_wallet_uuid:
+          type: string
+          description: For WALLET_TRANSFER transactions, the UUID of the sending wallet. Only populated on the credit side of the transfer (when `wallet_uuid` is the receiving wallet).
+          format: uuid
+        destination_wallet_uuid:
+          type: string
+          description: For WALLET_TRANSFER transactions, the UUID of the receiving wallet. Only populated on the debit side of the transfer (when `wallet_uuid` is the sending wallet).
+          format: uuid
         receipt_uuid:
           description: Receipt identifier for a given transaction
           type: string
@@ -14067,6 +14083,14 @@ components:
         payout_method_uuid:
           type: string
           description: 'If the transaction is related to the transfer of funds to a Beneficiary, this field will contain the UUID of applicable Payout Method  '
+        origin_wallet_uuid:
+          type: string
+          description: For WALLET_TRANSFER transactions, the UUID of the sending wallet. Only populated on the credit side of the transfer (when `wallet_uuid` is the receiving wallet).
+          format: uuid
+        destination_wallet_uuid:
+          type: string
+          description: For WALLET_TRANSFER transactions, the UUID of the receiving wallet. Only populated on the debit side of the transfer (when `wallet_uuid` is the sending wallet).
+          format: uuid
         receipt_uuid:
           description: Receipt identifier for a given transaction
           type: string
