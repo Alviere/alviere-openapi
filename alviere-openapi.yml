@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.36'
+  version: '6.2.37'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -11558,7 +11558,7 @@ components:
         percentage_ownership:
           type: number
           description: The percentage ownership in the company for type `BENEFICIAL_OWNER`
-          example: '25'
+          example: 25
           minimum: 0
           maximum: 100
           format: float
@@ -11898,9 +11898,12 @@ components:
           items:
             type: string
         percentage_ownership:
-          type: string
+          type: number
           description: The percentage ownership in the company for type `BENEFICIAL_OWNER`
-          example: '25'
+          example: 25
+          minimum: 0
+          maximum: 100
+          format: float
         first_name:
           type: string
           description: The first name
@@ -12042,7 +12045,7 @@ components:
         percentage_ownership:
           type: number
           description: The percentage ownership in the company for type `BENEFICIAL_OWNER`
-          example: '25'
+          example: 25
           format: float
           minimum: 0
           maximum: 100
@@ -12312,9 +12315,12 @@ components:
           items:
             type: string
         percentage_ownership:
-          type: string
+          type: number
           description: The percentage ownership in the company for type `BENEFICIAL_OWNER`
-          example: '25'
+          example: 25
+          minimum: 0
+          maximum: 100
+          format: float
         first_name:
           type: string
           description: The first name
