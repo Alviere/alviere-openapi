@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.37'
+  version: '6.2.38'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -2512,6 +2512,9 @@ paths:
                   type: string
                   minimum: 8
                   maximum: 64
+                description:
+                  type: string
+                  description: A small description to identify the transaction
                 transaction_options:
                   type: object
                   description: Options related to transaction handling
@@ -2526,6 +2529,11 @@ paths:
                             - SAME_DAY
                             - NEXT_DAY
                           description: Whether the ACH transfer should be done on the same day or next day window batches
+                        ach_reference:
+                          type: string
+                          minLength: 1
+                          maxLength: 80
+                          description: Optional reference to be included with the ACH transfer
                 metadata:
                   type: object
                   description: Allows for any number of custom metadata keys and values to be stored with a given transaction
@@ -9910,6 +9918,9 @@ components:
                   enum:
                     - SAME_DAY
                     - NEXT_DAY
+                ach_reference:
+                  type: string
+                  description: Reference included with the ACH transfer, when provided on the request
                 prefund:
                   type: string
                   description: If `FALSE`, prefunding has been disabled for this transaction. If `TRUE`, prefunding has been enabled for this transaction. If not returned, default program configuration applies.
@@ -14024,6 +14035,9 @@ components:
                   enum:
                     - SAME_DAY
                     - NEXT_DAY
+                ach_reference:
+                  type: string
+                  description: Reference included with the ACH transfer, when provided on the request
                 prefund:
                   type: string
                   description: If `FALSE`, prefunding has been disabled for this transaction. If `TRUE`, prefunding has been enabled for this transaction. If not returned, default program configuration applies.
@@ -14429,6 +14443,9 @@ components:
                   enum:
                     - SAME_DAY
                     - NEXT_DAY
+                ach_reference:
+                  type: string
+                  description: Reference included with the ACH transfer, when provided on the request
                 prefund:
                   type: string
                   description: If `FALSE`, prefunding has been disabled for this transaction. If `TRUE`, prefunding has been enabled for this transaction. If not returned, default program configuration applies.
