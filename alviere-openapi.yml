@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.38'
+  version: '6.2.39'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -17409,6 +17409,48 @@ components:
                   disputed: false
                   created_at: '2025-03-18T11:54:40.990725Z'
                   updated_at: '2025-03-18T11:54:40.998051Z'
+                validation:
+                  result: ACCEPTED
+            Send to wallet:
+              value:
+                transaction:
+                  transaction_uuid: c1f4a3b2-7e25-4a1c-9b87-1d5e2f3a4b6c
+                  wallet_uuid: 15100419-77df-4478-a84e-f14ca3f4f3dc
+                  origin_wallet_uuid: 15100419-77df-4478-a84e-f14ca3f4f3dc
+                  destination_wallet_uuid: 7a2f8d6e-3b91-4c5d-8e0f-9a1b2c3d4e5f
+                  account_uuid: ddb3d090-c124-4bc8-80d0-1e5a53aecc3f
+                  external_id: 4f8c6b2a-1d3e-4a5b-9c7d-8e0f1a2b3c4d
+                  transaction_type: WALLET_TRANSFER
+                  status: CREATED
+                  description: Birthday gift
+                  amount: -2500
+                  currency: USD
+                  funds_source: {}
+                  refunded: false
+                  disputed: false
+                  created_at: '2025-04-10T09:22:18.331204Z'
+                  updated_at: '2025-04-10T09:22:18.342817Z'
+                validation:
+                  result: ACCEPTED
+            Transfer to beneficiary:
+              value:
+                transaction:
+                  transaction_uuid: 8b3d2e1c-5a47-4f6e-9c2b-3d4f5a6b7c8d
+                  wallet_uuid: 15100419-77df-4478-a84e-f14ca3f4f3dc
+                  account_uuid: ddb3d090-c124-4bc8-80d0-1e5a53aecc3f
+                  beneficiary_uuid: 6c7d8e9f-0a1b-4c2d-8e3f-4a5b6c7d8e9f
+                  payout_method_uuid: 2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d
+                  external_id: e9f0a1b2-c3d4-4e5f-8a6b-7c8d9e0f1a2b
+                  transaction_type: BANK_DEBIT
+                  status: CREATED
+                  description: Rent payment
+                  amount: -120000
+                  currency: USD
+                  funds_source: {}
+                  refunded: false
+                  disputed: false
+                  created_at: '2025-04-12T14:08:55.402991Z'
+                  updated_at: '2025-04-12T14:08:55.415330Z'
                 validation:
                   result: ACCEPTED
     ledger-transaction-response-idempotency:
