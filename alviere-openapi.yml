@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.40'
+  version: '6.2.41'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -10676,6 +10676,9 @@ components:
         status_reason:
           type: string
           description: The reason why the payment method is in a particular status
+        bank_name:
+          type: string
+          description: The name of the bank that holds this account
         type:
           type: string
           description: The type of bank account
