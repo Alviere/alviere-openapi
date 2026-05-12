@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.2.42'
+  version: '6.2.43'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -12640,6 +12640,107 @@ components:
         email_address:
           type: string
           example: john.doe@alviere.com
+    stakeholder-information-update:
+      title: Stakeholder
+      type: object
+      description: This structure contains the updatable information of a stakeholder account. Only the properties present in the request body will be updated.
+      properties:
+        stakeholder_types:
+          type: array
+          description: The different types that apply to this stakeholder
+          enum:
+            - BENEFICIAL_OWNER
+            - OFFICER
+            - CONTROL_PERSON
+            - DIRECTOR
+            - ADMINISTRATOR
+          items:
+            type: string
+        officer_titles:
+          type: array
+          description: The titles that apply for type `OFFICER`
+          example: CEO
+          items:
+            type: string
+        percentage_ownership:
+          type: number
+          description: The percentage ownership in the company for type `BENEFICIAL_OWNER`
+          example: 25
+          format: float
+          minimum: 0
+          maximum: 100
+        first_name:
+          type: string
+          description: The first name
+          example: John
+          minLength: 1
+          maxLength: 40
+        middle_name:
+          type: string
+          description: The middle name
+          example: Smith
+          minLength: 1
+          maxLength: 40
+        last_name:
+          type: string
+          description: The last name
+          example: Doe
+          minLength: 1
+          maxLength: 40
+        date_of_birth:
+          type: string
+          description: The date of birth. Not required for `ADMINISTRATOR`
+          example: '1976-02-07'
+        email_address:
+          type: string
+          description: The stakeholder's email address
+          example: john.doe@example.com
+        phone_number:
+          type: string
+          description: The stakeholder's phone number in E.164 international standard
+          pattern: ^\+[1-9]\d{1,14}$
+          example: '+12125551234'
+        citizenship_country:
+          type: string
+          description: Country of citizenship (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        residency_country:
+          type: string
+          description: Country of residency (ISO 3166-1 alpha-3)
+          pattern: ^[A-Z]{3}$
+          example: USA
+        is_us_person:
+          type: boolean
+          description: Indicates whether the stakeholder is a U.S. person for tax reporting purposes (FATCA)
+          example: true
+        id_information:
+          type: object
+          description: ID information for the stakeholder
+          properties:
+            id_type:
+              type: string
+              enum:
+                - SSN
+                - ITIN
+                - FOREIGN_TAX_ID
+                - PASSPORT
+                - ALIEN_ID_CARD
+                - NATIONAL_ID
+                - DRIVERS_LICENSE
+              description: The type of ID document
+            id_number:
+              type: string
+              description: The ID number
+              example: '123456789'
+            country_of_issuance:
+              type: string
+              description: Country that issued the ID (ISO 3166-1 alpha-3). Required for non-U.S. IDs (FOREIGN_TAX_ID, PASSPORT, ALIEN_ID_CARD, NATIONAL_ID, DRIVERS_LICENSE)
+              pattern: ^[A-Z]{3}$
+              example: USA
+          required:
+            - id_type
+            - id_number
     account-information-update:
       oneOf:
         - title: Consumer
@@ -12659,7 +12760,7 @@ components:
             - stakeholder_information
           properties:
             stakeholder_information:
-              $ref: '#/components/schemas/stakeholder-information-request-standalone'
+              $ref: '#/components/schemas/stakeholder-information-update'
         - title: Cardholder
           required:
             - cardholder_information
