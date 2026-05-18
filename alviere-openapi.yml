@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.5.2'
+  version: '6.5.3'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -37,6 +37,44 @@ tags:
   - name: Treasury management
   - name: Service fees
   - name: Rewards and Incentives
+  - name: Webhooks
+    description: |
+      Alviere POSTs webhook events to a partner-supplied URL whenever something
+      meaningful happens on the account — KYC state changes, transactions settle,
+      cards are issued, and so on. Configure delivery via the subscription
+      endpoints; one subscription per event type.
+
+      ### Delivery
+
+      Each event is delivered as a JSON `POST` to your configured URL. Return
+      any `2xx` within **10 seconds** to acknowledge receipt. Anything else —
+      a non-`2xx` response, a timeout, or a network error — triggers a retry
+      with the same `event_uuid` and an incremented `event_retry` counter.
+
+      ### Headers
+
+      | Header | Description |
+      | --- | --- |
+      | `Alviere-Webhook-id` | UUID for this delivery attempt. Stable across retries — use it as your idempotency key. |
+      | `Alviere-Webhook-Timestamp` | RFC 3339 timestamp of when the event was dispatched. |
+      | `Alviere-Signature` | Hex-encoded HMAC-SHA256 signature. Present when the subscription is configured with an HMAC secret. |
+      | `Alviere-Auth` | Static API key. Present when the subscription is configured with API key auth instead of HMAC. |
+
+      ### Signature verification
+
+      Build the signing string as `{webhook_id}.{webhook_timestamp}.{compact_body}`,
+      where `compact_body` is the raw request body with all insignificant JSON
+      whitespace removed. Compute `HMAC-SHA256(secret, signing_string)`,
+      hex-encode it, and compare against `Alviere-Signature` using a
+      constant-time comparison. Reject the request if the signatures don't
+      match or the timestamp is more than a few minutes old.
+
+      ### Envelope
+
+      Every event body shares the same envelope — `event_uuid`, `event_type`,
+      `event_version`, `event_date`, `event_retry`, `business_account_uuid`,
+      `program_uuid` — plus an `entity` field whose shape depends on the
+      event type. See each event below.
 paths:
   /auth/realms/customers/protocol/openid-connect/token:
     servers:
@@ -9892,6 +9930,299 @@ paths:
       tags:
         - Global payments
     parameters: []
+x-webhooks:
+  account:
+    post:
+      tags:
+        - Webhooks
+      summary: account
+      operationId: webhook-account
+      description: |
+        Fired when an account is created or its state changes (KYC review,
+        status update, information update). `event_type` is `ACCOUNT`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/account-response'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  activity:
+    post:
+      tags:
+        - Webhooks
+      summary: activity
+      operationId: webhook-activity
+      description: |
+        Fired for cardholder activity events — card created, card replaced,
+        authorization denied, payroll deposit switch, and other notable
+        side-effects that don't fit a transaction. `event_type` is `ACTIVITY`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/activity-response'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  bank_pm:
+    post:
+      tags:
+        - Webhooks
+      summary: bank_pm
+      operationId: webhook-bank-pm
+      description: |
+        Fired when a bank account payment method's state changes (verification
+        completed, micro-deposits posted, account disabled). `event_type` is
+        `BANK_PM`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/bank-account-pm-response'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  beneficiary:
+    post:
+      tags:
+        - Webhooks
+      summary: beneficiary
+      operationId: webhook-beneficiary
+      description: |
+        Fired when a beneficiary is created, updated, or its status changes.
+        `event_type` is `BENEFICIARY`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/beneficiary-response'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  card_pm:
+    post:
+      tags:
+        - Webhooks
+      summary: card_pm
+      operationId: webhook-card-pm
+      description: |
+        Fired when a saved card payment method changes state — added, updated,
+        or removed. `event_type` is `CARD_PM`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/card-pm-response'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  check:
+    post:
+      tags:
+        - Webhooks
+      summary: check
+      operationId: webhook-check
+      description: |
+        Fired when a check deposit changes state — submitted, accepted,
+        rejected, or returned. `event_type` is `CHECK`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/check'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  dossier:
+    post:
+      tags:
+        - Webhooks
+      summary: dossier
+      operationId: webhook-dossier
+      description: |
+        Fired when a KYC/KYB dossier changes status (submitted, approved,
+        rejected, manual review). `event_type` is `DOSSIER`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/dossier-response'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  issued_card:
+    post:
+      tags:
+        - Webhooks
+      summary: issued_card
+      operationId: webhook-issued-card
+      description: |
+        Fired when an issued card changes state — created, activated, frozen,
+        replaced, closed. `event_type` is `ISSUED_CARD`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/issued-card-response'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  payment_instrument:
+    post:
+      tags:
+        - Webhooks
+      summary: payment_instrument
+      operationId: webhook-payment-instrument
+      description: |
+        Fired when a payment instrument changes state — created, updated, or
+        removed. `event_type` is `PAYMENT_INSTRUMENT`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/payment-instrument-response'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
+  wallet_transaction:
+    post:
+      tags:
+        - Webhooks
+      summary: wallet_transaction
+      operationId: webhook-wallet-transaction
+      description: |
+        Fired when a wallet transaction changes state — authorized, settled,
+        declined, reversed, refunded. `event_type` is `WALLET_TRANSACTION`.
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    entity:
+                      $ref: '#/components/schemas/transaction'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
 components:
   schemas:
     beneficiary_address:
@@ -18707,7 +19038,6 @@ components:
         status:
           type: string
           enum:
-            - CREATED
             - ACTIVE
             - FAILED
             - EXPIRED
@@ -18788,6 +19118,60 @@ components:
           $ref: '#/components/schemas/card-3ds-options'
         metadata:
           type: object
+    webhook-envelope:
+      type: object
+      description: Shared envelope present on every Alviere webhook delivery. Each event additionally carries an `entity` field whose shape depends on the `event_type`.
+      required:
+        - event_uuid
+        - event_type
+        - event_version
+        - event_date
+        - event_retry
+        - business_account_uuid
+        - program_uuid
+      properties:
+        event_uuid:
+          type: string
+          format: uuid
+          description: Unique identifier for this event. Stable across retries — use as your idempotency key.
+          example: 8944355f-342d-42df-9ec9-5b12e619d504
+        event_type:
+          type: string
+          description: The subscription type that produced this event.
+          enum:
+            - ACCOUNT
+            - ACTIVITY
+            - BANK_PM
+            - BENEFICIARY
+            - CARD_PM
+            - CHECK
+            - DOSSIER
+            - ISSUED_CARD
+            - PAYMENT_INSTRUMENT
+            - WALLET_TRANSACTION
+          example: ACCOUNT
+        event_version:
+          type: string
+          description: Version of the event payload contract.
+          example: '2021-11-18.1'
+        event_date:
+          type: string
+          format: date-time
+          description: When the event was generated, in UTC.
+          example: '2026-05-18T14:32:11Z'
+        event_retry:
+          type: integer
+          minimum: 0
+          description: Retry counter for this delivery attempt. `0` on the first attempt; increments on each subsequent retry.
+          example: 0
+        business_account_uuid:
+          type: string
+          format: uuid
+          description: The business account that owns the resource emitting this event.
+        program_uuid:
+          type: string
+          format: uuid
+          description: The program associated with the event.
 
   parameters:
     Version:
@@ -19225,6 +19609,32 @@ components:
           - CASH_LOADING
           - WALLET_TRANSFER
       description: Filter limits by transaction type
+    webhook-id-header:
+      name: Alviere-Webhook-id
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for this delivery attempt. Stable across retries — use as your idempotency key.
+    webhook-timestamp-header:
+      name: Alviere-Webhook-Timestamp
+      in: header
+      required: true
+      schema:
+        type: string
+        format: date-time
+      description: RFC 3339 timestamp of when the event was dispatched, in UTC.
+    webhook-signature-header:
+      name: Alviere-Signature
+      in: header
+      required: false
+      schema:
+        type: string
+      description: |
+        Hex-encoded HMAC-SHA256 signature of `{webhook_id}.{webhook_timestamp}.{compact_body}`
+        computed with your subscription's HMAC secret. Present when the
+        subscription is configured with HMAC auth.
   responses:
     400-Error:
       description: 'Bad Request '
