@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.4.0'
+  version: '6.5.0'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -5629,6 +5629,256 @@ paths:
               schema:
                 $ref: '#/components/schemas/card-transaction-response'
       operationId: cards-push
+      tags:
+        - Card Payments
+  /v3/cards:
+    post:
+      summary: Save a card
+      description: |
+        Save a card payment method to an account so it can be charged or credited later.
+
+        The returned `payment_method_uuid` is the permanent identifier for this card — pass it to
+        `/v3/cards/debit`, `/v3/cards/capture`, `/v3/cards/reverse`, or `/v3/cards/push`.
+
+        **Ownership:**
+        - If the bearer token is scoped to a single account (e.g. SDK session tokens), `account_uuid` is optional and derived from the token.
+        - If the bearer token can act on multiple accounts (e.g. partner-level tokens), `account_uuid` is required.
+
+        **Validation:**
+        - Saving a duplicate card on the same account returns the existing card with `409 Conflict` on the field `external_id`.
+        - AVS and CVV checks run at save time; the response includes `validation.avs_result` and `validation.cvv_result`.
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/card-save-request'
+            examples:
+              save-card:
+                summary: Save a card for future charges
+                value:
+                  external_id: pm_consumer_88102_visa
+                  card:
+                    pan: "4111111111111111"
+                    exp_month: "12"
+                    exp_year: "27"
+                    security_code: "123"
+                    name_on_card: Jane Doe
+                    billing_address:
+                      line_1: 123 Main St
+                      city: Brooklyn
+                      state: NY
+                      country: USA
+                      postal_code: "11201"
+              save-with-account:
+                summary: Save on a specific account (partner-level token)
+                value:
+                  account_uuid: 323e4567-e89b-12d3-a456-426614174000
+                  external_id: pm_consumer_88102_visa
+                  card:
+                    pan: "4111111111111111"
+                    exp_month: "12"
+                    exp_year: "27"
+                    security_code: "123"
+                    name_on_card: Jane Doe
+                    billing_address:
+                      line_1: 123 Main St
+                      city: Brooklyn
+                      state: NY
+                      country: USA
+                      postal_code: "11201"
+      responses:
+        '201':
+          description: The card was saved.
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card-saved-response'
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '409':
+          description: Conflict on `external_id` — returns the existing saved card.
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card-saved-response'
+      operationId: cards-save
+      tags:
+        - Card Payments
+    get:
+      summary: List saved cards
+      description: |
+        List saved cards for an account.
+
+        - If the bearer token is scoped to a single account, `account_uuid` is optional and derived from the token.
+        - If the bearer token can act on multiple accounts, `account_uuid` is required.
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - in: query
+          name: account_uuid
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: |
+            The account whose saved cards to list. Optional — derived from the bearer token if absent.
+            Required for partner-level tokens that act on multiple accounts.
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - cards
+                properties:
+                  cards:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/card-saved'
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+      operationId: cards-list
+      tags:
+        - Card Payments
+  /v3/cards/{payment_method_uuid}:
+    get:
+      summary: Get a saved card
+      description: Fetch a saved card by `payment_method_uuid`.
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/payment_method_uuid'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card-saved-response'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+      operationId: cards-get
+      tags:
+        - Card Payments
+    patch:
+      summary: Update a saved card
+      description: |
+        Update mutable fields on a saved card — billing address, expiry, name on card, 3DS preferences, metadata.
+        PAN cannot be changed; to update the card number, save a new card and delete the old one.
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/payment_method_uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/card-update-request'
+            examples:
+              update-expiry:
+                summary: Update card expiry
+                value:
+                  exp_month: "12"
+                  exp_year: "28"
+              update-billing-address:
+                summary: Update billing address
+                value:
+                  billing_address:
+                    line_1: 456 Oak Ave
+                    city: Brooklyn
+                    state: NY
+                    country: USA
+                    postal_code: "11215"
+      responses:
+        '200':
+          description: The saved card was updated.
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card-saved-response'
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+      operationId: cards-update
+      tags:
+        - Card Payments
+    delete:
+      summary: Delete a saved card
+      description: |
+        Forget a saved card. The `payment_method_uuid` can no longer be used in `/v3/cards/debit`,
+        `/v3/cards/capture`, `/v3/cards/reverse`, or `/v3/cards/push`. Historical transactions remain
+        accessible via `/v3/transactions/{transaction_uuid}`.
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/payment_method_uuid'
+      responses:
+        '204':
+          description: The saved card was deleted.
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+      operationId: cards-delete
       tags:
         - Card Payments
   /v3/transactions:
@@ -18365,6 +18615,196 @@ components:
           description: Custom key/value pairs to associate with the transaction
           example:
             payee_id: driver_88102
+
+    card-save-request:
+      title: Card save request
+      type: object
+      description: |
+        Save a card payment method to an account. The card details are tokenized and stored;
+        the returned `payment_method_uuid` is used on subsequent `/v3/cards/*` calls.
+      required:
+        - card
+      properties:
+        account_uuid:
+          type: string
+          format: uuid
+          description: |
+            The account that owns this saved card. Optional — if omitted, derived from the bearer
+            token's scope. Required only when the bearer token is not scoped to a single account
+            (e.g. partner-level tokens acting across multiple consumers).
+          example: 323e4567-e89b-12d3-a456-426614174000
+        external_id:
+          type: string
+          description: |
+            Your unique identifier for this saved card. Used to prevent accidental duplicates —
+            a second save with the same `external_id` returns the existing card (409).
+          example: pm_consumer_88102_visa
+        card:
+          $ref: '#/components/schemas/card-inline-details'
+        metadata:
+          type: object
+          description: Custom key/value pairs to associate with this saved card
+          example:
+            wallet_provider: customer_app
+
+    card-saved:
+      title: Saved card
+      type: object
+      description: A card payment method saved to an account.
+      required:
+        - payment_method_uuid
+        - account_uuid
+        - brand
+        - type
+        - last4
+        - status
+        - created_at
+        - updated_at
+      properties:
+        payment_method_uuid:
+          type: string
+          format: uuid
+          description: Permanent identifier for this saved card. Use on `/v3/cards/debit`, `/v3/cards/capture`, `/v3/cards/reverse`, `/v3/cards/push`.
+          example: 550e8400-e29b-41d4-a716-446655440000
+        account_uuid:
+          type: string
+          format: uuid
+          description: The account that owns this saved card.
+          example: 323e4567-e89b-12d3-a456-426614174000
+        external_id:
+          type: string
+          description: Your unique identifier for this saved card, supplied at save time.
+          example: pm_consumer_88102_visa
+        brand:
+          type: string
+          enum:
+            - VISA
+            - MASTERCARD
+            - AMEX
+            - DINERS
+            - DISCOVER
+            - JCB
+            - UNIONPAY
+            - UNKNOWN
+          description: Card network.
+        type:
+          type: string
+          enum:
+            - CREDIT
+            - DEBIT
+            - PREPAID
+            - UNKNOWN
+          description: Card product type.
+        bin:
+          type: string
+          pattern: ^[0-9]{6,8}$
+          description: First 6–8 digits of the card number (Bank Identification Number).
+          example: "411111"
+        last4:
+          type: string
+          pattern: ^[0-9]{4}$
+          description: Last 4 digits of the card number.
+          example: "1111"
+        exp_month:
+          type: string
+          pattern: ^(0[1-9]|1[012])$
+          example: "12"
+        exp_year:
+          type: string
+          pattern: ^[0-9]{2}$
+          example: "27"
+        name_on_card:
+          type: string
+          example: Jane Doe
+        country:
+          type: string
+          pattern: ^[A-Z]{3}$
+          description: Three-letter ISO 3166-1 alpha-3 country of issuance.
+          example: USA
+        status:
+          type: string
+          enum:
+            - CREATED
+            - ACTIVE
+            - FAILED
+            - EXPIRED
+            - REJECTED
+            - DELETED
+          description: Current lifecycle status of the saved card.
+        flags:
+          type: object
+          description: Transaction types this card supports.
+          required:
+            - debit
+            - push_to_card
+          properties:
+            debit:
+              type: boolean
+              description: Card accepts pull (debit) transactions.
+            push_to_card:
+              type: boolean
+              description: Card accepts push (OCT) transactions.
+        billing_address:
+          $ref: '#/components/schemas/card-billing-address'
+        3ds_options:
+          $ref: '#/components/schemas/card-3ds-options'
+        validation:
+          type: object
+          description: |
+            Validation results from the save attempt. Populated on creation; subsequent reads may omit.
+          properties:
+            avs_result:
+              type: string
+              description: AVS (Address Verification System) response code.
+              example: "Y"
+            cvv_result:
+              type: string
+              description: CVV check response code.
+              example: M
+        metadata:
+          type: object
+          description: Custom key/value pairs associated with this saved card.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    card-saved-response:
+      title: Saved card response
+      type: object
+      description: Response wrapping a single saved card.
+      required:
+        - card
+      properties:
+        card:
+          $ref: '#/components/schemas/card-saved'
+
+    card-update-request:
+      title: Card update request
+      type: object
+      description: |
+        Update mutable fields on a saved card. PAN cannot be changed — to update the card number,
+        save a new card and delete the old one.
+      properties:
+        exp_month:
+          type: string
+          pattern: ^(0[1-9]|1[012])$
+          example: "12"
+        exp_year:
+          type: string
+          pattern: ^[0-9]{2}$
+          example: "28"
+        name_on_card:
+          type: string
+          example: Jane Doe
+        billing_address:
+          $ref: '#/components/schemas/card-billing-address'
+        3ds_options:
+          $ref: '#/components/schemas/card-3ds-options'
+        metadata:
+          type: object
 
   parameters:
     Version:
