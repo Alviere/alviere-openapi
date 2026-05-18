@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.3.0'
+  version: '6.4.0'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -4649,6 +4649,8 @@ paths:
   /payments/payment-instruments:
     post:
       summary: Create Payment Instrument
+      deprecated: true
+      x-internal: true
       description: |
         Creates a payment instrument
       parameters:
@@ -4768,6 +4770,8 @@ paths:
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/payment_instrument_uuid'
       summary: Get Payment Instrument
+      deprecated: true
+      x-internal: true
       description: Returns Payment Instrument details
       responses:
         '200':
@@ -4803,6 +4807,8 @@ paths:
         - Payment processing
     delete:
       summary: Delete Payment Instrument
+      deprecated: true
+      x-internal: true
       description: |
         Deletes a Payment Instrument from the system
       parameters:
@@ -4839,6 +4845,8 @@ paths:
   /payments/debit:
     post:
       summary: Debit funds
+      deprecated: true
+      x-internal: true
       description: Debit funds from a Payment Instrument
       parameters:
         - $ref: '#/components/parameters/Authorization'
@@ -4966,6 +4974,8 @@ paths:
   /payments/refund:
     post:
       summary: Refund payment transaction
+      deprecated: true
+      x-internal: true
       description: Refunds a payment transaction
       parameters:
         - $ref: '#/components/parameters/Authorization'
@@ -5075,13 +5085,13 @@ paths:
       description: |
         Accept a payment from a customer's card. Funds settle into a wallet on your platform.
 
-        **Charge a saved card or charge a card directly:** Provide exactly one of:
+        **Charge a saved card or charge a card directly:** In `source`, provide exactly one of:
         - `payment_method_uuid` — charge a card the customer has previously saved on your platform.
         - `card` — charge a card from inline details (typical for guest checkout or one-time payments). Sending raw card data requires PCI compliance on your side.
 
         **Authorize and capture, or authorize now and capture later:**
         - `auth_type: AUTHCAP` — authorize and capture in one step. The card is charged immediately and funds are captured. Use this for digital goods or any flow where you fulfill on the spot.
-        - `auth_type: AUTH` — authorize now, capture later. Funds are held on the card but not captured. The transaction returns `status: COMPLETED` with `captured_at` absent. Capture later via `POST /v3/transactions/{transaction_uuid}/capture`.
+        - `auth_type: AUTH` — authorize now, capture later. Funds are held on the card but not captured. The transaction returns `status: COMPLETED` with `captured_at` absent. Capture later via `POST /v3/cards/capture`.
 
         **3-D Secure verification:**
         If 3-D Secure verification is required — either because you requested it (`3ds_preference: ENABLED` on the card) or because the end consumer's bank requires it — the response returns `status: PENDING`, `status_reason: 3DS_AUTH_REQUIRED`, and a `3ds_challenge` object with the redirect URL.
@@ -5106,8 +5116,10 @@ paths:
                   external_id: order_1000456
                   amount: "25.99"
                   currency: USD
-                  wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
-                  payment_method_uuid: 550e8400-e29b-41d4-a716-446655440000
+                  source:
+                    payment_method_uuid: 550e8400-e29b-41d4-a716-446655440000
+                  destination:
+                    wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
                   auth_type: AUTHCAP
                   channel: ECOM
                   merchant_details:
@@ -5124,21 +5136,23 @@ paths:
                   external_id: order_1000457
                   amount: "25.99"
                   currency: USD
-                  wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
-                  card:
-                    pan: "4111111111111111"
-                    exp_month: "12"
-                    exp_year: "27"
-                    security_code: "123"
-                    name_on_card: Jane Doe
-                    billing_address:
-                      line_1: 123 Main St
-                      city: Brooklyn
-                      state: NY
-                      country: USA
-                      postal_code: "11201"
-                    3ds_options:
-                      3ds_preference: ENABLED
+                  source:
+                    card:
+                      pan: "4111111111111111"
+                      exp_month: "12"
+                      exp_year: "27"
+                      security_code: "123"
+                      name_on_card: Jane Doe
+                      billing_address:
+                        line_1: 123 Main St
+                        city: Brooklyn
+                        state: NY
+                        country: USA
+                        postal_code: "11201"
+                      3ds_options:
+                        3ds_preference: ENABLED
+                  destination:
+                    wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
                   auth_type: AUTHCAP
                   channel: ECOM
                   return_url: https://merchant.com/checkout/return?order=1000457
@@ -5149,8 +5163,10 @@ paths:
                   external_id: order_1000458
                   amount: "150.00"
                   currency: USD
-                  wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
-                  payment_method_uuid: 550e8400-e29b-41d4-a716-446655440000
+                  source:
+                    payment_method_uuid: 550e8400-e29b-41d4-a716-446655440000
+                  destination:
+                    wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
                   auth_type: AUTH
                   channel: ECOM
               recurring-subscription:
@@ -5159,8 +5175,10 @@ paths:
                   external_id: sub_1000459
                   amount: "9.99"
                   currency: USD
-                  wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
-                  payment_method_uuid: 550e8400-e29b-41d4-a716-446655440000
+                  source:
+                    payment_method_uuid: 550e8400-e29b-41d4-a716-446655440000
+                  destination:
+                    wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
                   auth_type: AUTHCAP
                   recurring:
                     initiator: MERCHANT
@@ -5318,6 +5336,301 @@ paths:
       operationId: cards-debit
       tags:
         - Card Payments
+  /v3/cards/capture:
+    post:
+      summary: Capture card transaction
+      description: |
+        Capture a previously authorized (AUTH-only) card transaction.
+
+        Only valid when the parent transaction's `type_details.card_payment_details.auth_type` is `AUTH` and `captured_at` is not yet set.
+        Omit `amount` to capture the full authorized amount; pass `amount` to capture a smaller amount (partial capture) — the unused authorization is released back to the cardholder.
+
+        On success, the transaction's `type_details.card_payment_details.captured_at` is populated.
+        The transaction's `status` remains `COMPLETED` — no new transaction is created.
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/card-capture-request'
+            examples:
+              capture-full:
+                summary: Capture the full authorized amount
+                value:
+                  transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+              capture-partial:
+                summary: Partial capture (less than the authorized amount)
+                value:
+                  transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+                  amount: "100.00"
+              capture-with-metadata:
+                summary: Capture with an annotation
+                value:
+                  transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+                  description: Captured on fulfillment
+                  metadata:
+                    fulfillment_id: ful_88102
+      responses:
+        '201':
+          description: The transaction was captured successfully.
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card-transaction-response'
+              examples:
+                captured:
+                  summary: AUTH-only transaction now captured
+                  value:
+                    transaction:
+                      transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+                      external_id: order_1000458
+                      type: PAYMENT
+                      status: COMPLETED
+                      amount: "150.00"
+                      currency: USD
+                      wallet_uuid: "223e4567-e89b-12d3-a456-426614174000"
+                      account_uuid: "323e4567-e89b-12d3-a456-426614174000"
+                      funds_source:
+                        payment_method_uuid: "550e8400-e29b-41d4-a716-446655440000"
+                      type_details:
+                        card_payment_details:
+                          brand: VISA
+                          bin: "411111"
+                          last4: "1111"
+                          exp_month: 12
+                          exp_year: 2027
+                          auth_type: AUTH
+                          authorization_code: TX4271
+                          captured_at: "2026-05-15T16:10:22.000000000Z"
+                          avs_result: M
+                          cvv_result: M
+                      created_at: "2026-05-15T15:04:05.999999999Z"
+                      updated_at: "2026-05-15T16:10:22.000000000Z"
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+        '409':
+          description: Transaction is not in a state that allows capture
+      operationId: cards-capture
+      tags:
+        - Card Payments
+  /v3/cards/reverse:
+    post:
+      summary: Reverse card transaction
+      description: |
+        Reverse a previously created card transaction. The endpoint dispatches based on whether the parent
+        transaction has been captured — surfaced via `type_details.card_payment_details.captured_at`.
+
+        **Dual response:**
+        - **HTTP 201** with a new REFUND transaction — when the parent's `captured_at` is set. The new transaction
+          has `type: REFUND`, negative `amount`, and `parent_transaction_uuid` linking back to the original.
+        - **HTTP 204** with no body — when the parent's `captured_at` is absent (AUTH-only, not yet captured).
+          The authorization is voided in place; no new transaction is created. Refetch the parent via
+          `GET /v3/transactions/{transaction_uuid}` to see status flipped to `VOIDED`.
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/card-reverse-request'
+            examples:
+              reverse-full:
+                summary: Full reversal of a captured transaction
+                value:
+                  transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+                  external_id: refund_order_1000456
+                  amount: "25.99"
+                  refund_reason: CUSTOMER_REQUEST
+                  description: Refund for cancelled order
+              reverse-partial:
+                summary: Partial reversal
+                value:
+                  transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+                  external_id: refund_partial_1000456
+                  amount: "10.00"
+                  refund_reason: CUSTOMER_REQUEST
+              void-auth:
+                summary: Void an AUTH-only transaction (parent has no captured_at)
+                value:
+                  transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+                  external_id: void_order_1000458
+                  amount: "150.00"
+                  refund_reason: CUSTOMER_REQUEST
+      responses:
+        '201':
+          description: |
+            A new REFUND transaction was created. Returned when the parent was already captured/settled.
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card-transaction-response'
+              examples:
+                refund-created:
+                  summary: Refund transaction created
+                  value:
+                    transaction:
+                      transaction_uuid: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                      external_id: refund_order_1000456
+                      type: REFUND
+                      status: COMPLETED
+                      description: Refund for cancelled order
+                      amount: "-25.99"
+                      currency: USD
+                      parent_transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+                      wallet_uuid: "223e4567-e89b-12d3-a456-426614174000"
+                      account_uuid: "323e4567-e89b-12d3-a456-426614174000"
+                      funds_source:
+                        payment_method_uuid: "550e8400-e29b-41d4-a716-446655440000"
+                      type_details:
+                        card_payment_details:
+                          brand: VISA
+                          last4: "1111"
+                          authorization_code: RF8821
+                      refund_reason: CUSTOMER_REQUEST
+                      created_at: "2026-05-16T10:22:00.000000000Z"
+                      updated_at: "2026-05-16T10:22:00.000000000Z"
+        '204':
+          description: |
+            The parent transaction was AUTH-only with `captured_at` not yet set. The authorization was voided in place;
+            no new transaction was created. Refetch the parent to see `status: VOIDED`.
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+        '409':
+          description: Transaction is not in a state that allows reversal
+      operationId: cards-reverse
+      tags:
+        - Card Payments
+  /v3/cards/push:
+    post:
+      summary: Push funds to a card
+      description: |
+        Push funds from a wallet to a card payment method — an Original Credit Transaction (OCT).
+        Use for marketplace payouts, disbursements, P2P transfers, and instant payouts.
+
+        The destination must be a previously saved card payment method. Raw card details are not accepted on this endpoint.
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/card-push-request'
+            examples:
+              marketplace-payout:
+                summary: Marketplace payout (funds disbursement)
+                value:
+                  external_id: payout_1000600
+                  amount: "250.00"
+                  currency: USD
+                  source:
+                    wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
+                  destination:
+                    payment_method_uuid: 550e8400-e29b-41d4-a716-446655440000
+                  purpose: FUNDS_DISBURSEMENT
+                  description: Weekly payout
+                  metadata:
+                    payee_id: driver_88102
+              p2p-transfer:
+                summary: Person-to-person transfer
+                value:
+                  external_id: p2p_1000601
+                  amount: "50.00"
+                  currency: USD
+                  source:
+                    wallet_uuid: 223e4567-e89b-12d3-a456-426614174000
+                  destination:
+                    payment_method_uuid: 550e8400-e29b-41d4-a716-446655440000
+                  purpose: P2P
+      responses:
+        '201':
+          description: The push transaction was created.
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card-transaction-response'
+              examples:
+                push-completed:
+                  summary: Push completed
+                  value:
+                    transaction:
+                      transaction_uuid: 7a1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
+                      external_id: payout_1000600
+                      type: CARD_CREDIT
+                      status: COMPLETED
+                      description: Weekly payout
+                      amount: "250.00"
+                      currency: USD
+                      wallet_uuid: "223e4567-e89b-12d3-a456-426614174000"
+                      account_uuid: "323e4567-e89b-12d3-a456-426614174000"
+                      funds_source:
+                        payment_method_uuid: "550e8400-e29b-41d4-a716-446655440000"
+                      type_details:
+                        card_payment_details:
+                          brand: VISA
+                          bin: "411111"
+                          last4: "1111"
+                          authorization_code: OCT9912
+                      metadata:
+                        payee_id: driver_88102
+                      created_at: "2026-05-18T10:00:00.000000000Z"
+                      updated_at: "2026-05-18T10:00:00.000000000Z"
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+        '409':
+          description: Conflict on `external_id` — returns the existing transaction
+          headers:
+            Alv-Request-Id:
+              description: Alviere's internal unique identifier for the request.
+              example: 8944355f-342d-42df-9ec9-5b12e619d504
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card-transaction-response'
+      operationId: cards-push
+      tags:
+        - Card Payments
   /v3/transactions:
     get:
       summary: List transactions
@@ -5421,188 +5734,6 @@ paths:
         '404':
           $ref: '#/components/responses/404-Error'
       operationId: v3-transactions-get
-      tags:
-        - Transactions v3
-  /v3/transactions/{transaction_uuid}/capture:
-    post:
-      summary: Capture transaction
-      description: |
-        Capture a previously authorized (AUTH-only) card transaction.
-
-        Only valid when the parent transaction's `type_details.card_payment_details.auth_type` is `AUTH` and `captured_at` is not yet set.
-        Captures the full authorized amount; partial capture is not supported in v1 of this endpoint.
-
-        On success, the transaction's `type_details.card_payment_details.captured_at` is populated.
-        The transaction's `status` remains `COMPLETED` — no new transaction is created.
-      parameters:
-        - $ref: '#/components/parameters/Authorization'
-        - $ref: '#/components/parameters/transaction_uuid'
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/transaction-capture-request'
-            examples:
-              capture-full:
-                summary: Capture the full authorized amount
-                value: {}
-              capture-with-metadata:
-                summary: Capture with an annotation
-                value:
-                  description: Captured on fulfillment
-                  metadata:
-                    fulfillment_id: ful_88102
-      responses:
-        '201':
-          description: The transaction was captured successfully.
-          headers:
-            Alv-Request-Id:
-              description: Alviere's internal unique identifier for the request.
-              example: 8944355f-342d-42df-9ec9-5b12e619d504
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/card-transaction-response'
-              examples:
-                captured:
-                  summary: AUTH-only transaction now captured
-                  value:
-                    transaction:
-                      transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
-                      external_id: order_1000458
-                      type: PAYMENT
-                      status: COMPLETED
-                      amount: "150.00"
-                      currency: USD
-                      wallet_uuid: "223e4567-e89b-12d3-a456-426614174000"
-                      account_uuid: "323e4567-e89b-12d3-a456-426614174000"
-                      funds_source:
-                        payment_method_uuid: "550e8400-e29b-41d4-a716-446655440000"
-                      type_details:
-                        card_payment_details:
-                          brand: VISA
-                          bin: "411111"
-                          last4: "1111"
-                          exp_month: 12
-                          exp_year: 2027
-                          auth_type: AUTH
-                          authorization_code: TX4271
-                          captured_at: "2026-05-15T16:10:22.000000000Z"
-                          avs_result: M
-                          cvv_result: M
-                      created_at: "2026-05-15T15:04:05.999999999Z"
-                      updated_at: "2026-05-15T16:10:22.000000000Z"
-        '400':
-          $ref: '#/components/responses/400-Error'
-        '401':
-          $ref: '#/components/responses/401-Error'
-        '403':
-          $ref: '#/components/responses/403-Error'
-        '404':
-          $ref: '#/components/responses/404-Error'
-        '409':
-          description: Transaction is not in a state that allows capture
-      operationId: v3-transactions-capture
-      tags:
-        - Transactions v3
-  /v3/transactions/{transaction_uuid}/refund:
-    post:
-      summary: Refund transaction
-      description: |
-        Refund (or void) a previously created transaction. The endpoint dispatches based on whether the parent
-        transaction has been captured — surfaced via `type_details.card_payment_details.captured_at`.
-
-        **Dual response:**
-        - **HTTP 201** with a new REFUND transaction — when the parent's `captured_at` is set. The new transaction
-          has `type: REFUND`, negative `amount`, and `parent_transaction_uuid` linking back to the original.
-        - **HTTP 204** with no body — when the parent's `captured_at` is absent (AUTH-only, not yet captured).
-          The authorization is voided in place; no new transaction is created. Refetch the parent via
-          `GET /v3/transactions/{transaction_uuid}` to see status flipped to `VOIDED`.
-      parameters:
-        - $ref: '#/components/parameters/Authorization'
-        - $ref: '#/components/parameters/transaction_uuid'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/transaction-refund-request'
-            examples:
-              refund-full:
-                summary: Full refund of a captured transaction
-                value:
-                  external_id: refund_order_1000456
-                  amount: "25.99"
-                  refund_reason: CUSTOMER_REQUEST
-                  description: Refund for cancelled order
-              refund-partial:
-                summary: Partial refund
-                value:
-                  external_id: refund_partial_1000456
-                  amount: "10.00"
-                  refund_reason: CUSTOMER_REQUEST
-              void-auth:
-                summary: Void an AUTH-only transaction (parent has no captured_at)
-                value:
-                  external_id: void_order_1000458
-                  amount: "150.00"
-                  refund_reason: CUSTOMER_REQUEST
-      responses:
-        '201':
-          description: A new REFUND transaction was created. Returned when the parent was already captured/settled.
-          headers:
-            Alv-Request-Id:
-              description: Alviere's internal unique identifier for the request.
-              example: 8944355f-342d-42df-9ec9-5b12e619d504
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/card-transaction-response'
-              examples:
-                refund-created:
-                  summary: Refund transaction created
-                  value:
-                    transaction:
-                      transaction_uuid: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d
-                      external_id: refund_order_1000456
-                      type: REFUND
-                      status: COMPLETED
-                      description: Refund for cancelled order
-                      amount: "-25.99"
-                      currency: USD
-                      parent_transaction_uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa5
-                      wallet_uuid: "223e4567-e89b-12d3-a456-426614174000"
-                      account_uuid: "323e4567-e89b-12d3-a456-426614174000"
-                      funds_source:
-                        payment_method_uuid: "550e8400-e29b-41d4-a716-446655440000"
-                      type_details:
-                        card_payment_details:
-                          brand: VISA
-                          last4: "1111"
-                          authorization_code: RF8821
-                      refund_reason: CUSTOMER_REQUEST
-                      created_at: "2026-05-16T10:22:00.000000000Z"
-                      updated_at: "2026-05-16T10:22:00.000000000Z"
-        '204':
-          description: |
-            The parent transaction was AUTH-only with `captured_at` not yet set. The authorization was voided in place;
-            no new transaction was created. Refetch the parent to see `status: VOIDED`.
-        '400':
-          $ref: '#/components/responses/400-Error'
-        '401':
-          $ref: '#/components/responses/401-Error'
-        '403':
-          $ref: '#/components/responses/403-Error'
-        '404':
-          $ref: '#/components/responses/404-Error'
-        '409':
-          description: Transaction is not in a state that allows refund
-      operationId: v3-transactions-refund
       tags:
         - Transactions v3
   /accounts/{account_uuid}/issued-cards/non-reloadable:
@@ -17711,7 +17842,7 @@ components:
           description: |
             The authorization mode used.
             - `AUTHCAP` — authorize and capture in one message.
-            - `AUTH` — authorize only; capture later via `POST /v3/transactions/{transaction_uuid}/capture`.
+            - `AUTH` — authorize only; capture later via `POST /v3/cards/capture`.
         authorization_code:
           type: string
           description: Issuer authorization code
@@ -17721,7 +17852,7 @@ components:
           format: date-time
           description: |
             Timestamp at which the authorization was captured. Set automatically for `AUTHCAP` transactions.
-            For `AUTH` transactions this field is absent until `POST /v3/transactions/{transaction_uuid}/capture` is called.
+            For `AUTH` transactions this field is absent until `POST /v3/cards/capture` is called.
             Use the presence of this field to determine whether funds have been captured.
           example: "2026-05-15T15:04:05.999999999Z"
         channel:
@@ -17753,14 +17884,13 @@ components:
     card-debit-request:
       title: Card debit request
       type: object
-      description: |
-        Request body for accepting a card payment.
-        Provide exactly one of `payment_method_uuid` (saved card) or `card` (inline card details).
+      description: Request body for accepting a card payment.
       required:
         - external_id
         - amount
         - currency
-        - wallet_uuid
+        - source
+        - destination
         - auth_type
       properties:
         external_id:
@@ -17776,17 +17906,41 @@ components:
           type: string
           pattern: ^[A-Z]{3}$
           example: USD
-        wallet_uuid:
-          type: string
-          format: uuid
-          example: 223e4567-e89b-12d3-a456-426614174000
-        payment_method_uuid:
-          type: string
-          format: uuid
-          description: UUID of a previously saved card payment method. Mutually exclusive with `card`.
-          example: 550e8400-e29b-41d4-a716-446655440000
-        card:
-          $ref: '#/components/schemas/card-inline-details'
+        source:
+          type: object
+          description: |
+            The source of funds for the payment. Provide exactly one of:
+            - `payment_method_uuid` — charge a card the customer has previously saved on your platform.
+            - `card` — charge a card from inline details (typical for guest checkout or one-time payments). Sending raw card data requires PCI compliance on your side.
+          oneOf:
+            - title: Saved card
+              type: object
+              required:
+                - payment_method_uuid
+              properties:
+                payment_method_uuid:
+                  type: string
+                  format: uuid
+                  description: UUID of a previously saved card payment method.
+                  example: 550e8400-e29b-41d4-a716-446655440000
+            - title: Inline card details
+              type: object
+              required:
+                - card
+              properties:
+                card:
+                  $ref: '#/components/schemas/card-inline-details'
+        destination:
+          type: object
+          description: The destination for the payment funds
+          required:
+            - wallet_uuid
+          properties:
+            wallet_uuid:
+              type: string
+              format: uuid
+              description: The UUID of the wallet to receive the funds
+              example: 223e4567-e89b-12d3-a456-426614174000
         auth_type:
           type: string
           enum:
@@ -17845,8 +17999,8 @@ components:
       title: Card transaction response
       type: object
       description: |
-        Response containing a card transaction. Returned by `/v3/cards/debit`, the transaction-action
-        endpoints (`capture`, `refund`), and `GET /v3/transactions/{transaction_uuid}`.
+        Response containing a card transaction. Returned by `/v3/cards/debit`, `/v3/cards/capture`,
+        `/v3/cards/reverse`, `/v3/cards/push`, and `GET /v3/transactions/{transaction_uuid}`.
       required:
         - transaction
       properties:
@@ -17874,6 +18028,12 @@ components:
               enum:
                 - PAYMENT
                 - REFUND
+                - CARD_CREDIT
+              description: |
+                Transaction type.
+                - `PAYMENT` for card debits (including captures of prior auths).
+                - `REFUND` for reversals of a captured payment (always a child of a prior PAYMENT).
+                - `CARD_CREDIT` for push-to-card (OCT) transactions from `/v3/cards/push`.
             status:
               $ref: '#/components/schemas/v3-transaction-status'
             status_reason:
@@ -18049,15 +18209,29 @@ components:
           items:
             $ref: '#/components/schemas/v3-transaction'
 
-    transaction-capture-request:
-      title: Capture request
+    card-capture-request:
+      title: Card capture request
       type: object
       description: |
-        Capture a previously authorized card transaction. For v1 of this endpoint, captures the full authorized amount.
+        Capture a previously authorized card transaction.
 
-        The request body is optional — the `transaction_uuid` in the path is enough to identify what to capture.
-        Provide `description` or `metadata` only if you want to annotate the capture event.
+        Omit `amount` to capture the full authorized amount. Pass `amount` to capture less than the
+        authorized amount (partial capture); the unused authorization is released back to the cardholder.
+      required:
+        - transaction_uuid
       properties:
+        transaction_uuid:
+          type: string
+          format: uuid
+          description: The UUID of the AUTH-only transaction to capture.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa5
+        amount:
+          type: string
+          pattern: ^\d+\.\d{2}$
+          description: |
+            Optional capture amount as a decimal string. If omitted, the full authorized amount is captured.
+            Cannot exceed the authorized amount.
+          example: "150.00"
         description:
           type: string
           description: Optional note attached to the capture event
@@ -18066,24 +18240,32 @@ components:
           type: object
           description: Custom key/value pairs to attach to the capture event
 
-    transaction-refund-request:
-      title: Refund request
+    card-reverse-request:
+      title: Card reverse request
       type: object
       description: |
-        Refund (or void) a previously created transaction. The endpoint returns:
+        Reverse a previously created card transaction. The endpoint returns:
         - HTTP 201 with a new REFUND transaction when the parent was captured/settled.
         - HTTP 204 with no body when the parent was AUTHORIZED only (the auth is voided; no new transaction is created).
       required:
+        - transaction_uuid
         - external_id
         - amount
         - refund_reason
       properties:
+        transaction_uuid:
+          type: string
+          format: uuid
+          description: The UUID of the card transaction to reverse.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa5
         external_id:
           type: string
+          description: Your unique identifier for the reversal operation. Used for idempotency.
           example: refund_order_1000456
         amount:
           type: string
           pattern: ^\d+\.\d{2}$
+          description: The reversal amount as a decimal string. Cannot exceed the remaining refundable amount.
           example: "25.99"
         refund_reason:
           type: string
@@ -18092,11 +18274,97 @@ components:
             - FRAUD
             - CUSTOMER_REQUEST
             - OTHER
+          description: The reason for the reversal
         description:
           type: string
+          description: Optional description for the reversal transaction
           maxLength: 255
         metadata:
           type: object
+          description: Custom key/value pairs to associate with the reversal
+
+    card-push-request:
+      title: Card push request
+      type: object
+      description: |
+        Push funds from a wallet to a card payment method — an Original Credit Transaction (OCT).
+        Cardholder identity is taken from the saved payment method; sender identity is derived from
+        the partner's program configuration.
+      required:
+        - external_id
+        - amount
+        - currency
+        - source
+        - destination
+        - purpose
+      properties:
+        external_id:
+          type: string
+          description: |
+            Your unique identifier for this transaction. Used for idempotency —
+            duplicate requests with the same `external_id` return the existing transaction (409).
+          example: payout_1000600
+        amount:
+          type: string
+          pattern: ^\d+\.\d{2}$
+          description: The transaction amount as a decimal string
+          example: "250.00"
+        currency:
+          type: string
+          pattern: ^[A-Z]{3}$
+          description: The currency code in ISO-4217 format
+          example: USD
+        source:
+          type: object
+          description: The wallet to debit
+          required:
+            - wallet_uuid
+          properties:
+            wallet_uuid:
+              type: string
+              format: uuid
+              description: The UUID of the wallet funding the push
+              example: 223e4567-e89b-12d3-a456-426614174000
+        destination:
+          type: object
+          description: The saved card payment method to credit. Raw card details are not accepted on this endpoint.
+          required:
+            - payment_method_uuid
+          properties:
+            payment_method_uuid:
+              type: string
+              format: uuid
+              description: UUID of the destination card payment method
+              example: 550e8400-e29b-41d4-a716-446655440000
+        purpose:
+          type: string
+          enum:
+            - FUNDS_DISBURSEMENT
+            - P2P
+            - PAYROLL
+            - GOVERNMENT_DISBURSEMENT
+            - MERCHANT_DISBURSEMENT
+            - REFUND
+            - ACCOUNT_TO_ACCOUNT
+          description: |
+            Scheme-aligned funds transfer purpose. Required by Visa/Mastercard for OCT compliance.
+            - `FUNDS_DISBURSEMENT` — generic disbursement to an individual (gig payouts, claim payments).
+            - `P2P` — person-to-person money transfer.
+            - `PAYROLL` — wages or salary.
+            - `GOVERNMENT_DISBURSEMENT` — government-issued payments (tax refunds, benefits).
+            - `MERCHANT_DISBURSEMENT` — payouts to a business.
+            - `REFUND` — refund credited to a different card than the original payment.
+            - `ACCOUNT_TO_ACCOUNT` — same-owner account-to-account transfer.
+        description:
+          type: string
+          description: Optional description for the transaction
+          maxLength: 255
+          example: Weekly payout
+        metadata:
+          type: object
+          description: Custom key/value pairs to associate with the transaction
+          example:
+            payee_id: driver_88102
 
   parameters:
     Version:
