@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.5.4'
+  version: '6.5.5'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -5637,7 +5637,7 @@ paths:
       description: |
         Save a card payment method to an account so it can be charged or credited later.
 
-        The returned `payment_method_uuid` is the permanent identifier for this card — pass it as the funding source on `/v3/cards/debit` or the destination on `/v3/cards/push`. `/v3/cards/capture` and `/v3/cards/reverse` reference a `transaction_uuid` instead.
+        The returned `payment_method_uuid` is the permanent identifier for this card — pass it as the funding source on `/v3/cards/debit` or the destination on `/v3/cards/push`.
       parameters:
         - $ref: '#/components/parameters/Authorization'
       requestBody:
