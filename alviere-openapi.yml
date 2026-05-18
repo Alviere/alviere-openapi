@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.5.1'
+  version: '6.5.2'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -5637,8 +5637,7 @@ paths:
       description: |
         Save a card payment method to an account so it can be charged or credited later.
 
-        The returned `payment_method_uuid` is the permanent identifier for this card — pass it to
-        `/v3/cards/debit`, `/v3/cards/capture`, `/v3/cards/reverse`, or `/v3/cards/push`.
+        The returned `payment_method_uuid` is the permanent identifier for this card — pass it as the funding source on `/v3/cards/debit` or the destination on `/v3/cards/push`. `/v3/cards/capture` and `/v3/cards/reverse` reference a `transaction_uuid` instead.
       parameters:
         - $ref: '#/components/parameters/Authorization'
       requestBody:
@@ -5843,9 +5842,7 @@ paths:
     delete:
       summary: Delete a saved card
       description: |
-        Forget a saved card. The `payment_method_uuid` can no longer be used in `/v3/cards/debit`,
-        `/v3/cards/capture`, `/v3/cards/reverse`, or `/v3/cards/push`. Historical transactions remain
-        accessible via `/v3/transactions/{transaction_uuid}`.
+        Forget a saved card. The `payment_method_uuid` can no longer be used on `/v3/cards/debit` or `/v3/cards/push`. Historical transactions remain accessible via `/v3/transactions/{transaction_uuid}`.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/payment_method_uuid'
@@ -18650,7 +18647,7 @@ components:
         payment_method_uuid:
           type: string
           format: uuid
-          description: Permanent identifier for this saved card. Use on `/v3/cards/debit`, `/v3/cards/capture`, `/v3/cards/reverse`, `/v3/cards/push`.
+          description: Permanent identifier for this saved card. Use as the funding source on `/v3/cards/debit` or the destination on `/v3/cards/push`.
           example: 550e8400-e29b-41d4-a716-446655440000
         account_uuid:
           type: string
