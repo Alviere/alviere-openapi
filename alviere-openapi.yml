@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.5.0'
+  version: '6.5.1'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -5639,14 +5639,6 @@ paths:
 
         The returned `payment_method_uuid` is the permanent identifier for this card — pass it to
         `/v3/cards/debit`, `/v3/cards/capture`, `/v3/cards/reverse`, or `/v3/cards/push`.
-
-        **Ownership:**
-        - If the bearer token is scoped to a single account (e.g. SDK session tokens), `account_uuid` is optional and derived from the token.
-        - If the bearer token can act on multiple accounts (e.g. partner-level tokens), `account_uuid` is required.
-
-        **Validation:**
-        - Saving a duplicate card on the same account returns the existing card with `409 Conflict` on the field `external_id`.
-        - AVS and CVV checks run at save time; the response includes `validation.avs_result` and `validation.cvv_result`.
       parameters:
         - $ref: '#/components/parameters/Authorization'
       requestBody:
@@ -5725,11 +5717,7 @@ paths:
         - Card Payments
     get:
       summary: List saved cards
-      description: |
-        List saved cards for an account.
-
-        - If the bearer token is scoped to a single account, `account_uuid` is optional and derived from the token.
-        - If the bearer token can act on multiple accounts, `account_uuid` is required.
+      description: List saved cards for an account.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - in: query
@@ -5738,9 +5726,7 @@ paths:
           schema:
             type: string
             format: uuid
-          description: |
-            The account whose saved cards to list. Optional — derived from the bearer token if absent.
-            Required for partner-level tokens that act on multiple accounts.
+          description: The account whose saved cards to list.
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
       responses:
