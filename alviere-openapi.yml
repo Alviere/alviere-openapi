@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.1'
+  version: '6.6.2'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -12878,11 +12878,9 @@ components:
       oneOf:
         - title: US business account
           required:
-            - business_type
             - business_name
             - state_of_incorporation
             - country_of_incorporation
-            - ein
           properties:
             business_type:
               type: string
@@ -12975,7 +12973,6 @@ components:
               description: Number of employees in the organization
         - title: EU business account
           required:
-            - business_type
             - business_name
             - country_of_incorporation
             - company_id
