@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.0'
+  version: '6.6.1'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -10029,10 +10029,9 @@ x-webhooks:
                     information:
                       business_account_uuid: b2c3d4e5-f6a7-8901-bcde-f23456789012
                       stakeholder_information:
-                        business_account_uuid: b2c3d4e5-f6a7-8901-bcde-f23456789012
-                        types:
+                        stakeholder_types:
                           - BENEFICIAL_OWNER
-                        percentage_ownership: '51'
+                        percentage_ownership: 51
                         first_name: John
                         last_name: Smith
                     created_at: '2026-05-15T09:13:02Z'
@@ -10431,6 +10430,20 @@ x-webhooks:
                 status: ACTIVE
                 brand: VISA
                 last_4: '1234'
+                card_expiration: '2029-12'
+                blocked: false
+                pin_set: true
+                shipping_address:
+                  line_1: 1 Market St
+                  postal_code: '94105'
+                  city: San Francisco
+                  state: CA
+                  country: USA
+                auth_rules: {}
+                custom_fields:
+                  shipping_method: DEFAULT
+                  name_on_card: Jane Doe
+                metadata: {}
                 created_at: '2026-05-18T10:00:00Z'
                 updated_at: '2026-05-18T10:15:42Z'
       responses:
@@ -11346,54 +11359,47 @@ components:
             - WALLET
           description: Source of funds for transaction funded via a passthrough transaction
         funds_source:
-          oneOf:
-            - title: Bank account (DDA)
-              properties:
-                origin_bank:
-                  type: string
-                  description: The name of the origin bank for this bank credit.
-                  example: CHASE BANK
-                is_payroll:
-                  type: boolean
-                  description: If the bank account transaction relates to payroll, this propoerty will be true.
-                payroll_date:
-                  type: string
-                  format: date
-                  description: If transaction corresponds to a payroll, this is expected settlement date. If early pay is enabled for this wallet, the transaction could be generally settled up to two days in advance of this date
-                account_verification:
-                  type: boolean
-                  description: Whether the transaction purpose was to verify the validity of the account
-            - title: Payment method
-              properties:
-                payment_method_uuid:
-                  type: string
-                  description: When the transaction was performed using a payment method linked to this account, this property will hold the uuid of payment method token (eg. a debit card, a bank account, etc).
-                settled_at:
-                  type: string
-                  description: The date the child passthrough transaction settled
-                  format: date-time
-            - title: Check
-              properties:
-                check_uuid:
-                  type: string
-                  description: The uuid of the deposited check.
-                  format: uuid
-                check_released_amount:
-                  type: integer
-                  example: 10032
-                  minimum: -99999999
-                  maximum: 99999999
-                  description: |-
-                    For a `CHECK_DEPOSIT` transaction, the amount that has been released, defined in cents. 
-                    e.g. 1 USD will be represented as `amount: 100`
-                funding_instrument_details:
-                  $ref: '#/components/schemas/funding-instrument-response-check'
-            - title: Payment Instrument
-              properties:
-                payment_instrument_uuid:
-                  type: string
-                  description: Unique identifier of the payment instrument
           type: object
+          description: Where the transaction funds came from. Only the fields relevant to this transaction's source will be populated.
+          properties:
+            origin_bank:
+              type: string
+              description: For bank credits (e.g. payroll), the name of the origin bank.
+              example: CHASE BANK
+            is_payroll:
+              type: boolean
+              description: For bank credits, `true` if the transaction relates to payroll.
+            payroll_date:
+              type: string
+              format: date
+              description: For payroll bank credits, the expected settlement date. With early pay enabled, the transaction may settle up to two days in advance of this date.
+            account_verification:
+              type: boolean
+              description: Whether the transaction purpose was to verify the validity of the account.
+            payment_method_uuid:
+              type: string
+              description: When the transaction was performed using a payment method linked to this account, the uuid of the payment method token (e.g. a debit card, a bank account).
+            settled_at:
+              type: string
+              format: date-time
+              description: The date the child passthrough transaction settled.
+            check_uuid:
+              type: string
+              format: uuid
+              description: The uuid of the deposited check.
+            check_released_amount:
+              type: integer
+              example: 10032
+              minimum: -99999999
+              maximum: 99999999
+              description: |-
+                For a `CHECK_DEPOSIT` transaction, the amount that has been released, defined in cents.
+                e.g. 1 USD will be represented as `amount: 100`
+            funding_instrument_details:
+              $ref: '#/components/schemas/funding-instrument-response-check'
+            payment_instrument_uuid:
+              type: string
+              description: Unique identifier of the payment instrument.
         refunded:
           description: |
             This flag indicates if this transaction has been refunded.
@@ -11511,22 +11517,14 @@ components:
           description: Type of activity event
         type_details:
           type: object
-          oneOf:
-            - title: Denied Authorization
-              type: object
-              properties:
-                denied_authorization_details:
-                  $ref: '#/components/schemas/denied-authorization-details'
-            - title: Card Replacement
-              type: object
-              properties:
-                card_replacement_details:
-                  $ref: '#/components/schemas/card-replacement-details'
-            - title: Card Created
-              type: object
-              properties:
-                card_created_details:
-                  $ref: '#/components/schemas/card-created-details'
+          description: Activity-specific details. Only the field matching this event's `type` will be populated.
+          properties:
+            denied_authorization_details:
+              $ref: '#/components/schemas/denied-authorization-details'
+            card_replacement_details:
+              $ref: '#/components/schemas/card-replacement-details'
+            card_created_details:
+              $ref: '#/components/schemas/card-created-details'
         created_at:
           type: string
           format: date-time
@@ -12459,7 +12457,8 @@ components:
           description: The beneficiary's creation date
         updated_at:
           type: string
-          pattern: '2021-08-02T05:32:11.345Z'
+          format: date-time
+          example: '2021-08-02T05:32:11.345Z'
           description: The beneficiary's update date
     incentive-rule-response:
       title: Incentive rule
@@ -15589,54 +15588,47 @@ components:
             - WALLET
           description: Source of funds for transaction funded via a passthrough transaction
         funds_source:
-          oneOf:
-            - title: Bank account (DDA)
-              properties:
-                origin_bank:
-                  type: string
-                  description: The name of the origin bank for this bank credit.
-                  example: CHASE BANK
-                is_payroll:
-                  type: boolean
-                  description: If the bank account transaction relates to payroll, this propoerty will be true.
-                payroll_date:
-                  type: string
-                  format: date
-                  description: If transaction corresponds to a payroll, this is expected settlement date. If early pay is enabled for this wallet, the transaction could be generally settled up to two days in advance of this date
-                account_verification:
-                  type: boolean
-                  description: Whether the transaction purpose was to verify the validity of the account
-            - title: Payment method
-              properties:
-                payment_method_uuid:
-                  type: string
-                  description: When the transaction was performed using a payment method linked to this account, this property will hold the uuid of payment method token (eg. a debit card, a bank account, etc).
-                settled_at:
-                  type: string
-                  format: date-time
-                  description: The date the child passthrough transaction settled
-            - title: Check
-              properties:
-                check_uuid:
-                  type: string
-                  description: The uuid of the deposited check.
-                  format: uuid
-                check_released_amount:
-                  type: integer
-                  example: 10032
-                  minimum: -99999999
-                  maximum: 99999999
-                  description: |-
-                    For a `CHECK_DEPOSIT` transaction, the amount that has been released, defined in cents. 
-                    e.g. 1 USD will be represented as `amount: 100`
-                funding_instrument_details:
-                  $ref: '#/components/schemas/funding-instrument-response-check'
-            - title: Payment Instrument
-              properties:
-                payment_instrument_uuid:
-                  type: string
-                  description: Unique identifier of the payment instrument
           type: object
+          description: Where the transaction funds came from. Only the fields relevant to this transaction's source will be populated.
+          properties:
+            origin_bank:
+              type: string
+              description: For bank credits (e.g. payroll), the name of the origin bank.
+              example: CHASE BANK
+            is_payroll:
+              type: boolean
+              description: For bank credits, `true` if the transaction relates to payroll.
+            payroll_date:
+              type: string
+              format: date
+              description: For payroll bank credits, the expected settlement date. With early pay enabled, the transaction may settle up to two days in advance of this date.
+            account_verification:
+              type: boolean
+              description: Whether the transaction purpose was to verify the validity of the account.
+            payment_method_uuid:
+              type: string
+              description: When the transaction was performed using a payment method linked to this account, the uuid of the payment method token (e.g. a debit card, a bank account).
+            settled_at:
+              type: string
+              format: date-time
+              description: The date the child passthrough transaction settled.
+            check_uuid:
+              type: string
+              format: uuid
+              description: The uuid of the deposited check.
+            check_released_amount:
+              type: integer
+              example: 10032
+              minimum: -99999999
+              maximum: 99999999
+              description: |-
+                For a `CHECK_DEPOSIT` transaction, the amount that has been released, defined in cents.
+                e.g. 1 USD will be represented as `amount: 100`
+            funding_instrument_details:
+              $ref: '#/components/schemas/funding-instrument-response-check'
+            payment_instrument_uuid:
+              type: string
+              description: Unique identifier of the payment instrument.
         refunded:
           description: |
             This flag indicates if this transaction has been refunded.
@@ -15997,54 +15989,47 @@ components:
             - WALLET
           description: Source of funds for transaction funded via a passthrough transaction
         funds_source:
-          oneOf:
-            - title: Bank account (DDA)
-              properties:
-                origin_bank:
-                  type: string
-                  description: The name of the origin bank for this bank credit.
-                  example: CHASE BANK
-                is_payroll:
-                  type: boolean
-                  description: If the bank account transaction relates to payroll, this propoerty will be true.
-                payroll_date:
-                  type: string
-                  format: date
-                  description: If transaction corresponds to a payroll, this is expected settlement date. If early pay is enabled for this wallet, the transaction could be generally settled up to two days in advance of this date
-                account_verification:
-                  type: boolean
-                  description: Whether the transaction purpose was to verify the validity of the account
-            - title: Payment method
-              properties:
-                payment_method_uuid:
-                  type: string
-                  description: When the transaction was performed using a payment method linked to this account, this property will hold the uuid of payment method token (eg. a debit card, a bank account, etc).
-                settled_at:
-                  type: string
-                  format: date-time
-                  description: The date the child passthrough transaction settled
-            - title: Check
-              properties:
-                check_uuid:
-                  type: string
-                  description: The uuid of the deposited check.
-                  format: uuid
-                check_released_amount:
-                  type: integer
-                  example: 10032
-                  minimum: -99999999
-                  maximum: 99999999
-                  description: |-
-                    For a `CHECK_DEPOSIT` transaction, the amount that has been released, defined in cents. 
-                    e.g. 1 USD will be represented as `amount: 100`
-                funding_instrument_details:
-                  $ref: '#/components/schemas/funding-instrument-response-check'
-            - title: Payment Instrument
-              properties:
-                payment_instrument_uuid:
-                  type: string
-                  description: Unique identifier of the payment instrument
           type: object
+          description: Where the transaction funds came from. Only the fields relevant to this transaction's source will be populated.
+          properties:
+            origin_bank:
+              type: string
+              description: For bank credits (e.g. payroll), the name of the origin bank.
+              example: CHASE BANK
+            is_payroll:
+              type: boolean
+              description: For bank credits, `true` if the transaction relates to payroll.
+            payroll_date:
+              type: string
+              format: date
+              description: For payroll bank credits, the expected settlement date. With early pay enabled, the transaction may settle up to two days in advance of this date.
+            account_verification:
+              type: boolean
+              description: Whether the transaction purpose was to verify the validity of the account.
+            payment_method_uuid:
+              type: string
+              description: When the transaction was performed using a payment method linked to this account, the uuid of the payment method token (e.g. a debit card, a bank account).
+            settled_at:
+              type: string
+              format: date-time
+              description: The date the child passthrough transaction settled.
+            check_uuid:
+              type: string
+              format: uuid
+              description: The uuid of the deposited check.
+            check_released_amount:
+              type: integer
+              example: 10032
+              minimum: -99999999
+              maximum: 99999999
+              description: |-
+                For a `CHECK_DEPOSIT` transaction, the amount that has been released, defined in cents.
+                e.g. 1 USD will be represented as `amount: 100`
+            funding_instrument_details:
+              $ref: '#/components/schemas/funding-instrument-response-check'
+            payment_instrument_uuid:
+              type: string
+              description: Unique identifier of the payment instrument.
         refunded:
           description: |
             This flag indicates if this transaction has been refunded.
@@ -16287,30 +16272,20 @@ components:
           description: The IBAN number last 4 digits for this bank account
     bank-account-details-response:
       title: Bank account details
-      description: The bank account details need to be one of the structures, either `ach` or `eft` or `iban` or `swift` or `clabe`.
-      oneOf:
-        - title: ACH
-          properties:
-            ach_details:
-              $ref: '#/components/schemas/ach-details-response'
-        - title: EFT
-          properties:
-            eft_details:
-              $ref: '#/components/schemas/eft-details-response'
-        - title: SWIFT
-          properties:
-            swift_details:
-              $ref: '#/components/schemas/swift-details-response'
-        - title: CLABE
-          properties:
-            clabe_details:
-              $ref: '#/components/schemas/clabe-details-response'
-        - title: IBAN
-          properties:
-            iban_details:
-              $ref: '#/components/schemas/iban-details-response'
-      x-internal: false
+      description: Bank account routing details. Only the field corresponding to this account's format (ACH, EFT, IBAN, SWIFT, or CLABE) will be populated.
       type: object
+      x-internal: false
+      properties:
+        ach_details:
+          $ref: '#/components/schemas/ach-details-response'
+        eft_details:
+          $ref: '#/components/schemas/eft-details-response'
+        swift_details:
+          $ref: '#/components/schemas/swift-details-response'
+        clabe_details:
+          $ref: '#/components/schemas/clabe-details-response'
+        iban_details:
+          $ref: '#/components/schemas/iban-details-response'
     cash-details-response:
       title: Cash pickup location details
       type: object
