@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.2'
+  version: '6.6.3'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -10094,6 +10094,7 @@ x-webhooks:
                     currency: USD
                     network: VISA
                     subnetwork: INTERLINK
+                    merchant_category_code: '5814'
                     denied_reasons:
                       - INSUFFICIENT_FUNDS
                 created_at: '2026-05-18T16:04:55Z'
@@ -11570,6 +11571,9 @@ components:
         is_international:
           type: boolean
           description: Whether this was an international transaction
+        merchant_category_code:
+          type: string
+          description: Merchant category code (MCC) identifying the merchant's line of business
     card-replacement-details:
       type: object
       properties:
