@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.3'
+  version: '6.6.4'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -12284,6 +12284,7 @@ components:
           description: The type of wallet
           enum:
             - CHECKING
+            - SAVINGS
             - PREPAID
             - PREPAID_NON_RELOADABLE
             - PASSTHROUGH
@@ -19832,6 +19833,7 @@ components:
         type: string
         enum:
           - CHECKING
+          - SAVINGS
           - PREPAID
           - PREPAID_NON_RELOADABLE
           - PASSTHROUGH
