@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.4'
+  version: '6.6.5'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -18437,7 +18437,6 @@ components:
         - exp_year
         - security_code
         - name_on_card
-        - billing_address
       properties:
         pan:
           type: string
@@ -19192,6 +19191,7 @@ components:
         Save a card payment method to an account. The card details are tokenized and stored;
         the returned `payment_method_uuid` is used on subsequent `/v3/cards/*` calls.
       required:
+        - external_id
         - card
       properties:
         account_uuid:
@@ -19215,6 +19215,9 @@ components:
           description: Custom key/value pairs to associate with this saved card
           example:
             wallet_provider: customer_app
+        primary:
+          type: boolean
+          description: Mark this card as the primary payment method for the account
 
     card-saved:
       title: Saved card
@@ -19225,7 +19228,7 @@ components:
         - account_uuid
         - brand
         - type
-        - last4
+        - last_4
         - status
         - created_at
         - updated_at
@@ -19269,7 +19272,7 @@ components:
           pattern: ^[0-9]{6,8}$
           description: First 6–8 digits of the card number (Bank Identification Number).
           example: "411111"
-        last4:
+        last_4:
           type: string
           pattern: ^[0-9]{4}$
           description: Last 4 digits of the card number.
