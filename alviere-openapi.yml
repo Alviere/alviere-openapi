@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.5'
+  version: '6.6.6'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -39,10 +39,9 @@ tags:
   - name: Rewards and Incentives
   - name: Webhooks
     description: |
-      Alviere POSTs webhook events to a partner-supplied URL whenever something
+      Alviere POSTs webhook events to your configured URL whenever something
       meaningful happens on the account — KYC state changes, transactions settle,
-      cards are issued, and so on. Configure delivery via the subscription
-      endpoints; one subscription per event type.
+      cards are issued, and so on.
 
       ### Delivery
 
