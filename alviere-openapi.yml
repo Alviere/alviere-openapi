@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.6'
+  version: '6.6.7'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -11429,11 +11429,6 @@ components:
             payment_options:
               type: object
               properties:
-                ACH_type:
-                  type: string
-                  enum:
-                    - SAME_DAY
-                    - NEXT_DAY
                 ach_reference:
                   type: string
                   description: Reference included with the ACH transfer, when provided on the request
@@ -15659,11 +15654,6 @@ components:
             payment_options:
               type: object
               properties:
-                ACH_type:
-                  type: string
-                  enum:
-                    - SAME_DAY
-                    - NEXT_DAY
                 ach_reference:
                   type: string
                   description: Reference included with the ACH transfer, when provided on the request
@@ -16060,11 +16050,6 @@ components:
             payment_options:
               type: object
               properties:
-                ACH_type:
-                  type: string
-                  enum:
-                    - SAME_DAY
-                    - NEXT_DAY
                 ach_reference:
                   type: string
                   description: Reference included with the ACH transfer, when provided on the request
