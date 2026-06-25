@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.8'
+  version: '6.6.9'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -12910,6 +12910,7 @@ components:
               type: string
               enum:
                 - SSN
+                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
@@ -13252,6 +13253,7 @@ components:
               type: string
               enum:
                 - SSN
+                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
@@ -13401,6 +13403,7 @@ components:
               type: string
               enum:
                 - SSN
+                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
@@ -13681,6 +13684,7 @@ components:
               type: string
               enum:
                 - SSN
+                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
@@ -14015,6 +14019,7 @@ components:
               type: string
               enum:
                 - SSN
+                - EIN
                 - ITIN
                 - FOREIGN_TAX_ID
                 - PASSPORT
