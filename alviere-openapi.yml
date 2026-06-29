@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.9'
+  version: '6.6.10'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -2340,6 +2340,10 @@ paths:
                   type: string
                   minimum: 8
                   maximum: 64
+                description:
+                  type: string
+                  maxLength: 255
+                  description: A description to identify the transaction
                 transaction_options:
                   type: object
                   description: Options related to transaction handling
@@ -2354,6 +2358,11 @@ paths:
                             - SAME_DAY
                             - NEXT_DAY
                           description: Whether the ACH transfer should be done on the same day or next day window batches
+                        ach_reference:
+                          type: string
+                          minLength: 1
+                          maxLength: 80
+                          description: Optional reference to be included with the ACH transfer. Only applicable to ACH payment methods.
                         prefund:
                           type: boolean
                           description: Whether this transaction should be prefunded
@@ -10895,7 +10904,7 @@ components:
         amount:
           title: Transaction amount
           description: |
-            The transaction amount in the currency of the transaction, defined in cents. 
+            The transaction amount in the currency of the transaction, defined in cents.
             e.g. 1 USD will be represented as `amount: 100`
           type: integer
           example: 10032
@@ -10905,10 +10914,57 @@ components:
           description: The currency code in ISO-4217 format.
           type: string
           example: USD
+        expires_at:
+          type: string
+          format: date-time
+          description: |
+            Expiration timestamp. Present on `PAYMENT_REQUEST` transactions — after this time the request
+            becomes invalid and moves to `EXPIRED`.
+          example: "2026-06-28T23:59:59.000Z"
         type_details:
           type: object
           description: Additional details applying to specific transaction types
           properties:
+            instant_payment_details:
+              type: object
+              description: |
+                Details for instant payment transactions (FedNow / TCH RTP). Present on `INSTANT_PAYOUT`
+                and `PAYMENT_REQUEST` transactions.
+              properties:
+                network:
+                  type: string
+                  enum:
+                    - FEDNOW
+                    - RTP
+                  description: The instant rail used for the transfer
+                  example: FEDNOW
+                iso_reason_code:
+                  type: string
+                  description: |
+                    ISO 20022 reason code (e.g. `AC03`, `AG01`, `AM09`). Present only when the transaction was
+                    rejected and the rail returned a real ISO 20022 code; read `status_reason` otherwise.
+                  example: AC03
+                payment_request:
+                  type: object
+                  description: Aggregate payment progress. Present only on `PAYMENT_REQUEST` transactions.
+                  properties:
+                    amount_paid:
+                      type: integer
+                      description: Total amount accepted/settled so far, in cents. Authoritative paid figure for reconciliation.
+                      example: 50000
+                    amount_remaining:
+                      type: integer
+                      description: Requested amount not yet paid, in cents.
+                      example: 50000
+                    partially_paid:
+                      type: boolean
+                      example: true
+                    payments_received:
+                      type: integer
+                      example: 1
+                    payment_modification_allowed:
+                      type: boolean
+                      example: true
             global_payments_details:
               type: object
               description: If this transaction is related to an `INTERNATIONAL_TRANSFER`, this structure will show additional details
@@ -14711,11 +14767,13 @@ components:
         - CHECK_DEPOSIT
         - CHECK_DEPOSIT_RETURN
         - CHECK_DISBURSEMENT
+        - INSTANT_PAYOUT
         - INTERNATIONAL_TRANSFER
         - LOAD_FUNDS
         - LOAD_PULLBACK
         - NEGATIVE_LOSS
         - PAYMENT
+        - PAYMENT_REQUEST
         - RECOVERY
         - REFUND
         - RETURN
@@ -14895,12 +14953,14 @@ components:
         - CHECK_DISBURSEMENT
         - EXTERNAL_CREDIT
         - EXTERNAL_DEBIT
+        - INSTANT_PAYOUT
         - INTERNATIONAL_TRANSFER
         - INTERNAL_CREDIT
         - LOAD_FUNDS
         - LOAD_PULLBACK
         - NEGATIVE_LOSS
         - PAYMENT
+        - PAYMENT_REQUEST
         - PREFUND
         - RECOVERY
         - REFUND
@@ -15125,7 +15185,7 @@ components:
         amount:
           title: Transaction amount
           description: |
-            The transaction amount in the currency of the transaction, defined in cents. 
+            The transaction amount in the currency of the transaction, defined in cents.
             e.g. 1 USD will be represented as `amount: 100`
           type: integer
           example: 10032
@@ -15135,10 +15195,57 @@ components:
           description: The currency code in ISO-4217 format.
           type: string
           example: USD
+        expires_at:
+          type: string
+          format: date-time
+          description: |
+            Expiration timestamp. Present on `PAYMENT_REQUEST` transactions — after this time the request
+            becomes invalid and moves to `EXPIRED`.
+          example: "2026-06-28T23:59:59.000Z"
         type_details:
           type: object
           description: Additional details applying to specific transaction types
           properties:
+            instant_payment_details:
+              type: object
+              description: |
+                Details for instant payment transactions (FedNow / TCH RTP). Present on `INSTANT_PAYOUT`
+                and `PAYMENT_REQUEST` transactions.
+              properties:
+                network:
+                  type: string
+                  enum:
+                    - FEDNOW
+                    - RTP
+                  description: The instant rail used for the transfer
+                  example: FEDNOW
+                iso_reason_code:
+                  type: string
+                  description: |
+                    ISO 20022 reason code (e.g. `AC03`, `AG01`, `AM09`). Present only when the transaction was
+                    rejected and the rail returned a real ISO 20022 code; read `status_reason` otherwise.
+                  example: AC03
+                payment_request:
+                  type: object
+                  description: Aggregate payment progress. Present only on `PAYMENT_REQUEST` transactions.
+                  properties:
+                    amount_paid:
+                      type: integer
+                      description: Total amount accepted/settled so far, in cents. Authoritative paid figure for reconciliation.
+                      example: 50000
+                    amount_remaining:
+                      type: integer
+                      description: Requested amount not yet paid, in cents.
+                      example: 50000
+                    partially_paid:
+                      type: boolean
+                      example: true
+                    payments_received:
+                      type: integer
+                      example: 1
+                    payment_modification_allowed:
+                      type: boolean
+                      example: true
             global_payments_details:
               type: object
               description: If this transaction is related to an `INTERNATIONAL_TRANSFER`, this structure will show additional details
@@ -19243,11 +19350,13 @@ components:
           - CHECK_DEPOSIT
           - CHECK_DEPOSIT_RETURN
           - CHECK_DISBURSEMENT
+          - INSTANT_PAYOUT
           - INTERNATIONAL_TRANSFER
           - LOAD_FUNDS
           - LOAD_PULLBACK
           - NEGATIVE_LOSS
           - PAYMENT
+          - PAYMENT_REQUEST
           - RECOVERY
           - REFUND
           - RETURN
