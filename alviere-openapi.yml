@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.10'
+  version: '6.6.11'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -10918,7 +10918,7 @@ components:
           type: string
           format: date-time
           description: |
-            Expiration timestamp. Present on `PAYMENT_REQUEST` transactions — after this time the request
+            Expiration timestamp. Present on `INSTANT_PAYMENT_REQUEST` transactions — after this time the request
             becomes invalid and moves to `EXPIRED`.
           example: "2026-06-28T23:59:59.000Z"
         type_details:
@@ -10928,8 +10928,8 @@ components:
             instant_payment_details:
               type: object
               description: |
-                Details for instant payment transactions (FedNow / TCH RTP). Present on `INSTANT_PAYOUT`
-                and `PAYMENT_REQUEST` transactions.
+                Details for instant payment transactions (FedNow / TCH RTP). Present on `INSTANT_BANK_TRANSFER`
+                and `INSTANT_PAYMENT_REQUEST` transactions.
               properties:
                 network:
                   type: string
@@ -10946,7 +10946,7 @@ components:
                   example: AC03
                 payment_request:
                   type: object
-                  description: Aggregate payment progress. Present only on `PAYMENT_REQUEST` transactions.
+                  description: Aggregate payment progress. Present only on `INSTANT_PAYMENT_REQUEST` transactions.
                   properties:
                     amount_paid:
                       type: integer
@@ -14767,13 +14767,13 @@ components:
         - CHECK_DEPOSIT
         - CHECK_DEPOSIT_RETURN
         - CHECK_DISBURSEMENT
-        - INSTANT_PAYOUT
+        - INSTANT_BANK_TRANSFER
         - INTERNATIONAL_TRANSFER
         - LOAD_FUNDS
         - LOAD_PULLBACK
         - NEGATIVE_LOSS
         - PAYMENT
-        - PAYMENT_REQUEST
+        - INSTANT_PAYMENT_REQUEST
         - RECOVERY
         - REFUND
         - RETURN
@@ -14953,14 +14953,14 @@ components:
         - CHECK_DISBURSEMENT
         - EXTERNAL_CREDIT
         - EXTERNAL_DEBIT
-        - INSTANT_PAYOUT
+        - INSTANT_BANK_TRANSFER
         - INTERNATIONAL_TRANSFER
         - INTERNAL_CREDIT
         - LOAD_FUNDS
         - LOAD_PULLBACK
         - NEGATIVE_LOSS
         - PAYMENT
-        - PAYMENT_REQUEST
+        - INSTANT_PAYMENT_REQUEST
         - PREFUND
         - RECOVERY
         - REFUND
@@ -15199,7 +15199,7 @@ components:
           type: string
           format: date-time
           description: |
-            Expiration timestamp. Present on `PAYMENT_REQUEST` transactions — after this time the request
+            Expiration timestamp. Present on `INSTANT_PAYMENT_REQUEST` transactions — after this time the request
             becomes invalid and moves to `EXPIRED`.
           example: "2026-06-28T23:59:59.000Z"
         type_details:
@@ -15209,8 +15209,8 @@ components:
             instant_payment_details:
               type: object
               description: |
-                Details for instant payment transactions (FedNow / TCH RTP). Present on `INSTANT_PAYOUT`
-                and `PAYMENT_REQUEST` transactions.
+                Details for instant payment transactions (FedNow / TCH RTP). Present on `INSTANT_BANK_TRANSFER`
+                and `INSTANT_PAYMENT_REQUEST` transactions.
               properties:
                 network:
                   type: string
@@ -15227,7 +15227,7 @@ components:
                   example: AC03
                 payment_request:
                   type: object
-                  description: Aggregate payment progress. Present only on `PAYMENT_REQUEST` transactions.
+                  description: Aggregate payment progress. Present only on `INSTANT_PAYMENT_REQUEST` transactions.
                   properties:
                     amount_paid:
                       type: integer
@@ -19350,13 +19350,13 @@ components:
           - CHECK_DEPOSIT
           - CHECK_DEPOSIT_RETURN
           - CHECK_DISBURSEMENT
-          - INSTANT_PAYOUT
+          - INSTANT_BANK_TRANSFER
           - INTERNATIONAL_TRANSFER
           - LOAD_FUNDS
           - LOAD_PULLBACK
           - NEGATIVE_LOSS
           - PAYMENT
-          - PAYMENT_REQUEST
+          - INSTANT_PAYMENT_REQUEST
           - RECOVERY
           - REFUND
           - RETURN
