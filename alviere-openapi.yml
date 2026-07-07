@@ -10935,7 +10935,7 @@ components:
                   type: string
                   enum:
                     - FEDNOW
-                    - RTP
+                    - TCH_RTP
                   description: The instant rail used for the transfer
                   example: FEDNOW
                 iso_reason_code:
@@ -15216,7 +15216,7 @@ components:
                   type: string
                   enum:
                     - FEDNOW
-                    - RTP
+                    - TCH_RTP
                   description: The instant rail used for the transfer
                   example: FEDNOW
                 iso_reason_code:
