@@ -10925,7 +10925,7 @@ components:
           type: object
           description: Additional details applying to specific transaction types
           properties:
-            instant_payment_details:
+            instant_transfer_details:
               type: object
               description: |
                 Details for instant payment transactions (FedNow / TCH RTP). Present on `INSTANT_BANK_TRANSFER`
@@ -15206,7 +15206,7 @@ components:
           type: object
           description: Additional details applying to specific transaction types
           properties:
-            instant_payment_details:
+            instant_transfer_details:
               type: object
               description: |
                 Details for instant payment transactions (FedNow / TCH RTP). Present on `INSTANT_BANK_TRANSFER`
