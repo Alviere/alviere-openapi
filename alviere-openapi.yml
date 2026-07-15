@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.11'
+  version: '6.6.12'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -11580,13 +11580,13 @@ components:
           format: base64
           example: U3dhZ2dlciByb2Nrcw==...
           description: |
-            The image of the front of the check, captured with Alviere's Mobile SDK. This field is only returned on responses from the `Get check`endpoint
+            The image of the front of the check, captured with Alviere's Mobile SDK. This field is only returned on responses from the `Get check` endpoint, and only for checks deposited within the last 90 days. After 90 days the image is no longer returned.
         back_image:
           type: string
           format: base64
           example: U3dhZ2dlciByb2Nrcw==...
           description: |
-            The image of the back of the check, captured with Alviere's Mobile SDK. This field is only returned on responses from the `Get check`endpoint
+            The image of the back of the check, captured with Alviere's Mobile SDK. This field is only returned on responses from the `Get check` endpoint, and only for checks deposited within the last 90 days. After 90 days the image is no longer returned.
         status:
           type: string
           description: The status of the check entity
