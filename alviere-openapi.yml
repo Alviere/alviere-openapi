@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.12'
+  version: '6.6.13'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -10944,27 +10944,6 @@ components:
                     ISO 20022 reason code (e.g. `AC03`, `AG01`, `AM09`). Present only when the transaction was
                     rejected and the rail returned a real ISO 20022 code; read `status_reason` otherwise.
                   example: AC03
-                payment_request:
-                  type: object
-                  description: Aggregate payment progress. Present only on `INSTANT_PAYMENT_REQUEST` transactions.
-                  properties:
-                    amount_paid:
-                      type: integer
-                      description: Total amount accepted/settled so far, in cents. Authoritative paid figure for reconciliation.
-                      example: 50000
-                    amount_remaining:
-                      type: integer
-                      description: Requested amount not yet paid, in cents.
-                      example: 50000
-                    partially_paid:
-                      type: boolean
-                      example: true
-                    payments_received:
-                      type: integer
-                      example: 1
-                    payment_modification_allowed:
-                      type: boolean
-                      example: true
             global_payments_details:
               type: object
               description: If this transaction is related to an `INTERNATIONAL_TRANSFER`, this structure will show additional details
@@ -15225,27 +15204,6 @@ components:
                     ISO 20022 reason code (e.g. `AC03`, `AG01`, `AM09`). Present only when the transaction was
                     rejected and the rail returned a real ISO 20022 code; read `status_reason` otherwise.
                   example: AC03
-                payment_request:
-                  type: object
-                  description: Aggregate payment progress. Present only on `INSTANT_PAYMENT_REQUEST` transactions.
-                  properties:
-                    amount_paid:
-                      type: integer
-                      description: Total amount accepted/settled so far, in cents. Authoritative paid figure for reconciliation.
-                      example: 50000
-                    amount_remaining:
-                      type: integer
-                      description: Requested amount not yet paid, in cents.
-                      example: 50000
-                    partially_paid:
-                      type: boolean
-                      example: true
-                    payments_received:
-                      type: integer
-                      example: 1
-                    payment_modification_allowed:
-                      type: boolean
-                      example: true
             global_payments_details:
               type: object
               description: If this transaction is related to an `INTERNATIONAL_TRANSFER`, this structure will show additional details
