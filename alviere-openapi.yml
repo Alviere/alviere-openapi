@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.13'
+  version: '6.6.14'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -11042,7 +11042,6 @@ components:
                       type: string
                       enum:
                         - OPEN
-                        - PENDING
                         - WON
                         - LOST
                         - CLOSED
@@ -11051,25 +11050,16 @@ components:
                       type: string
                       enum:
                         - FILED
-                        - AWAITING_DOCUMENTATION
-                        - UNDER_REVIEW
-                        - MERCHANT_RESPONSE_PENDING
-                        - ESCALATED
-                        - FINAL_REVIEW
                         - RESOLVED_IN_FAVOR
                         - RESOLVED_AGAINST
                         - ADMINISTRATIVE_CLOSURE
                       description: Current lifecycle stage
-                    dispute_reason:
+                    reason_raw:
                       type: string
-                      enum:
-                        - FRAUD
-                        - AUTHORIZATION_ISSUE
-                        - MERCHANT_ERROR
-                        - SERVICE_ISSUE
-                        - PROCESSING_ERROR
-                        - OTHER
-                      description: Why the dispute was filed
+                      description: Raw dispute reason from the processor, if available
+                    recovered_amount:
+                      type: integer
+                      description: Amount recovered from the dispute, in cents
                 cashback_amount:
                   type: integer
                   description: The cashback amount for the transaction, in cents
@@ -15302,7 +15292,6 @@ components:
                       type: string
                       enum:
                         - OPEN
-                        - PENDING
                         - WON
                         - LOST
                         - CLOSED
@@ -15311,25 +15300,16 @@ components:
                       type: string
                       enum:
                         - FILED
-                        - AWAITING_DOCUMENTATION
-                        - UNDER_REVIEW
-                        - MERCHANT_RESPONSE_PENDING
-                        - ESCALATED
-                        - FINAL_REVIEW
                         - RESOLVED_IN_FAVOR
                         - RESOLVED_AGAINST
                         - ADMINISTRATIVE_CLOSURE
                       description: Current lifecycle stage
-                    dispute_reason:
+                    reason_raw:
                       type: string
-                      enum:
-                        - FRAUD
-                        - AUTHORIZATION_ISSUE
-                        - MERCHANT_ERROR
-                        - SERVICE_ISSUE
-                        - PROCESSING_ERROR
-                        - OTHER
-                      description: Why the dispute was filed
+                      description: Raw dispute reason from the processor, if available
+                    recovered_amount:
+                      type: integer
+                      description: Amount recovered from the dispute, in cents
                 cashback_amount:
                   type: integer
                   description: The cashback amount for the transaction, in cents
@@ -15698,7 +15678,6 @@ components:
                       type: string
                       enum:
                         - OPEN
-                        - PENDING
                         - WON
                         - LOST
                         - CLOSED
@@ -15707,25 +15686,16 @@ components:
                       type: string
                       enum:
                         - FILED
-                        - AWAITING_DOCUMENTATION
-                        - UNDER_REVIEW
-                        - MERCHANT_RESPONSE_PENDING
-                        - ESCALATED
-                        - FINAL_REVIEW
                         - RESOLVED_IN_FAVOR
                         - RESOLVED_AGAINST
                         - ADMINISTRATIVE_CLOSURE
                       description: Current lifecycle stage
-                    dispute_reason:
+                    reason_raw:
                       type: string
-                      enum:
-                        - FRAUD
-                        - AUTHORIZATION_ISSUE
-                        - MERCHANT_ERROR
-                        - SERVICE_ISSUE
-                        - PROCESSING_ERROR
-                        - OTHER
-                      description: Why the dispute was filed
+                      description: Raw dispute reason from the processor, if available
+                    recovered_amount:
+                      type: integer
+                      description: Amount recovered from the dispute, in cents
                 cashback_amount:
                   type: integer
                   description: The cashback amount for the transaction, in cents
