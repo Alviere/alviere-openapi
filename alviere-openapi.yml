@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.14'
+  version: '6.6.15'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -12680,8 +12680,11 @@ components:
                 - SOLE_PROPRIETORSHIP
                 - LLC
                 - LLP
+                - GENERAL_PARTNERSHIP
                 - CORPORATION_C
                 - CORPORATION_S
+                - NON_PROFIT_CORPORATION
+                - GOVERNMENT_ENTITY
             business_name:
               type: string
               description: The name of the company
@@ -13786,8 +13789,11 @@ components:
                 - SOLE_PROPRIETORSHIP
                 - LLC
                 - LLP
+                - GENERAL_PARTNERSHIP
                 - CORPORATION_C
                 - CORPORATION_S
+                - NON_PROFIT_CORPORATION
+                - GOVERNMENT_ENTITY
             business_name:
               type: string
               description: The name of the company
