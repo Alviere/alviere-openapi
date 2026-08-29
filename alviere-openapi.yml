@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.15'
+  version: '6.6.16'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -5974,12 +5974,13 @@ paths:
       operationId: CARD-XX
       tags:
         - Card issuance
+      x-internal: true
 
   /wallets/{wallet_uuid}/issued-cards:
     post:
       tags:
         - Card issuance
-      summary: Create Card in Wallet
+      summary: Create Card
       description: |
         Creates a new issued card for the designated wallet
       parameters:
@@ -6182,7 +6183,7 @@ paths:
     get:
       tags:
         - Card issuance
-      summary: List Cards from Wallet
+      summary: List Cards
       description: Gets all the issued cards that are associated to a wallet
       parameters:
         - $ref: '#/components/parameters/Authorization'
@@ -6551,7 +6552,7 @@ paths:
     get:
       tags:
         - Card issuance
-      summary: Get Card in Wallet
+      summary: Get Card
       description: |
         Gets an existing card from the system.
       parameters:
@@ -6594,7 +6595,7 @@ paths:
     patch:
       tags:
         - Card issuance
-      summary: Update Card in Wallet
+      summary: Update Card
       description: |
         Updates the card data.
 
@@ -6792,7 +6793,7 @@ paths:
     delete:
       tags:
         - Card issuance
-      summary: Cancel Card in Wallet
+      summary: Cancel Card
       description: |
         Cancels a card and put the status of the card to `CANCELED`
       parameters:
@@ -6829,7 +6830,7 @@ paths:
     put:
       tags:
         - Card issuance
-      summary: Activate Card in Wallet
+      summary: Activate Card
       description: |
         Activates an issued card.
 
@@ -6890,7 +6891,7 @@ paths:
     put:
       tags:
         - Card issuance
-      summary: Unfreeze Card in Wallet
+      summary: Unfreeze Card
       description: |
         Unfreezes an issued card.
       parameters:
@@ -6926,7 +6927,7 @@ paths:
     put:
       tags:
         - Card issuance
-      summary: Freeze Card in Wallet
+      summary: Freeze Card
       description: |
         Freezes an issued card
 
@@ -7051,7 +7052,7 @@ paths:
     get:
       tags:
         - Card issuance
-      summary: Get Card image in Wallet
+      summary: Get Card image
       description: Gets a base64 encoded image representing a physical card.
       parameters:
         - $ref: '#/components/parameters/Authorization'
@@ -7094,7 +7095,7 @@ paths:
     get:
       tags:
         - Card issuance
-      summary: Get Card sensitive data in Wallet
+      summary: Get Card sensitive data
       description: |
         Gets sensitive data of an issued card. This endpoint is restricted to Alviere's SDK or preauthorized clients.
       parameters:
