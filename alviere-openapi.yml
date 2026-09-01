@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.16'
+  version: '6.6.17'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -9941,6 +9941,61 @@ x-webhooks:
       responses:
         '2XX':
           description: Acknowledge receipt with any 2xx within 10 seconds.
+  batch:
+    post:
+      tags:
+        - Webhooks
+      summary: batch
+      description: |
+        Fired when a batch file dropped on SFTP changes envelope status — accepted
+        for processing, or reaching a terminal state. `event_type` is `BATCH`.
+
+        Counts describe instruction materialization, not settlement. Per-row outcomes
+        are in the result file at `result_file_path`.
+      operationId: webhook-batch
+      parameters:
+        - $ref: '#/components/parameters/webhook-id-header'
+        - $ref: '#/components/parameters/webhook-timestamp-header'
+        - $ref: '#/components/parameters/webhook-signature-header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/webhook-envelope'
+                - type: object
+                  required:
+                    - entity
+                  properties:
+                    event_type:
+                      type: string
+                      enum:
+                        - BATCH
+                    entity:
+                      $ref: '#/components/schemas/batch'
+            example:
+              event_uuid: 8944355f-342d-42df-9ec9-5b12e619d504
+              event_type: BATCH
+              event_version: '2021-11-18.1'
+              event_date: '2026-07-06T15:05:14Z'
+              event_retry: 0
+              business_account_uuid: 4d7e1f60-3a2b-4c1d-9e8a-1f3b2c5d6e7f
+              program_uuid: 4d7e1f60-3a2b-4c1d-9e8a-1f3b2c5d6e7f
+              entity:
+                batch_uuid: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+                file_name: CREATE_PAYMENT_20260706T150500Z.csv.pgp
+                instruction_type: CREATE_PAYMENT
+                status: PARTIALLY_PROCESSED
+                instruction_count: 4
+                processed_count: 2
+                failed_count: 2
+                result_file_path: /batch-processing/outgoing/results/CREATE_PAYMENT_20260706T150500Z_result.csv.pgp
+                created_at: '2026-07-06T15:05:08.000Z'
+                updated_at: '2026-07-06T15:05:14.000Z'
+      responses:
+        '2XX':
+          description: Acknowledge receipt with any 2xx within 10 seconds.
   beneficiary:
     post:
       tags:
@@ -18981,6 +19036,98 @@ components:
           description: Custom key/value pairs to associate with the transaction
           example:
             payee_id: driver_88102
+
+    batch-status:
+      type: string
+      title: Batch status
+      description: |
+        Envelope status. Describes the file, not settlement and not what each row created.
+
+        - `FAILED` — rejected at the file gate (malformed CSV, bad timestamp, duplicate file name), in which case the original is moved to `outgoing/failed/` and no result file is written; or every instruction failed after accept, in which case a result file is written
+        - `PROCESSING` — accepted; instructions running
+        - `PROCESSED` — every instruction reached `PROCESSED`; result file written. Not a guarantee that every row created an entity — check `entity_uuid` / `entity_type` in the result file
+        - `PARTIALLY_PROCESSED` — mix of processed and failed instructions; result file written
+      enum:
+        - FAILED
+        - PROCESSING
+        - PROCESSED
+        - PARTIALLY_PROCESSED
+      example: PARTIALLY_PROCESSED
+
+    batch-instruction-type:
+      type: string
+      title: Batch instruction type
+      description: |
+        What each row in the file instructs. One type per file, taken from the file name.
+
+        `CREATE_PAYMENT` creates ACH debits (collections).
+      enum:
+        - CREATE_PAYMENT
+      example: CREATE_PAYMENT
+
+    batch:
+      type: object
+      title: Batch
+      description: |
+        A batch file dropped on SFTP. Created by ingestion — batches are not created over the API.
+      required:
+        - batch_uuid
+        - file_name
+        - instruction_type
+        - status
+        - created_at
+        - updated_at
+      properties:
+        batch_uuid:
+          type: string
+          format: uuid
+          description: Alviere's unique identifier for this batch
+          example: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+        file_name:
+          type: string
+          description: |
+            Drop file name as submitted: `{INSTRUCTION_TYPE}_{file_id}.csv.pgp`.
+
+            Two fields only. The program is taken from the authenticated SFTP credentials and
+            never appears in the name. `{file_id}` is the client's identifier for the file —
+            opaque to Alviere, `[A-Za-z0-9-]`, max 64 characters, unique per program and
+            instruction type for all time.
+          example: CREATE_PAYMENT_20260706T150500Z.csv.pgp
+        instruction_type:
+          $ref: '#/components/schemas/batch-instruction-type'
+        status:
+          $ref: '#/components/schemas/batch-status'
+        instruction_count:
+          type: integer
+          minimum: 0
+          description: Rows parsed from the file. Absent when the file never passed the gate.
+          example: 4
+        processed_count:
+          type: integer
+          minimum: 0
+          description: |
+            Instructions Alviere finished handling. Completing an instruction does not by itself
+            mean a transaction was produced — the result file carries `entity_uuid` /
+            `entity_type` per row for what, if anything, was created.
+          example: 2
+        failed_count:
+          type: integer
+          minimum: 0
+          description: Instructions rejected for business reasons; nothing was created
+          example: 2
+        result_file_path:
+          type: string
+          description: Full SFTP path of the result file. Present once written.
+          example: /batch-processing/outgoing/results/CREATE_PAYMENT_20260706T150500Z_result.csv.pgp
+        created_at:
+          type: string
+          format: date-time
+          description: When Alviere picked the file up
+          example: '2026-07-06T15:05:08.000Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2026-07-06T15:05:14.000Z'
 
     webhook-envelope:
       type: object
