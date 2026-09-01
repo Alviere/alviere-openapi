@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.17'
+  version: '6.6.18'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -10311,37 +10311,67 @@ x-webhooks:
                         - WALLET_TRANSACTION
                     entity:
                       $ref: '#/components/schemas/transaction'
-            example:
-              event_uuid: af20e7f8-92b3-d4e5-6071-ac2d3e4f5081
-              event_type: WALLET_TRANSACTION
-              event_version: '2021-11-18.1'
-              event_date: '2026-05-18T12:01:33Z'
-              event_retry: 0
-              business_account_uuid: 4d7e1f60-3a2b-4c1d-9e8a-1f3b2c5d6e7f
-              program_uuid: 4d7e1f60-3a2b-4c1d-9e8a-1f3b2c5d6e7f
-              entity:
-                transaction_uuid: 46802ace-1357-9bdf-4680-2ace13579bdf
-                wallet_uuid: 13579024-6810-2468-1357-902468102468
-                account_uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-                external_id: partner-load-7
-                transaction_type: LOAD_FUNDS
-                status: COMPLETED
-                description: Funds loaded
-                amount: 12500
-                currency: USD
-                refunded: false
-                disputed: false
-                funds_source:
-                  payment_method_uuid: f1e2d3c4-b5a6-9788-7766-554433221100
-                type_details:
-                  payments_details:
-                    card_processing:
-                      auth_type: AUTHCAP
-                      3ds_details:
-                        3ds_preference: ENABLED
-                        3ds_challenge_indicator: CHALLENGE_REQUESTED
-                created_at: '2026-05-18T11:12:01Z'
-                updated_at: '2026-05-18T12:01:33Z'
+            examples:
+              card-load:
+                summary: Card load
+                value:
+                  event_uuid: af20e7f8-92b3-d4e5-6071-ac2d3e4f5081
+                  event_type: WALLET_TRANSACTION
+                  event_version: '2021-11-18.1'
+                  event_date: '2026-05-18T12:01:33Z'
+                  event_retry: 0
+                  business_account_uuid: 4d7e1f60-3a2b-4c1d-9e8a-1f3b2c5d6e7f
+                  program_uuid: 4d7e1f60-3a2b-4c1d-9e8a-1f3b2c5d6e7f
+                  entity:
+                    transaction_uuid: 46802ace-1357-9bdf-4680-2ace13579bdf
+                    wallet_uuid: 13579024-6810-2468-1357-902468102468
+                    account_uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                    external_id: partner-load-7
+                    transaction_type: LOAD_FUNDS
+                    status: COMPLETED
+                    description: Funds loaded
+                    amount: 12500
+                    currency: USD
+                    refunded: false
+                    disputed: false
+                    funds_source:
+                      payment_method_uuid: f1e2d3c4-b5a6-9788-7766-554433221100
+                    type_details:
+                      payments_details:
+                        card_processing:
+                          auth_type: AUTHCAP
+                          3ds_details:
+                            3ds_preference: ENABLED
+                            3ds_challenge_indicator: CHALLENGE_REQUESTED
+                    created_at: '2026-05-18T11:12:01Z'
+                    updated_at: '2026-05-18T12:01:33Z'
+              batch-payment:
+                summary: ACH debit created from a batch file
+                value:
+                  event_uuid: 5b8c2d10-4e6f-8a0b-1c2d-3e4f5a6b7c8d
+                  event_type: WALLET_TRANSACTION
+                  event_version: '2021-11-18.1'
+                  event_date: '2026-07-06T15:05:12Z'
+                  event_retry: 0
+                  business_account_uuid: 4d7e1f60-3a2b-4c1d-9e8a-1f3b2c5d6e7f
+                  program_uuid: 4d7e1f60-3a2b-4c1d-9e8a-1f3b2c5d6e7f
+                  entity:
+                    transaction_uuid: 2f4a6c8e-0b1d-3f5a-7c9e-1b3d5f7a9c0e
+                    wallet_uuid: 13579024-6810-2468-1357-902468102468
+                    account_uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                    external_id: partner-invoice-8842
+                    batch_uuid: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+                    transaction_type: PAYMENT
+                    status: PROCESSING
+                    description: Invoice 8842 collection
+                    amount: 24500
+                    currency: USD
+                    refunded: false
+                    disputed: false
+                    funds_source:
+                      payment_method_uuid: e1f2a3b4-c5d6-7890-abcd-ef0123456789
+                    created_at: '2026-07-06T15:05:09Z'
+                    updated_at: '2026-07-06T15:05:12Z'
       responses:
         '2XX':
           description: Acknowledge receipt with any 2xx within 10 seconds.
@@ -10945,6 +10975,13 @@ components:
           description: Receipt identifier for a given transaction
           type: string
           format: uuid
+        batch_uuid:
+          type: string
+          format: uuid
+          description: |
+            The batch this transaction was created from. Present only on transactions materialized
+            from a batch file; absent on API-initiated transactions.
+          example: 7c9e6679-7425-40de-944b-e07fc1f90ae7
         transaction_type:
           $ref: '#/components/schemas/transaction-type'
         status:
@@ -15201,6 +15238,13 @@ components:
           description: Receipt identifier for a given transaction
           type: string
           format: uuid
+        batch_uuid:
+          type: string
+          format: uuid
+          description: |
+            The batch this transaction was created from. Present only on transactions materialized
+            from a batch file; absent on API-initiated transactions.
+          example: 7c9e6679-7425-40de-944b-e07fc1f90ae7
         transaction_type:
           $ref: '#/components/schemas/wallet-transaction-type'
         status:
