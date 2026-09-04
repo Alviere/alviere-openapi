@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.18'
+  version: '6.6.19'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -1986,6 +1986,11 @@ paths:
           in: query
           name: payment_method_uuid
           description: The unique ID of the payment method that is associated with the transactions
+        - $ref: '#/components/parameters/transaction_list_external_id'
+        - $ref: '#/components/parameters/transaction_list_amount_min'
+        - $ref: '#/components/parameters/transaction_list_amount_max'
+        - $ref: '#/components/parameters/transaction_list_description'
+        - $ref: '#/components/parameters/transaction_list_metadata'
       responses:
         '200':
           description: |
@@ -2068,6 +2073,11 @@ paths:
           in: query
           name: payment_method_uuid
           description: The unique ID of the payment method that is associated with the transactions
+        - $ref: '#/components/parameters/transaction_list_external_id'
+        - $ref: '#/components/parameters/transaction_list_amount_min'
+        - $ref: '#/components/parameters/transaction_list_amount_max'
+        - $ref: '#/components/parameters/transaction_list_description'
+        - $ref: '#/components/parameters/transaction_list_metadata'
       responses:
         '200':
           description: |
@@ -19452,6 +19462,49 @@ components:
         format: date-time
         example: '2019-10-12T07:20:50.52Z'
       description: End date for list entity
+    transaction_list_external_id:
+      name: external_id
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter by the partner external ID of the transaction. Exact match.
+    transaction_list_amount_min:
+      name: amount_min
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+      description: Inclusive lower bound in integer cents, compared to abs(amount). Debit vs credit is filtered with type, not the sign of amount.
+    transaction_list_amount_max:
+      name: amount_max
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+      description: Inclusive upper bound in integer cents, compared to abs(amount). Debit vs credit is filtered with type, not the sign of amount.
+    transaction_list_description:
+      name: description
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Case-insensitive substring match on the transaction description.
+    transaction_list_metadata:
+      name: metadata
+      in: query
+      required: false
+      description: JSON object of string keys to string values. Returns transactions whose metadata contains every supplied pair. Exact match, not a substring.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+          example:
+            order_id: ord_123
     wallet_transaction_type:
       name: type
       in: query
