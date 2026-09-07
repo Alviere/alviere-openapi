@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.20'
+  version: '6.6.21'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -19667,16 +19667,22 @@ components:
       name: status
       in: query
       required: false
+      style: form
+      explode: false
       schema:
-        type: string
-        enum:
-          - ACTIVE
-          - DELETED
-          - REJECTED
-          - PENDING
-          - PROCESSING
-      description: Must be ACTIVE, DELETED, REJECTED, PENDING or PROCESSING
-      example: ACTIVE
+        type: array
+        items:
+          type: string
+          enum:
+            - ACTIVE
+            - DELETED
+            - REJECTED
+            - PENDING
+            - PROCESSING
+      description: >-
+        Filter by payment method status. Accepts a single value or several as a
+        comma-separated list, for example `ACTIVE,PENDING`.
+      example: ACTIVE,PENDING
     card-statuses:
       name: status
       in: query
