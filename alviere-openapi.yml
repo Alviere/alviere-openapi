@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.19'
+  version: '6.6.20'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -2859,6 +2859,12 @@ paths:
                             type: string
                             title: Email Address
                             format: email
+                          business_name:
+                            type: string
+                            description: |
+                              Legal name of the originating business. Present when the originating
+                              account is a business. Omitted for consumer accounts.
+                            example: Tofu Gallore
                           address:
                             title: Address
                             type: object
@@ -2915,6 +2921,14 @@ paths:
                           last_name:
                             title: Last name
                             type: string
+                          business_name:
+                            type: string
+                            description: |
+                              Legal name of the destination business. Present when the destination
+                              is a business entity: a business beneficiary on `BANK_DEBIT` or
+                              `INTERNATIONAL_TRANSFER`, or a destination wallet on a business
+                              account for `WALLET_TRANSFER`. Omitted otherwise.
+                            example: Santo Raphael
                           address:
                             $ref: '#/components/schemas/beneficiary-address'
                           payout_method:
@@ -3918,6 +3932,7 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/payment-method-status'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/account_uuid'
       responses:
@@ -4207,6 +4222,7 @@ paths:
             type: string
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/payment-method-status'
         - $ref: '#/components/parameters/Version'
         - $ref: '#/components/parameters/account_uuid'
       responses:
@@ -19647,6 +19663,20 @@ components:
       schema:
         type: string
       description: The unique ID of a Wallet
+    payment-method-status:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - ACTIVE
+          - DELETED
+          - REJECTED
+          - PENDING
+          - PROCESSING
+      description: Must be ACTIVE, DELETED, REJECTED, PENDING or PROCESSING
+      example: ACTIVE
     card-statuses:
       name: status
       in: query
