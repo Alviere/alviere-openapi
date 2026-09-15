@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.21'
+  version: '6.6.22'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -19252,11 +19252,11 @@ components:
       name: Version
       in: header
       required: true
-      example: '2021-11-18'
+      example: 'v2'
       schema:
         type: string
-        example: '2021-11-18'
-      description: The API version
+        enum: ['v2']
+      description: The API version.
     account_uuid:
       name: account_uuid
       in: path
