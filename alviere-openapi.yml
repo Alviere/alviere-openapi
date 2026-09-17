@@ -17940,6 +17940,13 @@ components:
           description: |
             The Google Pay Unified Push Provisioning (UPP) session identifier returned by the
             Google Pay SDK on the device. Supplying it selects the UPP provisioning flow.
+        google_opc_requested:
+          type: boolean
+          default: true
+          description: |
+            Whether to also mint the Google OPC for the FPAN (card-on-file) flow, alongside
+            the device token. Relay the value the Google Pay SDK supplies when it requests
+            payment credentials. Only applies when `server_session_id` is supplied.
       x-internal: false
     samsung-pay-request:
       title: Samsung Pay
