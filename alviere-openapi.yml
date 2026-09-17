@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.23'
+  version: '6.6.24'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -17920,14 +17920,26 @@ components:
     google-pay-request:
       title: Google Pay
       type: object
-      description: Parameters required to add card to Google Pay
+      description: |
+        Parameters required to add card to Google Pay.
+
+        Google is replacing the legacy in-app push provisioning flow with Unified Push
+        Provisioning (UPP). Send `server_session_id` to use the UPP flow. Requests that
+        omit it continue to use the legacy flow until Google retires it at the end of 2026.
       properties:
         client_wallet_account_id:
           type: string
           description: Value returned by Google Pay for use with Visa.
         client_device_id:
           type: string
-          description: Value returned by Google Pay for use with Visa.
+          description: |
+            Value returned by Google Pay for use with Visa. Not required when
+            `server_session_id` is supplied, since the UPP flow derives the device from the session.
+        server_session_id:
+          type: string
+          description: |
+            The Google Pay Unified Push Provisioning (UPP) session identifier returned by the
+            Google Pay SDK on the device. Supplying it selects the UPP provisioning flow.
       x-internal: false
     samsung-pay-request:
       title: Samsung Pay
@@ -17963,11 +17975,23 @@ components:
     google-pay-response:
       title: Google Pay provisioning data
       type: object
-      description: String required to pass to Google Pay in your provisioning request.
+      description: |
+        Strings required to pass to Google Pay in your provisioning request.
+
+        `opaque_payment_data` drives the legacy provisioning flow and is always returned.
+        `provisioning_payload` is additionally returned when the request supplied a
+        `server_session_id`, and drives the Unified Push Provisioning (UPP) flow. Prefer
+        `provisioning_payload` when it is present.
       properties:
         opaque_payment_data:
           type: string
           description: Base64-encoded or Base64url-encoded opaque string to be passed to Google Pay
+          format: base64
+        provisioning_payload:
+          type: string
+          description: |
+            Encrypted payload representing the card data for the Google Pay Unified Push
+            Provisioning (UPP) flow. Only returned when the request supplied a `server_session_id`.
           format: base64
       required:
         - opaque_payment_data
