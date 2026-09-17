@@ -17924,8 +17924,8 @@ components:
         Parameters required to add card to Google Pay.
 
         Google is replacing the legacy in-app push provisioning flow with Unified Push
-        Provisioning (UPP). Send `server_session_id` to use the UPP flow. Requests that
-        omit it continue to use the legacy flow until Google retires it at the end of 2026.
+        Provisioning (UPP). `server_session_id` and `google_opc_requested` are supplied by
+        Google in the credentials callback on the device. Pass both through unchanged.
       properties:
         client_wallet_account_id:
           type: string
@@ -17933,20 +17933,20 @@ components:
         client_device_id:
           type: string
           description: |
-            Value returned by Google Pay for use with Visa. Not required when
-            `server_session_id` is supplied, since the UPP flow derives the device from the session.
+            Value returned by Google Pay for use with Visa. Optional, and can be omitted when
+            Google does not supply one.
         server_session_id:
           type: string
           description: |
-            The Google Pay Unified Push Provisioning (UPP) session identifier returned by the
-            Google Pay SDK on the device. Supplying it selects the UPP provisioning flow.
+            The session identifier Google supplies in the credentials callback on the device.
+            Pass the value through unchanged.
         google_opc_requested:
           type: boolean
-          default: true
           description: |
-            Whether to also mint the Google OPC for the FPAN (card-on-file) flow, alongside
-            the device token. Relay the value the Google Pay SDK supplies when it requests
-            payment credentials. Only applies when `server_session_id` is supplied.
+            Whether Google requested the Google Opaque Payment Card, which lets Google store the
+            card on file in the user's Google Account and re-provision it to future devices.
+            Set from the value Google supplies in the credentials callback. Pass the value
+            through unchanged.
       x-internal: false
     samsung-pay-request:
       title: Samsung Pay
@@ -17985,10 +17985,9 @@ components:
       description: |
         Strings required to pass to Google Pay in your provisioning request.
 
-        `opaque_payment_data` drives the legacy provisioning flow and is always returned.
-        `provisioning_payload` is additionally returned when the request supplied a
-        `server_session_id`, and drives the Unified Push Provisioning (UPP) flow. Prefer
-        `provisioning_payload` when it is present.
+        `opaque_payment_data` creates the device token. `provisioning_payload` is returned
+        alongside it and lets Google store the card on file in the user's Google Account for
+        re-provisioning to future devices. Pass both to Google Pay.
       properties:
         opaque_payment_data:
           type: string
@@ -17998,7 +17997,7 @@ components:
           type: string
           description: |
             Encrypted payload representing the card data for the Google Pay Unified Push
-            Provisioning (UPP) flow. Only returned when the request supplied a `server_session_id`.
+            Provisioning (UPP) flow. Returned on every Google Pay response.
           format: base64
       required:
         - opaque_payment_data
