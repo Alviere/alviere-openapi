@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.26'
+  version: '6.6.27'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -3360,7 +3360,6 @@ paths:
                   description: |
                     The amount to transfer, in cents of the source wallet currency.
                     e.g. 1 USD must be sent as `amount: 100`
-                  example: 2700
                 available_at:
                   type: string
                   format: date-time
@@ -11715,7 +11714,6 @@ components:
           description: The date this account was last updated
     early-pay-party-request:
       type: object
-      title: Early Pay party
       required:
         - wallet_uuid
       properties:
@@ -11731,7 +11729,6 @@ components:
           description: Custom metadata stored on this party's transaction
     early-pay-party:
       type: object
-      title: Early Pay party
       required:
         - wallet_uuid
         - transaction_uuid
