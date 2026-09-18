@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.24'
+  version: '6.6.25'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -25,6 +25,7 @@ tags:
   - name: Accounts
   - name: Authentication
   - name: Wallets
+  - name: Early Pay
   - name: Transactions
   - name: Payment methods
   - name: Card Payments
@@ -3316,6 +3317,286 @@ paths:
       tags:
         - Wallets
 
+  /early-pay/transfers:
+    post:
+      summary: Transfer funds
+      description: |
+        Transfers funds to a wallet with a hold until `available_at`. The recipient sees the amount as
+        pending until that time, or until it is released early. Transfers created through this service are
+        funded by the program's Early Pay funding.
+
+        Each side of the transfer carries its own description and metadata. If only one side provides a
+        description, it is used for both.
+      operationId: early-pay-transfers-post
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Version'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - external_id
+                - amount
+                - available_at
+                - source
+                - destination
+              properties:
+                external_id:
+                  type: string
+                  minLength: 8
+                  maxLength: 64
+                  description: |
+                    The unique ID of this transfer in your own platform. Used for idempotency.
+
+                    NOTE: This field MUST be unique. Any subsequent transfers with the same value will be discarded.
+                  example: RIDE-4821-PAYOUT
+                amount:
+                  type: integer
+                  minimum: 1
+                  maximum: 99999999
+                  description: |
+                    The amount to transfer, in cents of the source wallet currency.
+                    e.g. 1 USD must be sent as `amount: 100`
+                  example: 2700
+                available_at:
+                  type: string
+                  format: date-time
+                  description: When the funds become available to the recipient. RFC 3339.
+                  example: "2026-09-21T09:00:00.000Z"
+                source:
+                  $ref: '#/components/schemas/early-pay-party-request'
+                destination:
+                  $ref: '#/components/schemas/early-pay-party-request'
+                service_fees:
+                  type: array
+                  description: Service fees charged to the source wallet.
+                  items:
+                    $ref: '#/components/schemas/service-fee-transaction'
+      responses:
+        '201':
+          description: The transfer was created
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - transfer
+                properties:
+                  transfer:
+                    $ref: '#/components/schemas/early-pay-transfer'
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+        '409':
+          description: Idempotency detected - conflict with `external_id` field.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - transfer
+                properties:
+                  transfer:
+                    $ref: '#/components/schemas/early-pay-transfer'
+      tags:
+        - Early Pay
+    get:
+      summary: List unsettled transfers
+      description: |
+        Lists every Early Pay transfer in the program whose source funds have not yet settled.
+        Once the source settles, the transfer is an ordinary credit and no longer appears here.
+      operationId: early-pay-transfers-get
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/start_date'
+        - $ref: '#/components/parameters/end_date'
+        - in: query
+          name: source_wallet_uuid
+          description: Only transfers sent from this wallet
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: destination_wallet_uuid
+          description: Only transfers sent to this wallet
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The open Early Pay transfers
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - records
+                  - transfers
+                properties:
+                  records:
+                    type: integer
+                    description: The number of transfers returned
+                  transfers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/early-pay-transfer'
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+      tags:
+        - Early Pay
+  /early-pay/release:
+    post:
+      summary: Release funds
+      description: |
+        Makes held Early Pay funds available to the recipient before `available_at`.
+        Releases the full held amount unless `amount` is provided.
+      operationId: early-pay-release-post
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Version'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - external_id
+                - transaction_uuid
+              properties:
+                external_id:
+                  type: string
+                  description: The unique ID of this release in your own platform. Used for idempotency.
+                  example: RIDE-4821-RELEASE
+                transaction_uuid:
+                  type: string
+                  format: uuid
+                  description: The `destination.transaction_uuid` of the Early Pay transfer
+                amount:
+                  type: integer
+                  minimum: 1
+                  maximum: 99999999
+                  description: The amount to release, in cents. Defaults to everything still held.
+                service_fees:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/service-fee-release'
+      responses:
+        '200':
+          description: The funds were released
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - transfer
+                properties:
+                  transfer:
+                    $ref: '#/components/schemas/early-pay-transfer'
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+        '409':
+          description: Idempotency detected - conflict with `external_id` field.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - transfer
+                properties:
+                  transfer:
+                    $ref: '#/components/schemas/early-pay-transfer'
+      tags:
+        - Early Pay
+  /wallets/{wallet_uuid}/push-to-card:
+    post:
+      summary: Push to card
+      description: |
+        Sends funds from the wallet to a tokenized debit card over the card network's push rails.
+        Funds typically reach the card within minutes. Bank payment methods are rejected.
+      operationId: wallets-wallet_uuid-push-to-card-post
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Version'
+        - $ref: '#/components/parameters/wallet_uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - external_id
+                - payment_method_uuid
+                - amount
+              properties:
+                external_id:
+                  type: string
+                  minLength: 8
+                  maxLength: 64
+                  description: |
+                    The unique ID of this payout in your own platform. Used for idempotency.
+
+                    NOTE: This field MUST be unique. Any subsequent payouts with the same value will be discarded.
+                  example: RIDE-4821-CARD
+                payment_method_uuid:
+                  type: string
+                  format: uuid
+                  description: The tokenized card to push the funds to
+                amount:
+                  type: integer
+                  minimum: 1
+                  maximum: 99999999
+                  description: |
+                    The amount to push, in cents.
+                    e.g. 1 USD must be sent as `amount: 100`
+                  example: 2700
+                description:
+                  type: string
+                  description: A small description to identify the transaction
+                metadata:
+                  type: object
+                  description: Allows for any number of custom metadata keys and values to be stored with a given transaction
+                service_fees:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/service-fee-transaction'
+      responses:
+        '201':
+          $ref: '#/components/responses/wallet-transaction-response-success'
+        '400':
+          $ref: '#/components/responses/400-Error'
+        '401':
+          $ref: '#/components/responses/401-Error'
+        '403':
+          $ref: '#/components/responses/403-Error'
+        '404':
+          $ref: '#/components/responses/404-Error'
+        '409':
+          $ref: '#/components/responses/wallet-transaction-response-idempotency'
+      tags:
+        - Early Pay
   /beneficiaries/{beneficiary_uuid}/payout-methods:
     post:
       summary: Create payout method
@@ -11388,6 +11669,83 @@ components:
         updated_at:
           type: string
           description: The date this account was last updated
+    early-pay-party-request:
+      type: object
+      title: Early Pay party
+      required:
+        - wallet_uuid
+      properties:
+        wallet_uuid:
+          type: string
+          format: uuid
+        description:
+          type: string
+          description: The description shown on this party's transaction
+          example: Your earnings for Sept 18
+        metadata:
+          type: object
+          description: Custom metadata stored on this party's transaction
+    early-pay-party:
+      type: object
+      title: Early Pay party
+      required:
+        - wallet_uuid
+        - transaction_uuid
+      properties:
+        wallet_uuid:
+          type: string
+          format: uuid
+        transaction_uuid:
+          type: string
+          format: uuid
+          description: The transaction on this party's wallet
+        description:
+          type: string
+        metadata:
+          type: object
+    early-pay-transfer:
+      type: object
+      title: Early Pay transfer
+      required:
+        - external_id
+        - amount
+        - currency
+        - available_at
+        - released_at
+        - created_at
+        - source
+        - destination
+      properties:
+        external_id:
+          type: string
+          example: RIDE-4821-PAYOUT
+        amount:
+          type: integer
+          description: The transfer amount in cents
+          example: 2700
+        currency:
+          type: string
+          description: The currency code in ISO-4217 format.
+          example: USD
+        available_at:
+          type: string
+          format: date-time
+          description: When the funds become available to the recipient
+          example: "2026-09-21T09:00:00.000Z"
+        released_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the funds were made available, early or at `available_at`. Null while held.
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-09-18T16:20:00.000Z"
+        source:
+          $ref: '#/components/schemas/early-pay-party'
+        destination:
+          $ref: '#/components/schemas/early-pay-party'
     transaction:
       type: object
       description: Details of a transaction entity in Alviere's systems. This entity represents a financial transaction between wallets and/or vaults.
