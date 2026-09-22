@@ -478,6 +478,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of account records returned
                   accounts:
                     type: array
                     description: List of accounts
@@ -1153,6 +1157,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of address records returned
                   addresses:
                     title: List of addresses
                     type: array
@@ -1529,6 +1537,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of dossier records returned
                   dossiers:
                     type: array
                     items:
@@ -1728,6 +1740,10 @@ paths:
                 type: object
                 description: The ledger for this user account.
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of wallet records returned
                   wallets:
                     type: array
                     items:
@@ -4567,6 +4583,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of bank account records returned
                   bank_accounts:
                     type: array
                     description: An array of bank account records
@@ -6559,11 +6579,16 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of card records returned
                   cards:
                     type: array
                     items:
                       $ref: '#/components/schemas/issued-card-response'
                 required:
+                  - records
                   - cards
         '400':
           $ref: '#/components/responses/400-Error'
@@ -7613,11 +7638,16 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of beneficiary records returned
                   beneficiaries:
                     type: array
                     items:
                       $ref: '#/components/schemas/beneficiary-response'
                 required:
+                  - records
                   - beneficiaries
         '400':
           $ref: '#/components/responses/400-Error'
@@ -9018,6 +9048,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of check records returned
                   checks:
                     type: array
                     description: Array containing check objects
@@ -9187,6 +9221,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  records:
+                    type: integer
+                    title: Number of records
+                    description: The number of incentive rule records returned
                   incentive_rules:
                     type: array
                     description: Array of incentive rules
