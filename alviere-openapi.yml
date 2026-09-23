@@ -20117,7 +20117,7 @@ components:
 
             Two fields only. The program is taken from the authenticated SFTP credentials and
             never appears in the name. `{file_id}` is the client's identifier for the file —
-            opaque to Alviere, `[A-Za-z0-9-]`, max 64 characters, unique per program and
+            opaque to Alviere, `[A-Za-z0-9-]`, unique per program and
             instruction type for all time.
           example: CREATE_PAYMENT_20260706T150500Z.csv.pgp
         instruction_type:
