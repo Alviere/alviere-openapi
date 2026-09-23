@@ -13549,6 +13549,10 @@ components:
               minLength: 1
               maxLength: 26
               pattern: "^[a-zA-Z0-9- ]{1,26}$"
+            physical_mail_returned_at:
+              type: string
+              format: date-time
+              description: The time the physical card was reported as returned by mail. Omitted if no mail return has been recorded.
         service_fees:
           type: array
           items:
