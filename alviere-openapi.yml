@@ -10828,7 +10828,6 @@ x-webhooks:
                 file_name: CREATE_PAYMENT_20260706T150500Z.csv.pgp
                 instruction_type: CREATE_PAYMENT
                 status: PARTIALLY_PROCESSED
-                error_code: null
                 instruction_count: 4
                 processed_count: 2
                 failed_count: 2
@@ -20107,7 +20106,6 @@ components:
         - file_name
         - instruction_type
         - status
-        - error_code
         - created_at
         - updated_at
       properties:
@@ -20132,10 +20130,9 @@ components:
           $ref: '#/components/schemas/batch-status'
         error_code:
           type: string
-          nullable: true
           description: |
-            Why the file was rejected as a whole. Set only on a `FAILED` batch whose file was rejected;
-            `null` on every other batch, including one where every row ran and failed.
+            Why the file was rejected as a whole. Present only on a `FAILED` batch whose file was rejected;
+            absent on every other batch, including one where every row ran and failed.
         instruction_count:
           type: integer
           minimum: 0
