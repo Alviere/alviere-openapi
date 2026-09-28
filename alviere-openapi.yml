@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.27'
+  version: '6.6.28'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -2008,6 +2008,7 @@ paths:
         - $ref: '#/components/parameters/transaction_list_amount_max'
         - $ref: '#/components/parameters/transaction_list_description'
         - $ref: '#/components/parameters/transaction_list_metadata'
+        - $ref: '#/components/parameters/transaction_list_batch_uuid'
       responses:
         '200':
           description: |
@@ -2095,6 +2096,7 @@ paths:
         - $ref: '#/components/parameters/transaction_list_amount_max'
         - $ref: '#/components/parameters/transaction_list_description'
         - $ref: '#/components/parameters/transaction_list_metadata'
+        - $ref: '#/components/parameters/transaction_list_batch_uuid'
       responses:
         '200':
           description: |
@@ -10826,6 +10828,7 @@ x-webhooks:
                 file_name: CREATE_PAYMENT_20260706T150500Z.csv.pgp
                 instruction_type: CREATE_PAYMENT
                 status: PARTIALLY_PROCESSED
+                error_code: null
                 instruction_count: 4
                 processed_count: 2
                 failed_count: 2
@@ -20068,12 +20071,14 @@ components:
       type: string
       title: Batch status
       description: |
-        Envelope status. Describes the file, not settlement and not what each row created.
+        Roll-up of the per-row outcomes in the result file. Describes the file, not settlement.
 
-        - `FAILED` — rejected at the file gate (malformed CSV, bad timestamp, duplicate file name), in which case the original is moved to `outgoing/failed/` and no result file is written; or every instruction failed after accept, in which case a result file is written
-        - `PROCESSING` — accepted; instructions running
-        - `PROCESSED` — every instruction reached `PROCESSED`; result file written. Not a guarantee that every row created an entity — check `entity_uuid` / `entity_type` in the result file
-        - `PARTIALLY_PROCESSED` — mix of processed and failed instructions; result file written
+        - `PROCESSING` — accepted; rows are running
+        - `PROCESSED` — every row created its payment. No failures. A payment held in `MANUAL_REVIEW` counts as created. A file with a header and no rows closes `PROCESSED`
+        - `PARTIALLY_PROCESSED` — some rows created payments, some were rejected
+        - `FAILED` — no payments were created. Either the file was rejected outright (original moved to `outgoing/failed/`, `error_code` set, no `result_file_path`), or every row was rejected (`result_file_path` populated)
+
+        A re-used file name is skipped, not failed: the original moves to `outgoing/skipped/` and no batch is created.
       enum:
         - FAILED
         - PROCESSING
@@ -20102,6 +20107,7 @@ components:
         - file_name
         - instruction_type
         - status
+        - error_code
         - created_at
         - updated_at
       properties:
@@ -20124,23 +20130,29 @@ components:
           $ref: '#/components/schemas/batch-instruction-type'
         status:
           $ref: '#/components/schemas/batch-status'
+        error_code:
+          type: string
+          nullable: true
+          description: |
+            Why the file was rejected as a whole. Set only on a `FAILED` batch whose file was rejected;
+            `null` on every other batch, including one where every row ran and failed.
         instruction_count:
           type: integer
           minimum: 0
-          description: Rows parsed from the file. Absent when the file never passed the gate.
+          description: |
+            Data rows after the header. Set whenever the file decrypts to UTF-8 text, including on a
+            rejected file. Absent when the file name was rejected, the file could not be decrypted, or
+            it is not UTF-8 text.
           example: 4
         processed_count:
           type: integer
           minimum: 0
-          description: |
-            Instructions Alviere finished handling. Completing an instruction does not by itself
-            mean a transaction was produced — the result file carries `entity_uuid` /
-            `entity_type` per row for what, if anything, was created.
+          description: Rows that created a payment — `PROCESSED` in the result file. Includes a payment held in `MANUAL_REVIEW`
           example: 2
         failed_count:
           type: integer
           minimum: 0
-          description: Instructions rejected for business reasons; nothing was created
+          description: Rows that did not create a payment — `FAILED` in the result file, each with an error code
           example: 2
         result_file_path:
           type: string
@@ -20460,6 +20472,14 @@ components:
       schema:
         type: string
       description: Case-insensitive substring match on the transaction description.
+    transaction_list_batch_uuid:
+      name: batch_uuid
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: Returns only transactions created from this batch. Unknown or another program's `batch_uuid` returns an empty list.
     transaction_list_metadata:
       name: metadata
       in: query
