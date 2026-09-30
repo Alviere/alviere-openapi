@@ -20453,7 +20453,7 @@ components:
       schema:
         type: integer
         minimum: 0
-      description: Inclusive lower bound in integer cents, compared to abs(amount). Debit vs credit is filtered with type, not the sign of amount.
+      description: Inclusive lower bound in integer cents, compared to abs(amount). Debit vs credit is filtered with type, not the sign of amount. Searches transactions from the last rolling year only.
     transaction_list_amount_max:
       name: amount_max
       in: query
@@ -20461,14 +20461,14 @@ components:
       schema:
         type: integer
         minimum: 0
-      description: Inclusive upper bound in integer cents, compared to abs(amount). Debit vs credit is filtered with type, not the sign of amount.
+      description: Inclusive upper bound in integer cents, compared to abs(amount). Debit vs credit is filtered with type, not the sign of amount. Searches transactions from the last rolling year only.
     transaction_list_description:
       name: description
       in: query
       required: false
       schema:
         type: string
-      description: Case-insensitive substring match on the transaction description.
+      description: Case-insensitive substring match on the transaction description. Searches transactions from the last rolling year only.
     transaction_list_batch_uuid:
       name: batch_uuid
       in: query
@@ -20481,15 +20481,10 @@ components:
       name: metadata
       in: query
       required: false
-      description: JSON object of string keys to string values. Returns transactions whose metadata contains every supplied pair. Exact match, not a substring.
-      content:
-        application/json:
-          schema:
-            type: object
-            additionalProperties:
-              type: string
-          example:
-            order_id: ord_123
+      description: URL-encoded JSON object of string keys to string values. Returns transactions whose metadata contains every supplied pair. Exact match, not a substring. Searches transactions from the last rolling year only.
+      schema:
+        type: string
+        example: '{"order_id":"ord_123"}'
     wallet_transaction_type:
       name: type
       in: query
