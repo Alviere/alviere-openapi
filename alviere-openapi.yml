@@ -2008,7 +2008,6 @@ paths:
         - $ref: '#/components/parameters/transaction_list_amount_max'
         - $ref: '#/components/parameters/transaction_list_description'
         - $ref: '#/components/parameters/transaction_list_metadata'
-        - $ref: '#/components/parameters/transaction_list_batch_uuid'
       responses:
         '200':
           description: |
@@ -2096,7 +2095,6 @@ paths:
         - $ref: '#/components/parameters/transaction_list_amount_max'
         - $ref: '#/components/parameters/transaction_list_description'
         - $ref: '#/components/parameters/transaction_list_metadata'
-        - $ref: '#/components/parameters/transaction_list_batch_uuid'
       responses:
         '200':
           description: |
@@ -20469,14 +20467,6 @@ components:
       schema:
         type: string
       description: Case-insensitive substring match on the transaction description. Searches transactions from the last rolling year only.
-    transaction_list_batch_uuid:
-      name: batch_uuid
-      in: query
-      required: false
-      schema:
-        type: string
-        format: uuid
-      description: Returns only transactions created from this batch. Unknown or another program's `batch_uuid` returns an empty list.
     transaction_list_metadata:
       name: metadata
       in: query
