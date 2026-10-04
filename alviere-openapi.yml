@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.29'
+  version: '6.6.30'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -2026,8 +2026,6 @@ paths:
                     used to validate against duplicate records (e.g. if you send two cards with same `external_id` the system
                     will return an HTTP status code 409 - conflict)
                   type: string
-                  maximum: 128
-                  minimum: 1
                 country:
                   title: Country
                   description: Three-letter country code (ISO 3166-1 alpha-3).
@@ -2757,8 +2755,6 @@ paths:
 
                     NOTE: This field MUST be unique. Any subsequent transactions with the same value will be discarded.
                   type: string
-                  minimum: 8
-                  maximum: 64
                 description:
                   type: string
                   maxLength: 255
@@ -2856,8 +2852,6 @@ paths:
 
                     NOTE: This field MUST be unique. Any subsequent transactions with the same value will be discarded.
                   type: string
-                  minimum: 8
-                  maximum: 64
                 description:
                   type: string
                   description: A small description to identify the transaction
@@ -2928,8 +2922,6 @@ paths:
 
                     NOTE: This field MUST be unique. Any subsequent transactions with the same value will be discarded.
                   type: string
-                  minimum: 8
-                  maximum: 64
                 amount:
                   description: |
                     The amount is the value associated with the request, in cents.
@@ -3013,8 +3005,6 @@ paths:
 
                     NOTE: This field MUST be unique. Any subsequent transactions with the same value will be discarded.
                   type: string
-                  minimum: 8
-                  maximum: 64
                 metadata:
                   type: object
                   description: |
@@ -3217,8 +3207,6 @@ paths:
 
                     NOTE: This field MUST be unique. Any subsequent transactions with the same value will be discarded.
                   type: string
-                  minimum: 8
-                  maximum: 64
                 description:
                   type: string
                   description: A small description to identify the transaction
@@ -3277,8 +3265,6 @@ paths:
 
                         NOTE: This field MUST be unique. Any subsequent transactions with the same value will be discarded.
                       type: string
-                      minimum: 8
-                      maximum: 64
                     mode:
                       enum:
                         - LOAD
@@ -4303,8 +4289,6 @@ paths:
               properties:
                 external_id:
                   type: string
-                  minLength: 8
-                  maxLength: 64
                   description: |
                     The unique ID of this transfer in your own platform. Used for idempotency.
 
@@ -4509,8 +4493,6 @@ paths:
               properties:
                 external_id:
                   type: string
-                  minLength: 8
-                  maxLength: 64
                   description: |
                     The unique ID of this payout in your own platform. Used for idempotency.
 
@@ -5647,8 +5629,6 @@ paths:
 
                     NOTE: This field MUST be unique. Any subsequent transactions with same `external_id` will fail.
                   type: string
-                  minimum: 8
-                  maximum: 64
                 amount:
                   description: |
                     The amount is the value associated with the request, in cents.
@@ -5776,8 +5756,6 @@ paths:
 
                     NOTE: This field MUST be unique. Any subsequent transactions with same `external_id` will fail.
                   type: string
-                  minimum: 8
-                  maximum: 64
                 amount:
                   description: |
                     The amount is the value associated with the request, in cents.
