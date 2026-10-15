@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.30'
+  version: '6.6.31'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -18406,9 +18406,10 @@ components:
       description: |
         Strings required to pass to Google Pay in your provisioning request.
 
-        `opaque_payment_data` creates the device token. `provisioning_payload` is returned
-        alongside it and lets Google store the card on file in the user's Google Account for
-        re-provisioning to future devices. Pass both to Google Pay.
+        `opaque_payment_data` creates the device token. When the card supports Unified Push
+        Provisioning (UPP), `provisioning_payload` is returned alongside it and lets Google store
+        the card on file in the user's Google Account for re-provisioning to future devices.
+        Pass every value returned to Google Pay.
       properties:
         opaque_payment_data:
           type: string
@@ -18418,7 +18419,7 @@ components:
           type: string
           description: |
             Encrypted payload representing the card data for the Google Pay Unified Push
-            Provisioning (UPP) flow. Returned on every Google Pay response.
+            Provisioning (UPP) flow. Returned only when the card supports UPP.
           format: base64
       required:
         - opaque_payment_data
