@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.33'
+  version: '6.6.34'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -10809,7 +10809,7 @@ x-webhooks:
                 instruction_count: 4
                 processed_count: 2
                 failed_count: 2
-                result_file_path: /batch-processing/outgoing/results/CREATE_PAYMENT_20260706T150500Z_result.csv.pgp
+                result_file_path: /batch-processing/outgoing/CREATE_PAYMENT_20260706T150500Z_result.csv.pgp
                 created_at: '2026-07-06T15:05:08.000Z'
                 updated_at: '2026-07-06T15:05:14.000Z'
       responses:
@@ -20134,7 +20134,7 @@ components:
         result_file_path:
           type: string
           description: Full SFTP path of the result file. Present once written.
-          example: /batch-processing/outgoing/results/CREATE_PAYMENT_20260706T150500Z_result.csv.pgp
+          example: /batch-processing/outgoing/CREATE_PAYMENT_20260706T150500Z_result.csv.pgp
         created_at:
           type: string
           format: date-time
