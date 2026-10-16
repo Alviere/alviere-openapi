@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.32'
+  version: '6.6.33'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -20056,9 +20056,9 @@ components:
         - `PROCESSING` — accepted; rows are running
         - `PROCESSED` — every row created its payment. No failures. A payment held in `MANUAL_REVIEW` counts as created. A file with a header and no rows closes `PROCESSED`
         - `PARTIALLY_PROCESSED` — some rows created payments, some were rejected
-        - `FAILED` — no payments were created. Either the file was rejected outright (original moved to `outgoing/failed/`, `error_code` set, no `result_file_path`), or every row was rejected (`result_file_path` populated)
+        - `FAILED` — no payments were created. Either the file was rejected outright (original moved to `batch-processing/incoming/failed/`, `error_code` set, no `result_file_path`), or every row was rejected (`result_file_path` populated)
 
-        A re-used file name is skipped, not failed: the original moves to `outgoing/skipped/` and no batch is created.
+        A re-used file name is skipped, not failed: the original moves to `batch-processing/incoming/skipped/` and no batch is created.
       enum:
         - FAILED
         - PROCESSING
@@ -20085,7 +20085,6 @@ components:
       required:
         - batch_uuid
         - file_name
-        - instruction_type
         - status
         - created_at
         - updated_at
@@ -20106,7 +20105,9 @@ components:
             instruction type for all time.
           example: CREATE_PAYMENT_20260706T150500Z.csv.pgp
         instruction_type:
-          $ref: '#/components/schemas/batch-instruction-type'
+          allOf:
+            - $ref: '#/components/schemas/batch-instruction-type'
+          description: Absent when the file name does not carry a recognised instruction-type prefix.
         status:
           $ref: '#/components/schemas/batch-status'
         error_code:
@@ -20118,9 +20119,7 @@ components:
           type: integer
           minimum: 0
           description: |
-            Data rows after the header. Set whenever the file decrypts to UTF-8 text, including on a
-            rejected file. Absent when the file name was rejected, the file could not be decrypted, or
-            it is not UTF-8 text.
+            Data rows after the header. Absent when the file was rejected before its rows were counted.
           example: 4
         processed_count:
           type: integer
