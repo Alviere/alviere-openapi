@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.34'
+  version: '6.6.35'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -4029,7 +4029,12 @@ paths:
           $ref: '#/components/responses/404-Error'
         '409':
           description: Transaction is already in a `CANCELED` status
-      description: Cancel transaction
+      description: |
+        Cancel transaction.
+
+        An `INSTANT_PAYMENT_REQUEST` can be canceled while in `CREATED` or `PROCESSING_PAYMENT`. If the request has
+        already reached the bank, the cancellation is forwarded synchronously; a bank rejection returns `400` with
+        `error_code` `30427` and the transaction keeps its status.
       parameters:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/Version'
@@ -4045,6 +4050,13 @@ paths:
                 description:
                   type: string
                   description: A small description indicating why the transaction was canceled
+                cancel_reason:
+                  type: string
+                  enum:
+                    - WRONG_AMOUNT
+                    - PAYMENT_NO_LONGER_DUE
+                  default: PAYMENT_NO_LONGER_DUE
+                  description: Reason sent to the payer's bank. Only applicable to `INSTANT_PAYMENT_REQUEST`.
                 refund_method:
                   enum:
                     - CASH
