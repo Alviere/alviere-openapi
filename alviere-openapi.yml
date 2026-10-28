@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.35'
+  version: '6.6.36'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -6581,6 +6581,20 @@ paths:
                             - Alviere, Inc.
                           items:
                             type: string
+                        allowed_mccs:
+                          description: |
+                            The array of merchant category codes (ISO 18245) to be accepted.
+                            A transaction is authorized if it matches any merchant id, merchant name or MCC in `allowed_merchants`.
+                          type: array
+                          title: Acceptable merchant category codes
+                          example:
+                            - '5411'
+                            - '5812'
+                          items:
+                            type: string
+                            pattern: ^[0-9]{4}$
+                    allowed_transactions:
+                      $ref: '#/components/schemas/issued-card-allowed-transactions'
                     limits:
                       type: array
                       items:
@@ -6857,6 +6871,20 @@ paths:
                             - Alviere, Inc.
                           items:
                             type: string
+                        allowed_mccs:
+                          description: |
+                            The array of merchant category codes (ISO 18245) to be accepted.
+                            A transaction is authorized if it matches any merchant id, merchant name or MCC in `allowed_merchants`.
+                          type: array
+                          title: Acceptable merchant category codes
+                          example:
+                            - '5411'
+                            - '5812'
+                          items:
+                            type: string
+                            pattern: ^[0-9]{4}$
+                    allowed_transactions:
+                      $ref: '#/components/schemas/issued-card-allowed-transactions'
                     limits:
                       type: array
                       items:
@@ -7762,6 +7790,20 @@ paths:
                             - Alviere, Inc.
                           items:
                             type: string
+                        allowed_mccs:
+                          description: |
+                            The array of merchant category codes (ISO 18245) to be accepted.
+                            A transaction is authorized if it matches any merchant id, merchant name or MCC in `allowed_merchants`.
+                          type: array
+                          title: Acceptable merchant category codes
+                          example:
+                            - '5411'
+                            - '5812'
+                          items:
+                            type: string
+                            pattern: ^[0-9]{4}$
+                    allowed_transactions:
+                      $ref: '#/components/schemas/issued-card-allowed-transactions'
                     limits:
                       type: array
                       items:
@@ -13505,6 +13547,20 @@ components:
                     - Alviere, Inc.
                   items:
                     type: string
+                allowed_mccs:
+                  description: |
+                    The array of merchant category codes (ISO 18245) to be accepted.
+                    A transaction is authorized if it matches any merchant id, merchant name or MCC in `allowed_merchants`.
+                  type: array
+                  title: Acceptable merchant category codes
+                  example:
+                    - '5411'
+                    - '5812'
+                  items:
+                    type: string
+                    pattern: ^[0-9]{4}$
+            allowed_transactions:
+              $ref: '#/components/schemas/issued-card-allowed-transactions'
             limits:
               type: array
               items:
@@ -17806,6 +17862,40 @@ components:
         - city
         - state
         - country
+    issued-card-allowed-transactions:
+      title: Allowed transactions
+      type: object
+      description: |
+        Turns categories of card use on or off. Each key defaults to `true`. Setting a key to `false` declines authorizations in that category, even at merchants in `allowed_merchants`. On update, only the keys sent change, and a change applies to new authorizations within a few seconds.
+
+        Mobile wallet payments (Apple Pay, Google Pay, Samsung Pay) are not affected by `online` or `contactless`.
+      properties:
+        international:
+          type: boolean
+          default: true
+          description: Purchases from merchants outside the United States, in person or online.
+        online:
+          type: boolean
+          default: true
+          description: Card-not-present purchases, including websites, in-app purchases, and phone and mail orders. Where the authorization identifies them, merchant-initiated charges such as subscriptions are not affected.
+        atm_withdrawal:
+          type: boolean
+          default: true
+          description: Cash withdrawals at ATMs.
+        contactless:
+          type: boolean
+          default: true
+          description: Tapping the physical card at a terminal.
+        swipe:
+          type: boolean
+          default: true
+          description: Reading the card's magnetic stripe at a terminal, including when the chip read fails and the terminal falls back to the stripe.
+      example:
+        international: true
+        online: false
+        atm_withdrawal: false
+        contactless: true
+        swipe: true
     issued-card-limit-request:
       title: Issued Card limit
       type: object
@@ -18197,6 +18287,20 @@ components:
                     - Alviere, Inc.
                   items:
                     type: string
+                allowed_mccs:
+                  description: |
+                    The array of merchant category codes (ISO 18245) to be accepted.
+                    A transaction is authorized if it matches any merchant id, merchant name or MCC in `allowed_merchants`.
+                  type: array
+                  title: Acceptable merchant category codes
+                  example:
+                    - '5411'
+                    - '5812'
+                  items:
+                    type: string
+                    pattern: ^[0-9]{4}$
+            allowed_transactions:
+              $ref: '#/components/schemas/issued-card-allowed-transactions'
             limits:
               type: array
               items:
