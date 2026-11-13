@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.36'
+  version: '6.6.37'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -17529,6 +17529,14 @@ components:
         primary:
           type: boolean
           description: Mark this bank account as the primary payment method for the account
+        account_holder_name:
+          type: string
+          minLength: 1
+          maxLength: 140
+          description: |
+            Name of the bank account holder, when it differs from the account's name. Available for selected programs.
+            Leading and trailing spaces are trimmed. Allowed characters: Latin letters (accented included), digits, spaces and `. , - ' & /`. Cannot be changed after creation.
+          example: Acme Billing LLC
         metadata:
           type: object
           description: Allows for any number of custom metadata keys and values to be stored with a given entity
