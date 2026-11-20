@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '6.6.37'
+  version: '6.6.38'
   title: The HIVE APIs
   contact:
     email: support@alviere.com
@@ -477,7 +477,7 @@ paths:
 
         This service will automatically trigger the KYC/KYB and Identity Management process relevant to the account type.
 
-        Please note that an account cannot be duplicated within the same parent program account; an account is considered duplicated when the same `external_id` and `account_type` combination is provided. Using an `external_id` that already exists under a different `account_type` will result in a HTTP 400 error.
+        An `external_id` is unique within the program. Repeating the same `external_id` and `account_type` returns HTTP 409 with the existing account. Any other reuse of the `external_id` returns HTTP 400.
 
         **Note**: For consumer accounts, if you do not set the `primary_address` property, you have to add an address separately to initiate the KYC process.
       parameters:
@@ -496,9 +496,8 @@ paths:
                     The ID of this account in your own platform. This will be associated with this account and can
                     be used to identify the account as well as protect our API against duplicate accounts.
 
-                    NOTE: This field MUST be unique per account type. Submitting the same `external_id` for the same
-                    `account_type` will fail with HTTP 409. Submitting the same `external_id` for a different
-                    `account_type` will fail with HTTP 400.
+                    NOTE: Unique within the program. The same `external_id` and `account_type` returns HTTP 409 with
+                    the existing account; any other reuse returns HTTP 400.
                 parent_account_uuid:
                   type: string
                   format: uuid
@@ -21244,7 +21243,7 @@ components:
               account:
                 $ref: '#/components/schemas/account-response'
     account-response-idempotency:
-      description: Idempotency detected - conflict with `external_id` property.
+      description: An account with this `external_id` and `account_type` already exists. Returns the existing account.
       headers:
         Alv-Request-Id:
           description: |
@@ -21258,13 +21257,9 @@ components:
         application/json:
           schema:
             type: object
-            description: |
-              The user account details containing all the information of the user.
             properties:
               account:
-                type: array
-                items:
-                  $ref: '#/components/schemas/account-response'
+                $ref: '#/components/schemas/account-response'
     check-response-success:
       description: |
         The details of the check
